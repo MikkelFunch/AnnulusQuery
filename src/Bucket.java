@@ -12,10 +12,10 @@ public class Bucket {
 		randomVectorDistances = new ArrayList<LinkedList<Pair<Double, RealVector>>>(numberOfRandomVectors);
 	}
 	
-	public void add(RealVector v){
+	public void add(RealVector vector){
 		for (int randomVectorIndex = 0; randomVectorIndex < Constants.getAmountOfRandomVectors(); randomVectorIndex++) {
-			double d = v.dotProduct(RandomVectors.getRandomVector(randomVectorIndex));
-			randomVectorDistances.get(randomVectorIndex).add(Pair.of(d, v));
+			double dotProduct = vector.dotProduct(RandomVectors.getRandomVector(randomVectorIndex));
+			randomVectorDistances.get(randomVectorIndex).add(Pair.of(dotProduct, vector));
 		}
 	}
 }
