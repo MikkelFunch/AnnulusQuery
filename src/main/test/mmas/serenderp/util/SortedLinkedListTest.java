@@ -78,6 +78,7 @@ public class SortedLinkedListTest {
 	public void testEmptyList() {
 		SortedLinkedList<Integer> list = new SortedLinkedList<Integer>();
 		
+		Assert.assertTrue(list.isEmpty());
 		Assert.assertNull(list.first());
 		Assert.assertNull(list.last());
 		

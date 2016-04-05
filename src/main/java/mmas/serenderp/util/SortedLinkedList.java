@@ -27,7 +27,7 @@ public class SortedLinkedList <E extends Comparable<E>> implements Iterable<E> {
 	}
 	
 	public void add(E e) {
-		if(size() == 0) {
+		if(isEmpty()) {
 			header = new Node<E>(e, null);
 		} else {
 			if(shouldInsertBefore(e, header)) {
@@ -56,6 +56,10 @@ public class SortedLinkedList <E extends Comparable<E>> implements Iterable<E> {
 	
 	public boolean shouldInsertBefore(E e, Node<E> element) {
 		return e.compareTo(element.item) > 0;
+	}
+	
+	public boolean isEmpty() {
+		return size() == 0;
 	}
 	
 	public int size() {
