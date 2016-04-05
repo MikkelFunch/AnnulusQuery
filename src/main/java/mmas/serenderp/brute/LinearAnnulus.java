@@ -1,3 +1,5 @@
+package main.java.mmas.serenderp.brute;
+
 import java.util.Random;
 
 import java.util.Collection;
