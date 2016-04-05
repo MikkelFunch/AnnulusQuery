@@ -12,7 +12,7 @@ public class SortedLinkedList <E extends Comparable<E>> implements Iterable<E> {
 	}
 	
 	public E get(int index) {
-		if(size() < index) {
+		if(size() <= index) {
 			throw new IndexOutOfBoundsException();
 		}
 		Iterator<E> iterator = iterator();
@@ -24,32 +24,29 @@ public class SortedLinkedList <E extends Comparable<E>> implements Iterable<E> {
 	
 	public void add(E e) {
 		if(size() == 0) {
-			header = new Node<E>(null, e, null);
+			header = new Node<E>(e, null);
 		} else {
-			Node<E> previousElement = null;
-			Node<E> currentElement = header;
-			
-			// Skip until e is larger than the next element
-			while(currentElement != null && e.compareTo(currentElement.item) < 0) {
-				previousElement = currentElement;
-				currentElement = currentElement.next;
-			}
-			
-			// Create new node
-			Node<E> newElement = new Node<E>(previousElement, e, currentElement);
-			
-			// Link the previous node to the new node
-			if(previousElement != null) {
-				previousElement.next = newElement;
-			}
-			
-			// Link the next node the new node
-			if(currentElement != null) {
-				currentElement.prev = newElement;
-			}
-			
-			if(header.equals(currentElement)) {
+			if(shouldInsertBefore(e, header)) {
+				// Create new node
+				Node<E> newElement = new Node<E>(e, header);
+				
+				// Replace the header
 				header = newElement;
+			} else {
+				Node<E> lastElement = header;
+				Node<E> currentElement = header.next;
+				
+				// Skip until we should insert element
+				while(currentElement != null && !shouldInsertBefore(e, currentElement)) {
+					lastElement = currentElement;
+					currentElement = currentElement.next;
+				}
+				
+				// Create new node
+				Node<E> newElement = new Node<E>(e, currentElement);
+				
+				// Link previous node to the new node
+				lastElement.next = newElement;
 			}
 		}
 		size++;
@@ -63,20 +60,35 @@ public class SortedLinkedList <E extends Comparable<E>> implements Iterable<E> {
 		return size;
 	}
 	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("[");
+		
+		Iterator<E> iterator = iterator();
+		while(iterator.hasNext()) {
+			E e = iterator.next();
+			sb.append(e.toString());
+			if(iterator.hasNext()) {
+				sb.append(", ");
+			}
+		}
+		sb.append("]");
+		return sb.toString();
+	}
+	
     private static class Node<E> {
          E item;
          Node<E> next;
-         Node<E> prev;
  
-         Node(Node<E> prev, E element, Node<E> next) {
+         Node(E element, Node<E> next) {
              this.item = element;
              this.next = next;
-             this.prev = prev;
          }
          
          @Override
          public String toString() {
-     		return String.format("(prev = %s, item = %s, next = %s)", prev == null ? null : prev.item, item, next == null ? null : next.item);
+     		return String.format("(item = %s, next = %s)", item, next == null ? null : next.item);
      	}
      }
 
