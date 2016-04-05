@@ -34,16 +34,14 @@ public class SortedLinkedList <E extends Comparable<E>> implements Iterable<E> {
 				header = newElement;
 			} else {
 				Node<E> lastElement = header;
-				Node<E> currentElement = header.next;
 				
 				// Skip until we should insert element
-				while(currentElement != null && !shouldInsertBefore(e, currentElement)) {
-					lastElement = currentElement;
-					currentElement = currentElement.next;
+				while(lastElement.next != null && !shouldInsertBefore(e, lastElement.next)) {
+					lastElement = lastElement.next;
 				}
 				
 				// Create new node
-				Node<E> newElement = new Node<E>(e, currentElement);
+				Node<E> newElement = new Node<E>(e, lastElement.next);
 				
 				// Link previous node to the new node
 				lastElement.next = newElement;
