@@ -15,6 +15,16 @@ public class SortedLinkedList <E extends Comparable<E>> implements Iterable<E> {
 		return size() > 0 ? get(size() - 1) : null;
 	}
 	
+	public E poll() {
+		if(isEmpty()) {
+			return null;
+		}
+		E result = header.item;
+		header = header.next;
+		size--;
+		return result;
+	}
+	
 	public E get(int index) {
 		if(size() <= index || index < 0) {
 			throw new IndexOutOfBoundsException();
