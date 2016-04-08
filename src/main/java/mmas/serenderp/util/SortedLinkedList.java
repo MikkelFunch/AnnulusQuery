@@ -12,7 +12,7 @@ public class SortedLinkedList <E extends Comparable<E>> implements Iterable<E> {
 	}
 	
 	public E last() {
-		return size() > 0 ? get(size() - 1) : null;
+		return isEmpty() ? null : get(size() - 1);
 	}
 	
 	public E poll() {
