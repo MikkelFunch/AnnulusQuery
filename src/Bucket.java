@@ -27,4 +27,13 @@ public class Bucket {
 	public RealVector getHead(int i){
 		return randomVectorDistances.get(i).first().getRight();
 	}
+
+	public Pair<Double, RealVector> poll(int i) {
+		return randomVectorDistances.get(i).poll();
+	}
+
+	public SortedLinkedList<Pair<Double, RealVector>> getList(int i) {
+		// TODO Auto-generated method stub
+		return randomVectorDistances.get(i);
+	}
 }

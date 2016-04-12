@@ -1,20 +1,37 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.PriorityQueue;
 
-import org.apache.commons.math3.linear.ArrayRealVector;
-import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.math3.linear.RealVector;
 
 public class Engine {
 	public static void main(String[] args) {
 		setConstants();
 		
+		List<RealVector> vectors = new ArrayList<>();
 		//Parse input
 		
 		/* Preprocess
 		for each point
 			hash to buckets
 		*/
+		for (RealVector v : vectors) {
+			for (int i = 0; i < Constants.getAmountOfRandomVectors(); i++) {
+				
+			}
+		}
+		
 		Bucket[] buckets = null; //set
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		
 		
@@ -23,31 +40,39 @@ public class Engine {
 		/* Querying */
 		RealVector q = null; //set
 		
-		PriorityQueue<Pair<Double, RealVector>> pq = new PriorityQueue<>(Constants.getAmountOfRandomVectors());
+		PriorityQueue<Quad> pq = new PriorityQueue<>();
 		
 		//Fill pq
 		for (Bucket bucket : buckets) {
 			for (int i = 0; i < Constants.getAmountOfRandomVectors(); i++) {
-				RealVector v = bucket.getHead(i);
+				RealVector v = bucket.poll(i).getRight();
 				double priorityValue = RandomVectors.getRandomVector(i).dotProduct(q.subtract(v));
-				pq.add(Pair.of(priorityValue, v));
+				pq.add(new Quad(priorityValue, v, bucket.getList(i), i));
 			}
 		}
 		
 		int r = Constants.getR();
 		int w = Constants.getW();
-		double value; //Like this?
+		
+		double value;
 		RealVector result = null;
+		Pair<Double, RealVector> nextToPq;
 		do{
 			//ADD NEXT ELEMENT TO pq
-			Pair<Double, RealVector> next = pq.poll();
+			Quad next = pq.poll();
 			if (next == null) {
 				result = null;
 				break;
 			}
-			value = next.getLeft();
-			result = next.getRight();
-		} while(value > r*w || value < r/w);
+			value = next.getDotProduct();
+			result = next.getVector();
+			nextToPq = next.getSortedLinkedList().poll();
+			if (nextToPq != null) {
+				int vectorIndex = next.getRandomVectorIndex();
+				double priorityValue = RandomVectors.getRandomVector(vectorIndex).dotProduct(q.subtract(next.getVector()));
+				pq.add(new Quad(priorityValue, nextToPq.getRight(), next.getSortedLinkedList(), vectorIndex));
+			}
+		} while(!(r/w < value && value < r*w));
 
 		
 		
