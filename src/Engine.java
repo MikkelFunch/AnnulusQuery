@@ -10,12 +10,14 @@ public class Engine {
 		setConstants();
 		
 		List<RealVector> vectors = new ArrayList<>();
-		//Parse input
+		//Parse inputs
 		
 		/* Preprocess
 		for each point
 			hash to buckets
 		*/
+		
+		
 		for (RealVector v : vectors) {
 			for (int i = 0; i < Constants.getAmountOfRandomVectors(); i++) {
 				
