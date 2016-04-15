@@ -78,7 +78,6 @@ public class SparseVector {
 		return dotProduct;
 	}
 
-
 	public double dotProduct(RealVector other) {
 		double dotProduct = 0d;
 		for(int i : vector.keySet()){
