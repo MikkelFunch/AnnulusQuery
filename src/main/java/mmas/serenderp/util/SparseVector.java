@@ -3,6 +3,7 @@ import java.util.Collection;
 import java.util.TreeMap;
 import java.util.Set;
 import java.util.Map;
+import org.apache.commons.math3.linear.RealVector;
 
 public class SparseVector {
 	private int size;
@@ -73,6 +74,15 @@ public class SparseVector {
 			} else if (keyA > keyB) {
 				j++;
 			}
+		}
+		return dotProduct;
+	}
+
+
+	public double dotProduct(RealVector other) {
+		double dotProduct = 0d;
+		for(int i : vector.keySet()){
+			dotProduct += get(i) * other.getEntry(i);
 		}
 		return dotProduct;
 	}
