@@ -48,13 +48,13 @@ public class SparseVector {
 	}
 
 	public int size() {
-		return nextAvailable;
+		return size;
 	}
 
-	public double dotProduct(SparseVector other) {
+	public static double dotProduct(SparseVector a, SparseVector b) {
 		Map.Entry<Integer,Double>[] typePar = new Map.Entry[0];
-		Map.Entry<Integer,Double>[] vectorA = vector.entrySet().toArray(typePar);
-		Map.Entry<Integer,Double>[] vectorB = other.vector.entrySet().toArray(typePar);
+		Map.Entry<Integer,Double>[] vectorA = a.vector.entrySet().toArray(typePar);
+		Map.Entry<Integer,Double>[] vectorB = b.vector.entrySet().toArray(typePar);
 
 		double dotProduct = 0.0;
 		int i = 0, j = 0;
@@ -78,12 +78,20 @@ public class SparseVector {
 		return dotProduct;
 	}
 
-	public double dotProduct(RealVector other) {
+	public static double dotProduct(SparseVector a, RealVector b) {
 		double dotProduct = 0d;
-		for(int i : vector.keySet()){
-			dotProduct += get(i) * other.getEntry(i);
+		for(int i : a.vector.keySet()){
+			dotProduct += a.get(i) * b.getEntry(i);
 		}
 		return dotProduct;
+	}
+
+	public static SparseVector subtract(SparseVector a, SparseVector b) {
+		SparseVector res = new SparseVector(a.size());
+		for (int i = 0; i < b.size(); i++) {
+			res.add(a.get(i) - b.get(i));
+		}
+		return res;
 	}
 
 	public Map<Integer,Double> getMap() {
