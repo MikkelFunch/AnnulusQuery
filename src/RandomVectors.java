@@ -8,7 +8,7 @@ public class RandomVectors {
 	private static RealVector[] randomVectors;
 	
 	private RandomVectors() {
-		randomVectors = new RealVector[10];
+		randomVectors = new RealVector[Constants.getAmountOfRandomVectors()];
 	}
 	
 	public static RealVector getRandomVector(int index) {

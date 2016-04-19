@@ -1,9 +1,39 @@
+import java.math.BigInteger;
+import java.util.Random;
+import java.util.stream.IntStream;
+
 import org.apache.commons.math3.linear.RealVector;
 
 public class MinHashing {
+	private static int a[];
+	private static int b[];
+	private static BigInteger p;
+	private static int m;
 	
-	public static int hash(RealVector v) {
+	
+	public static void init(){
+		Random r = new Random();
+		
+		int randomVectors = Constants.getAmountOfRandomVectors();
+		a = new int[randomVectors];
+		b = new int[randomVectors];
+		m = Constants.getDimensions();
+		p = BigInteger.probablePrime(32, r);
+		
+		for (int i = 0; i < randomVectors; i++) {
+			do {
+				a[i] = r.nextInt();
+			} while (a[i] != 0);
+			b[i] = r.nextInt();
+		}
+	}
+	
+	public static int hash(int i, int x) {
 		int dim = Constants.getDimensions();
+		
+		int result = (((a[i] * x) + b[i]) % p.intValue()) % m;
+		
+		return result;
 		
 		// en.wikipedia.org/wiki/Universal_hashing
 		// ((ax + b) mod p) mod m

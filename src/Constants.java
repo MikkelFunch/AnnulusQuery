@@ -3,6 +3,7 @@ public class Constants {
 	private static int dimensions;
 	private static int amountOfRandomVectors;
 	private static int r, w;
+	private static int numberOfHashFunctions;
 
 	public static int getDimensions() {
 		return dimensions;
@@ -34,5 +35,13 @@ public class Constants {
 
 	public static void setW(int w) {
 		Constants.w = w;
+	}
+
+	public static int getNumberOfHashFunctions() {
+		return numberOfHashFunctions;
+	}
+	
+	public static void setNumberOfHashFunctions(int i){
+		numberOfHashFunctions = i;
 	}
 }

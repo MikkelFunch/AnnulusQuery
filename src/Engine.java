@@ -3,32 +3,32 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.math3.linear.RealVector;
+
+import main.java.mmas.serenderp.util.SparseVector;
 
 public class Engine {
+	private static final double THRESHOLD = 0.3d;
+	
 	public static void main(String[] args) {
-		setConstants();
+		init();
 		
-		List<RealVector> vectors = new ArrayList<>();
-		//Parse inputs
-		
-		/* Preprocess
-		for each point
-			hash to buckets
-		*/
+		//Pre process
+		List<SparseVector> vectors = new ArrayList<>();
 		
 		
-		for (RealVector v : vectors) {
-			for (int i = 0; i < Constants.getAmountOfRandomVectors(); i++) {
-				
+		
+		Bucket[] buckets = new Bucket[Constants.getDimensions()];
+		
+		//For each point
+		for (SparseVector sv : vectors) {
+			for (int i = 0; i < Constants.getNumberOfHashFunctions(); i++) {
+				for (int x = 0; x < Constants.getDimensions(); x++){
+					if (sv.get(MinHashing.hash(i, x)) > THRESHOLD) {
+						buckets[x].add(sv);
+					}
+				}
 			}
 		}
-		
-		Bucket[] buckets = null; //set
-		
-		
-		
-		
 		
 		
 		
@@ -40,14 +40,14 @@ public class Engine {
 		
 		
 		/* Querying */
-		RealVector q = null; //set
+		SparseVector q = null; //set
 		
 		PriorityQueue<Quad> pq = new PriorityQueue<>();
 		
 		//Fill pq
 		for (Bucket bucket : buckets) {
 			for (int i = 0; i < Constants.getAmountOfRandomVectors(); i++) {
-				RealVector v = bucket.poll(i).getRight();
+				SparseVector v = bucket.poll(i).getRight();
 				double priorityValue = RandomVectors.getRandomVector(i).dotProduct(q.subtract(v));
 				pq.add(new Quad(priorityValue, v, bucket.getList(i), i));
 			}
@@ -57,8 +57,8 @@ public class Engine {
 		int w = Constants.getW();
 		
 		double value;
-		RealVector result = null;
-		Pair<Double, RealVector> nextToPq;
+		SparseVector result = null;
+		Pair<Double, SparseVector> nextToPq;
 		do{
 			//ADD NEXT ELEMENT TO pq
 			Quad next = pq.poll();
@@ -75,30 +75,19 @@ public class Engine {
 				pq.add(new Quad(priorityValue, nextToPq.getRight(), next.getSortedLinkedList(), vectorIndex));
 			}
 		} while(!(r/w < value && value < r*w));
-
 		
 		
-		/*
-		int size = 15_000_000;
-		int runs = 100_00;
-		RealVector a = new ArrayRealVector(size);
-		RealVector b = new ArrayRealVector(size);
-		RealVector c = new ArrayRealVector(size);
-		RealVector d = new ArrayRealVector(size);
-		RealVector e = new ArrayRealVector(size);
-		RealVector f = new ArrayRealVector(size);
-		
-		long start = System.currentTimeMillis();
-		
-		for (int i = 0; i < runs; i++) {
-			a.dotProduct(b);
-		}
-		long time = System.currentTimeMillis() - start;
-		System.out.println("Total time: " + time + "\nAverage time: " + time / runs);
-		*/
 	}
 	
+	private static void init() {
+		setConstants();
+		MinHashing.init();
+	}
+
 	private static void setConstants(){
-		
+		Constants.setAmountOfRandomVectors(amountOfRandomVectors);
+		Constants.setDimensions(dimensions);
+		Constants.setR(r);
+		Constants.setW(w);
 	}
 }
