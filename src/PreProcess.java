@@ -15,17 +15,17 @@ public class PreProcess {
 	private static ArrayList<String> indices = new ArrayList<>();
 	
 	private static String moviePattern = ".*\\d{4}\\)";
-    private static Pattern pattern = Pattern.compile(moviePattern);
-    private static String lastMovie = "";
+	private static Pattern pattern = Pattern.compile(moviePattern);
+	private static String lastMovie = "";
 	
 	public static List<SparseVector> getMovies(){
 		insertGenres();
 		
 		try (BufferedReader br = new BufferedReader(new FileReader(new File("textfiles/movies.csv")))) {
-		    String line; line = br.readLine();
+		String line; line = br.readLine();
 		    
-		    while ((line = br.readLine()) != null) {
-		    	String[] columns;
+		while ((line = br.readLine()) != null) {
+			String[] columns;
 				columns = line.split(",");
 				if (columns.length > 3) {
 					for (int i = 2; i < columns.length - 1; i++) {
@@ -41,16 +41,16 @@ public class PreProcess {
 					columns[1] = columns[1].substring(1, columns[1].length() - 1);
 				}
 		    	
-		    	SparseVector sv = new SparseVector(99999); // SIZE?
-		    	String[] genres = columns[2].split("\\|");
-		    	for (String g : genres) {
-		    		if (g != "(no genres listed)") {
-		    			sv.add(indices.indexOf(g));
+			SparseVector sv = new SparseVector(99999); // SIZE?
+			String[] genres = columns[2].split("\\|");
+			for (String g : genres) {
+				if (g != "(no genres listed)") {
+					sv.add(indices.indexOf(g));
 					}
 				}
 		    	
-		    	movies.put(columns[1], sv);
-		    }
+			movies.put(columns[1], sv);
+		}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -70,38 +70,38 @@ public class PreProcess {
 	
 	private static void insertActorsActresses(String path){
 		try (BufferedReader br = new BufferedReader(new FileReader(new File(path)))) {
-		    String line;// line = br.readLine();
-		    boolean added = true;
-		    int id = indices.size();
+			String line;// line = br.readLine();
+			boolean added = true;
+			int id = indices.size();
 		    
-		    while ((line = br.readLine()) != null) {
-		    	if(line.isEmpty()) { //No movie or actor
+		while ((line = br.readLine()) != null) {
+			if(line.isEmpty()) { //No movie or actor
 					continue;
 				} else if (!line.startsWith("\t")) { //Actor with movie
-		    		//check if previous actor was added to a movie, remove if not
+				//check if previous actor was added to a movie, remove if not
 					
-		    		if (!added) {
+				if (!added) {
 						indices.remove(id);
 					}
 		    		
-		    		id = indices.size();
-		    		try{
-		    		indices.add(line.substring(0, line.indexOf("\t")));
-		    		} catch(Exception e){//?
-		    			new UnexpectedException("");
-		    		}
+				id = indices.size();
+				try{
+				indices.add(line.substring(0, line.indexOf("\t")));
+				} catch(Exception e){//?
+					new UnexpectedException("");
+				}
 		    		
-		    		//add actor to movie
-		    		String movieLine = line.substring(line.lastIndexOf("\t") + 1);
-		    		if(insertToMovie(movieLine, id)){
-		    			added = true;
-		    		}
+				//add actor to movie
+				String movieLine = line.substring(line.lastIndexOf("\t") + 1);
+				if(insertToMovie(movieLine, id)){
+					added = true;
+				}
 				} else { //Just movie
 					//add actor to movie
 					String movieLine = line.substring(line.lastIndexOf("\t") + 1);
 					if(insertToMovie(movieLine, id)){
-		    			added = true;
-		    		}
+					added = true;
+				}
 				}
 		    }
 
@@ -114,12 +114,12 @@ public class PreProcess {
 	
 	private static boolean insertToMovie(String movieLine, int id){
 		Matcher m = pattern.matcher(movieLine);
-	    if (m.find()){
-	    	String movie = m.group(0);
-	    	if (movie.startsWith("The")) {
+		if (m.find()){
+		String movie = m.group(0);
+		if (movie.startsWith("The")) {
 				movie = movie.substring(4, movie.length() - 7) + ", The " + movie.substring(movie.length() - 6);;
 			}
-	    	if (movie != lastMovie) {
+		if (movie != lastMovie) {
 				lastMovie = movie;
 				if (movies.containsKey(movie)) {
 					SparseVector sv = movies.get(movie);
@@ -145,9 +145,9 @@ public class PreProcess {
 	private static void insertGenres() {
 		try (BufferedReader br = new BufferedReader(new FileReader(new File("textfiles/genres.txt")))) {
 			String line;
-		    while ((line = br.readLine()) != null) {
-		       indices.add(line);
-		    }
+			while ((line = br.readLine()) != null) {
+				indices.add(line);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
