@@ -3,7 +3,9 @@ import java.util.HashMap;
 import java.util.Collection;
 import java.util.TreeMap;
 import java.util.Set;
-import java.util.Function.BinaryOperator;
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
+import java.util.function.DoubleUnaryOperator;
 import java.util.Map;
 import org.apache.commons.math3.linear.RealVector;
 
@@ -19,7 +21,7 @@ public class SparseVector {
 
 	//add at last available index
 	public void addEntry(double d) {
-		add(nextAvailable,d);
+		addEntry(nextAvailable,d);
 	}
 
 	//Overloaded add that takes an integer.
@@ -89,17 +91,63 @@ public class SparseVector {
 	}
 
 	public static SparseVector add(SparseVector a, SparseVector b) {
-		return parwiseOp(a,(a,b) -> a+b ,b);
+		return pairwiseOp(a,(x,y) -> x+y ,b);
 	}
 
 	public static SparseVector subtract(SparseVector a, SparseVector b) {
-		return parwiseOp(a,(a,b) -> a-b ,b);
+		return pairwiseOp(a,(x,y) -> x-y ,b);
 	}
 
-	public static SparseVector parwiseOp(SparseVector a, BinaryOperator<Double> f, SparseVector b) {
+	public static SparseVector multiply(SparseVector v, double k) {
+		return mapIgnoreDefault(v, (x) -> x*k);
+	}
+
+	public static SparseVector divide(SparseVector v, double k) {
+		return mapIgnoreDefault(v, (x) -> x/k);
+	}
+
+	public static double distance(SparseVector v1, SparseVector v2) {
+		SparseVector v = subtract(v1,v2);
+		v = mapIgnoreDefault(v1, (x) -> Math.pow(x,2));
+		double sumOfSquares = foldIgnoreDefault(v, (x,y) -> x+y, 0d);
+		return Math.sqrt(sumOfSquares);
+	}
+
+	public static <A> A foldIgnoreDefault (SparseVector v, BiFunction<Double,A,A> f, A def) {
+		Map.Entry<Integer,Double>[] typePar = new Map.Entry[0];
+		Map.Entry<Integer,Double>[] vector = v.vector.entrySet().toArray(typePar);
+
+		for(int i = 0; i < vector.length;  i++) {
+			Map.Entry<Integer,Double> pair = vector[i];
+			Double value = pair.getValue();
+
+			def = f.apply(value, def);
+		}
+		return def;
+	}
+
+	public static SparseVector mapIgnoreDefault(SparseVector v, DoubleUnaryOperator f) {
+		Map.Entry<Integer,Double>[] typePar = new Map.Entry[0];
+		Map.Entry<Integer,Double>[] vector = v.vector.entrySet().toArray(typePar);
+
+		SparseVector res = new SparseVector(v.size());
+
+		int i = 0;
+
+		while(i < vector.length) {
+			Map.Entry<Integer,Double> pair = vector[i];
+			int key = pair.getKey();
+			double value = pair.getValue();
+			res.addEntry(key, f.applyAsDouble(value));
+			i++;
+		}
+		return res;
+	}
+
+	public static SparseVector pairwiseOp(SparseVector a, BinaryOperator<Double> f, SparseVector b) {
 		SparseVector res = new SparseVector(a.size());
 		for (int i = 0; i < b.size(); i++) {
-			res.addEntry(f.apply(a, b));
+			res.addEntry(f.apply(a.get(i), b.get(i)));
 		}
 		return res;
 	}

@@ -45,7 +45,7 @@ public class PreProcess {
 			String[] genres = columns[2].split("\\|");
 			for (String g : genres) {
 				if (g != "(no genres listed)") {
-					sv.add(indices.indexOf(g));
+					sv.addEntry(indices.indexOf(g));
 					}
 				}
 		    	
@@ -123,7 +123,7 @@ public class PreProcess {
 				lastMovie = movie;
 				if (movies.containsKey(movie)) {
 					SparseVector sv = movies.get(movie);
-					sv.add(id);
+					sv.addEntry(id);
 					return true;
 				}
 			} else {
