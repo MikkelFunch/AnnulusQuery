@@ -1,6 +1,4 @@
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.math3.linear.RealVector;
-
 import main.java.mmas.serenderp.util.SortedLinkedList;
 import main.java.mmas.serenderp.util.SparseVector;
 
@@ -36,5 +34,6 @@ public class Quad implements Comparable<Quad> {
 	@Override
 	public int compareTo(Quad o) {
 		// TODO Auto-generated method stub
+		return -1; // TODO: CHANGE!
 	}
 }

@@ -1,8 +1,5 @@
 import java.math.BigInteger;
 import java.util.Random;
-import java.util.stream.IntStream;
-
-import org.apache.commons.math3.linear.RealVector;
 
 public class MinHashing {
 	private static int a[];
@@ -29,7 +26,7 @@ public class MinHashing {
 	}
 	
 	public static int hash(int i, int x) {
-		int dim = Constants.getDimensions();
+		//int dim = Constants.getDimensions();
 		
 		int result = (((a[i] * x) + b[i]) % p.intValue()) % m;
 		

@@ -10,10 +10,24 @@ public class Engine {
 	private static final double THRESHOLD = 0.3d;
 	
 	public static void main(String[] args) {
+		PreProcess.getMovies();
+	}
+	
+	public static void realMain() {
+	//public static void main(String[] args) {
 		init();
 		
 		//Pre process
+		
+		
+		
 		List<SparseVector> vectors = new ArrayList<>();
+		
+		
+		
+		
+		
+		
 		
 		
 		
@@ -34,11 +48,6 @@ public class Engine {
 		
 		
 		
-		
-		
-		
-		
-		
 		/* Querying */
 		SparseVector q = null; //set
 		
@@ -48,7 +57,7 @@ public class Engine {
 		for (Bucket bucket : buckets) {
 			for (int i = 0; i < Constants.getAmountOfRandomVectors(); i++) {
 				SparseVector v = bucket.poll(i).getRight();
-				double priorityValue = RandomVectors.getRandomVector(i).dotProduct(q.subtract(v));
+				double priorityValue = -1;//RandomVectors.getRandomVector(i).dotProduct(q.subtract(v)); TODO: CHANGE!
 				pq.add(new Quad(priorityValue, v, bucket.getList(i), i));
 			}
 		}
@@ -71,7 +80,7 @@ public class Engine {
 			nextToPq = next.getSortedLinkedList().poll();
 			if (nextToPq != null) {
 				int vectorIndex = next.getRandomVectorIndex();
-				double priorityValue = RandomVectors.getRandomVector(vectorIndex).dotProduct(q.subtract(next.getVector()));
+				double priorityValue = -1; //RandomVectors.getRandomVector(vectorIndex).dotProduct(q.subtract(next.getVector())); TODO:CHANGE!
 				pq.add(new Quad(priorityValue, nextToPq.getRight(), next.getSortedLinkedList(), vectorIndex));
 			}
 		} while(!(r/w < value && value < r*w));
@@ -85,9 +94,9 @@ public class Engine {
 	}
 
 	private static void setConstants(){
-		Constants.setAmountOfRandomVectors(amountOfRandomVectors);
+		/*Constants.setAmountOfRandomVectors(amountOfRandomVectors);
 		Constants.setDimensions(dimensions);
 		Constants.setR(r);
-		Constants.setW(w);
+		Constants.setW(w);*/
 	}
 }
