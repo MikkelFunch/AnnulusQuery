@@ -13,3 +13,8 @@ hs_err_pid*
 
 # mac shit
 .DS_Store
+
+# res
+.list
+.txt
+.csv
