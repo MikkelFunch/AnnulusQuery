@@ -3,6 +3,7 @@ import java.util.HashMap;
 import java.util.Collection;
 import java.util.TreeMap;
 import java.util.Set;
+import java.util.Function.BinaryOperator;
 import java.util.Map;
 import org.apache.commons.math3.linear.RealVector;
 
@@ -17,14 +18,14 @@ public class SparseVector {
 	}
 
 	//add at last available index
-	public void add(double d) {
+	public void addEntry(double d) {
 		add(nextAvailable,d);
 	}
 
 	//Overloaded add that takes an integer.
 	//Take care if mixing use of the two add functions, as they move the
 	//nextAvailable index.
-	public void add(int i, double d) {
+	public void addEntry(int i, double d) {
 		if (vector.containsKey(i)) {
 			//this may be overkill
 			throw new RuntimeException("vector overwrite not permitted");
@@ -87,10 +88,18 @@ public class SparseVector {
 		return dotProduct;
 	}
 
+	public static SparseVector add(SparseVector a, SparseVector b) {
+		return parwiseOp(a,(a,b) -> a+b ,b);
+	}
+
 	public static SparseVector subtract(SparseVector a, SparseVector b) {
+		return parwiseOp(a,(a,b) -> a-b ,b);
+	}
+
+	public static SparseVector parwiseOp(SparseVector a, BinaryOperator<Double> f, SparseVector b) {
 		SparseVector res = new SparseVector(a.size());
 		for (int i = 0; i < b.size(); i++) {
-			res.add(a.get(i) - b.get(i));
+			res.addEntry(f.apply(a, b));
 		}
 		return res;
 	}
