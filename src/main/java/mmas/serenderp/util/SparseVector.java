@@ -1,12 +1,11 @@
 package main.java.mmas.serenderp.util;
-import java.util.HashMap;
-import java.util.Collection;
+
+import java.util.Map;
 import java.util.TreeMap;
-import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.DoubleUnaryOperator;
-import java.util.Map;
+
 import org.apache.commons.math3.linear.RealVector;
 
 public class SparseVector {
