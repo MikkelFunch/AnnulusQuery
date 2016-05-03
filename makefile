@@ -6,7 +6,7 @@ testclasses=$(shell cd bin; find main -path "main/test/*.class" | sed -e 's/\.cl
 default: compile
 
 compile:
-	$(shell find -name '*.java' -exec javac -d bin -cp bin:lib/\* {} +)
+	$(shell find src -name '*.java' -exec javac -d bin -cp bin:lib/\* {} +)
 
 test: $(testclasses)
 
