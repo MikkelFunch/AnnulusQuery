@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.regex.Pattern;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -88,9 +87,7 @@ public class MovieLensReader {
 	}
 	
 	public static void main(String[] args) {
-//		List<List<Entry<Integer, Double>>> ratings = loadUserRatings();
-//		System.out.println(ratings.size());
-		
-		Map<Integer, String> movies = loadMovies();
+		loadUserRatings();
+		loadMovies();
 	}
 }
