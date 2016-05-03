@@ -7,7 +7,6 @@ public class MinHashing {
 	private static BigInteger p;
 	private static int m;
 	
-	
 	public static void init(){
 		Random r = new Random();
 		
@@ -24,7 +23,7 @@ public class MinHashing {
 			b[i] = r.nextInt();
 		}
 	}
-	
+
 	public static int hash(int i, int x) {
 		//int dim = Constants.getDimensions();
 		
