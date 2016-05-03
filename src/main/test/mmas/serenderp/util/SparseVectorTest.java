@@ -13,12 +13,12 @@ public class SparseVectorTest {
 	@Test
 	public void testConstructionIsSparse() {
 		SparseVector a = new SparseVector(6);
-		a.add(0);
-		a.add(1);
-		a.add(0);
-		a.add(1);
-		a.add(2);
-		a.add(1);
+		a.addEntry(0);
+		a.addEntry(1);
+		a.addEntry(0);
+		a.addEntry(1);
+		a.addEntry(2);
+		a.addEntry(1);
 
 		Map<Integer,Double> m = a.getMap();
 		Integer[] keys = m.keySet().toArray(new Integer[0]);
@@ -29,12 +29,12 @@ public class SparseVectorTest {
 	@Test
 	public void testConstructionKVPairs() {
 		SparseVector a = new SparseVector(6);
-		a.add(0);
-		a.add(1);
-		a.add(0);
-		a.add(1);
-		a.add(2);
-		a.add(1);
+		a.addEntry(0);
+		a.addEntry(1);
+		a.addEntry(0);
+		a.addEntry(1);
+		a.addEntry(2);
+		a.addEntry(1);
 
 		Map<Integer,Double> m = a.getMap();
 		Double[] values = m.values().toArray(new Double[0]);
@@ -45,12 +45,12 @@ public class SparseVectorTest {
 	public void testDotProductOperatorOrthogonal() {
 		SparseVector a = new SparseVector(3);
 		SparseVector b = new SparseVector(3);
-		a.add(0);
-		a.add(1);
+		a.addEntry(0);
+		a.addEntry(1);
 
-		b.add(1);
-		b.add(0);
-		b.add(1);
+		b.addEntry(1);
+		b.addEntry(0);
+		b.addEntry(1);
 
 		assertEquals("dp of orthogonal vectors is 0", 0, dotProduct(a,b), 0);
 	}
@@ -59,14 +59,14 @@ public class SparseVectorTest {
 	public void testDotProductOperator() {
 		SparseVector a = new SparseVector(4);
 		SparseVector b = new SparseVector(4);
-		a.add(2);
-		a.add(100);
-		a.add(1);
-		a.add(1);
+		a.addEntry(2);
+		a.addEntry(100);
+		a.addEntry(1);
+		a.addEntry(1);
 
-		b.add(1);
-		b.add(0);
-		b.add(1);
+		b.addEntry(1);
+		b.addEntry(0);
+		b.addEntry(1);
 
 		assertEquals("dp of vectors is 3", 3, dotProduct(a,b), 0);
 	}
@@ -74,8 +74,8 @@ public class SparseVectorTest {
 	public void testDotProductOperatorRealOrthogonal() {
 		SparseVector a = new SparseVector(3);
 		RealVector b = new ArrayRealVector(new double[]{1,0,1});
-		a.add(0);
-		a.add(1);
+		a.addEntry(0);
+		a.addEntry(1);
 
 		assertEquals("dp of orthogonal vectors is 0", 0, dotProduct(a,b), 0);
 	}
@@ -84,10 +84,10 @@ public class SparseVectorTest {
 	public void testDotProductRealOperator() {
 		SparseVector a = new SparseVector(4);
 		RealVector b = new ArrayRealVector(new double[]{1,0,1,0});
-		a.add(2);
-		a.add(100);
-		a.add(1);
-		a.add(1);
+		a.addEntry(2);
+		a.addEntry(100);
+		a.addEntry(1);
+		a.addEntry(1);
 
 
 		assertEquals("dp of vectors is 3", 3, dotProduct(a,b), 0);
@@ -97,10 +97,10 @@ public class SparseVectorTest {
 	public void testSubtractOperatorZeroVectors() {
 		SparseVector a = new SparseVector(4);
 		SparseVector b = new SparseVector(4);
-		a.add(0);
-		a.add(0);
-		a.add(0);
-		a.add(0);
+		a.addEntry(0);
+		a.addEntry(0);
+		a.addEntry(0);
+		a.addEntry(0);
 
 		SparseVector sub = subtract(a,b);
 		assertEquals(4,sub.size());
@@ -114,10 +114,10 @@ public class SparseVectorTest {
 	public void testSubtractOperatorVectors() {
 		SparseVector a = new SparseVector(4);
 		SparseVector b = new SparseVector(4);
-		b.add(0);
-		b.add(4);
-		b.add(-4);
-		b.add(0);
+		b.addEntry(0);
+		b.addEntry(4);
+		b.addEntry(-4);
+		b.addEntry(0);
 
 		SparseVector sub = subtract(a,b);
 		double[] subarr = new double[]{0,-4,4,0};

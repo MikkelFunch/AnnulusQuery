@@ -12,27 +12,15 @@ public class Engine {
 	public static void main(String[] args) {
 		//PreProcess.getMovieLensMovies();
 	}
-	
-	public static void realMain() {
-	//public static void main(String[] args) {
+
+	public static Bucket[] buildQueryStructure() {
 		init();
-		
+
 		//Pre process
-		
-		
-		
 		List<SparseVector> vectors = new ArrayList<>();
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
 		Bucket[] buckets = new Bucket[Constants.getDimensions()];
-		
+
 		//For each point
 		for (SparseVector sv : vectors) {
 			for (int i = 0; i < Constants.getNumberOfHashFunctions(); i++) {
@@ -43,18 +31,14 @@ public class Engine {
 				}
 			}
 		}
-		
-		
-		
-		
-		
-		/* Querying */
-		SparseVector q = null; //set
-		
+		return buckets;
+	}
+
+	public static SparseVector query(Bucket[] queryStructure, SparseVector q) {
 		PriorityQueue<Quad> pq = new PriorityQueue<>();
 		
 		//Fill pq
-		for (Bucket bucket : buckets) {
+		for (Bucket bucket : queryStructure) {
 			for (int i = 0; i < Constants.getAmountOfRandomVectors(); i++) {
 				SparseVector v = bucket.poll(i).getRight();
 				double priorityValue = -1;//RandomVectors.getRandomVector(i).dotProduct(q.subtract(v)); TODO: CHANGE!
@@ -84,10 +68,10 @@ public class Engine {
 				pq.add(new Quad(priorityValue, nextToPq.getRight(), next.getSortedLinkedList(), vectorIndex));
 			}
 		} while(!(r/w < value && value < r*w));
-		
-		
+
+		return result;
 	}
-	
+
 	private static void init() {
 		setConstants();
 		MinHashing.init();

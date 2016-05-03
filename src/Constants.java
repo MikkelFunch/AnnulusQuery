@@ -1,4 +1,3 @@
-
 public class Constants {
 	private static int dimensions;
 	private static int amountOfRandomVectors;
