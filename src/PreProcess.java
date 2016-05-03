@@ -21,69 +21,6 @@ public class PreProcess {
 	private static Pattern pattern = Pattern.compile(moviePattern);
 	private static String lastMovie = "";
 	
-    /***
-     * Get movielens movies
-     * @return
-     */
-	/*public static List<SparseVector> getMovieLensMovies(){
-		insertGenres();
-		
-<<<<<<< HEAD
-		try (BufferedReader br = new BufferedReader(new FileReader(new File("data/movielens_movies.csv")))) {
-		    String line; line = br.readLine();
-=======
-		try (BufferedReader br = new BufferedReader(new FileReader(new File("data/movies.csv")))) {
-		String line; line = br.readLine();
->>>>>>> 1db4e674de0879f133d08b5abffb0a5710587864
-		    
-		while ((line = br.readLine()) != null) {
-			String[] columns;
-				columns = line.split(",");
-				if (columns.length > 3) {
-					for (int i = 2; i < columns.length - 1; i++) {
-						if (columns[i].startsWith(" The")) {
-							columns[1] += "," + columns[i];
-						} else {
-							columns[1] += columns[i];
-						}
-					}
-					columns[2] = columns[columns.length - 1];
-				}
-				if(columns[1].startsWith("\"")){
-					columns[1] = columns[1].substring(1, columns[1].length() - 1);
-				}
-		    	
-			SparseVector sv = new SparseVector(99999); // SIZE?
-			String[] genres = columns[2].split("\\|");
-			for (String g : genres) {
-				if (g != "(no genres listed)") {
-					sv.addEntry(indices.indexOf(g));
-					}
-				}
-		    	
-<<<<<<< HEAD
-		    	movieLensmovies.put(columns[1], sv);
-		    }
-=======
-			movies.put(columns[1], sv);
-		}
->>>>>>> 1db4e674de0879f133d08b5abffb0a5710587864
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		insertActors();
-		insertActresses();
-		
-		
-		//Get movies
-		//Get genres
-		//Get Actors
-		//Get ratings, 0 - 1
-		//Global indexes
-		return new ArrayList<SparseVector>(movieLensmovies.values());
-	}*/
-	
 	private static void insertActorsActresses(String path){
 		try (BufferedReader br = new BufferedReader(new FileReader(new File(path)))) {
 			String line;// line = br.readLine();
