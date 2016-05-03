@@ -1,8 +1,10 @@
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -12,20 +14,29 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
 public class MovieLensReader {
+	
+	private static final CSVFormat CSV_FORMAT = CSVFormat.DEFAULT.withHeader();
+	private static final Charset FILE_CHARSET = StandardCharsets.UTF_8;
+	
+	private static final String RATING_FILE = "data/ratings.csv";
+	private static final String MOVIE_FILE = "data/movielens_movies.csv";
 
-	// Format of CSV file [userId, movieId, rating, timestamp]
+	// Format of ratings.csv [userId, movieId, rating, timestamp]
 	private static final String USER_ID = "userId";
 	private static final String MOVIE_ID = "movieId";
 	private static final String RATING = "rating";
+	
+	// Format of movielens_movies.csv [movieId, title, genres]
+	private static final String TITLE = "title";
 
-	public static List<List<Entry<Integer, Double>>> load() {
-		File csvData = new File("data/ratings.csv");
+	public static List<List<Entry<Integer, Double>>> loadUserRatings() {
+		File csvData = new File(RATING_FILE);
 		
 		// List of Users of Ratings
 		List<List<Entry<Integer, Double>>> ratings = new ArrayList<List<Entry<Integer, Double>>>();
 		
 		try {
-			CSVParser parser = CSVParser.parse(csvData, StandardCharsets.UTF_8, CSVFormat.DEFAULT.withHeader());
+			CSVParser parser = CSVParser.parse(csvData, FILE_CHARSET, CSV_FORMAT);
 
 			int currentUserId = 0;
 			List<Entry<Integer, Double>> currentUser = null;
@@ -48,8 +59,33 @@ public class MovieLensReader {
 		return ratings;
 	}
 	
+	public static Map<Integer, String> loadMovies() {
+		File csvData = new File(MOVIE_FILE);
+		
+		// Map from movieId to movie
+		Map<Integer, String> movies = new HashMap<Integer, String>();
+		
+		try {
+			CSVParser parser = CSVParser.parse(csvData, FILE_CHARSET, CSV_FORMAT);
+			
+			for(CSVRecord record : parser) {
+				int movieId = Integer.parseInt(record.get(MOVIE_ID));
+				String title = record.get(TITLE);
+				
+				movies.put(movieId, title);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return movies;
+	}
+	
 	public static void main(String[] args) {
-		List<List<Entry<Integer, Double>>> data = load();
-		System.out.println(data.size());
+		List<List<Entry<Integer, Double>>> ratings = loadUserRatings();
+		System.out.println(ratings.size());
+		
+		Map<Integer, String> movies = loadMovies();
+		System.out.println(movies.size());
 	}
 }
