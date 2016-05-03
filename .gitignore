@@ -15,6 +15,6 @@ hs_err_pid*
 .DS_Store
 
 # res
-.list
-.txt
-.csv
+*.list
+*.txt
+*.csv

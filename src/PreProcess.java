@@ -11,17 +11,22 @@ import java.util.regex.Pattern;
 import main.java.mmas.serenderp.util.SparseVector;
 
 public class PreProcess {
-	private static HashMap<String, SparseVector> movies = new HashMap<>();
+	private static HashMap<String, SparseVector> movieLensmovies = new HashMap<>();
+	private static HashMap<String, SparseVector> IMDBmovies = new HashMap<>();
 	private static ArrayList<String> indices = new ArrayList<>();
 	
 	private static String moviePattern = ".*\\d{4}\\)";
     private static Pattern pattern = Pattern.compile(moviePattern);
     private static String lastMovie = "";
 	
-	public static List<SparseVector> getMovies(){
+    /***
+     * Get movielens movies
+     * @return
+     */
+	/*public static List<SparseVector> getMovieLensMovies(){
 		insertGenres();
 		
-		try (BufferedReader br = new BufferedReader(new FileReader(new File("textfiles/movies.csv")))) {
+		try (BufferedReader br = new BufferedReader(new FileReader(new File("textfiles/movielens_movies.csv")))) {
 		    String line; line = br.readLine();
 		    
 		    while ((line = br.readLine()) != null) {
@@ -49,7 +54,7 @@ public class PreProcess {
 					}
 				}
 		    	
-		    	movies.put(columns[1], sv);
+		    	movieLensmovies.put(columns[1], sv);
 		    }
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -64,9 +69,8 @@ public class PreProcess {
 		//Get Actors
 		//Get ratings, 0 - 1
 		//Global indexes
-		
-		return null;
-	}
+		return new ArrayList<SparseVector>(movieLensmovies.values());
+	}*/
 	
 	private static void insertActorsActresses(String path){
 		try (BufferedReader br = new BufferedReader(new FileReader(new File(path)))) {
@@ -93,36 +97,34 @@ public class PreProcess {
 		    		
 		    		//add actor to movie
 		    		String movieLine = line.substring(line.lastIndexOf("\t") + 1);
-		    		if(insertToMovie(movieLine, id)){
+		    		if(insertActorToMovie(movieLine, id)){
 		    			added = true;
 		    		}
 				} else { //Just movie
 					//add actor to movie
 					String movieLine = line.substring(line.lastIndexOf("\t") + 1);
-					if(insertToMovie(movieLine, id)){
+					if(insertActorToMovie(movieLine, id)){
 		    			added = true;
 		    		}
 				}
 		    }
-
-		    //SparseVector sv = movies.get("Toy Story (1995)");
-		    //int s = indices.indexOf("Bradley, Lisa (IV)");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	private static boolean insertToMovie(String movieLine, int id){
+	private static boolean insertActorToMovie(String movieLine, int id){
 		Matcher m = pattern.matcher(movieLine);
 	    if (m.find()){
 	    	String movie = m.group(0);
 	    	if (movie.startsWith("The")) {
+	    		//Move "The" behind in the movie
 				movie = movie.substring(4, movie.length() - 7) + ", The " + movie.substring(movie.length() - 6);;
 			}
 	    	if (movie != lastMovie) {
 				lastMovie = movie;
-				if (movies.containsKey(movie)) {
-					SparseVector sv = movies.get(movie);
+				if (movieLensmovies.containsKey(movie)) {
+					SparseVector sv = movieLensmovies.get(movie);
 					sv.add(id);
 					return true;
 				}
@@ -151,5 +153,44 @@ public class PreProcess {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/***
+	 * Get imdb movies
+	 * @return
+	 */
+	public static List<SparseVector> getIMDBMovies(){
+		insertGenres();
+		
+		try (BufferedReader br = new BufferedReader(new FileReader(new File("textfiles/imdb_movies.csv")))) {
+		    String line;
+		    
+		    while ((line = br.readLine()) != null) {
+		    	Matcher m = pattern.matcher(line);
+		    	
+		    	if (m.find()){
+		    		String movie = m.group(0);
+		    		if (movie != lastMovie) {
+		    			lastMovie = movie;
+		    		}
+					SparseVector sv = new SparseVector(99999); // SIZE?
+					movieLensmovies.put(movie, sv);
+		    	}
+		}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		//addgenres();
+		insertActors();
+		insertActresses();
+		
+		
+		
+		//Get movies
+		//Get genres
+		//Get Actors
+		//Get ratings, 0 - 1
+		//Global indexes
+		return new ArrayList<SparseVector>(movieLensmovies.values());
 	}
 }
