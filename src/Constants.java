@@ -62,6 +62,8 @@ public class Constants {
 				SparseVector vector = imdbMovies.get(movie.getValue());
 				if (vector != null) {
 					movies.put(movie.getKey(), vector);
+				} else {
+					System.out.println("Could not find movie with name: " + movie.getValue());
 				}
 			}
 		}
