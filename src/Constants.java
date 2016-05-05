@@ -6,7 +6,7 @@ import main.java.mmas.serenderp.util.SparseVector;
 public class Constants {
 	private static int dimensions;
 	private static int amountOfRandomVectors;
-	private static int r, w;
+	private static int r, w, c;
 	private static int numberOfHashFunctions;
 
 	private static Map<Integer, SparseVector> movies;
@@ -41,6 +41,14 @@ public class Constants {
 
 	public static void setW(int w) {
 		Constants.w = w;
+	}
+	
+	public static int getC(){
+		return c;
+	}
+	
+	public static void setC(int c) {
+		Constants.c = c;
 	}
 
 	public static int getNumberOfHashFunctions() {

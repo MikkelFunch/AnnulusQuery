@@ -23,7 +23,7 @@ public class PreProcess {
 		try (BufferedReader br = new BufferedReader(new FileReader(new File(path)))) {
 			String line;// line = br.readLine();
 			boolean added = true;
-			int id = indices.size();
+			int id = indices.size(); //TODO: Why?
 			
 			while ((line = br.readLine()) != null) {
 				if (line.isEmpty()) { // No movie or actor
@@ -72,7 +72,7 @@ public class PreProcess {
 				lastMovie = movie;
 				if (IMDBmovies.containsKey(movie)) {
 					SparseVector sv = IMDBmovies.get(movie);
-					sv.addEntry(id);
+					sv.addEntry(id, 1d);
 					return true;
 				}
 			} else {
@@ -151,11 +151,16 @@ public class PreProcess {
 				if (m.find()) {
 					String movie = m.group(0);
 					String genre = line.substring(line.lastIndexOf("\t") + 1);
-					IMDBmovies.get(movie).addEntry(indices.indexOf(genre));
+					IMDBmovies.get(movie).addEntry(indices.indexOf(genre), 1d);
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	
+	public static String getFromGlobalIndex(int i) {
+		return indices.get(i);
 	}
 }

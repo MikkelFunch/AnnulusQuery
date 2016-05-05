@@ -9,9 +9,10 @@ public class Bucket {
 	private List<SortedLinkedList<Pair<Double, SparseVector>>> randomVectorDistances;
 	//private SortedLinkedList<RealVector> 
 	
-	public Bucket(int numberOfRandomVectors) {
-		randomVectorDistances = new ArrayList<SortedLinkedList<Pair<Double, SparseVector>>>(numberOfRandomVectors);
-		for (int i = 0; i < numberOfRandomVectors; i++) {
+	public Bucket() {
+		int amountOfRandomVectors = Constants.getAmountOfRandomVectors();
+		randomVectorDistances = new ArrayList<SortedLinkedList<Pair<Double, SparseVector>>>(amountOfRandomVectors);
+		for (int i = 0; i < amountOfRandomVectors; i++) {
 			randomVectorDistances.add(new SortedLinkedList<>());
 		}
 	}

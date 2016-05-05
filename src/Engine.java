@@ -1,5 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Map.Entry;
 import java.util.Map;
@@ -19,24 +18,61 @@ public class Engine {
 		System.out.println("loaded ratings");
 		Magic.assessMagic(users, imdMovsByMlId);
 
+		
+		////PRE PROCESS
+		//Long startTime = System.currentTimeMillis();
+		//Map<String, SparseVector> movies = PreProcess.getIMDBMovies();
+		//Long endTime = System.currentTimeMillis();
+		//Long duration = (endTime - startTime);
+		//System.out.println(String.format("Pre process duration: %d sec", (duration / 1000)));
+		//
+		////Test data
+		//SparseVector q = movies.get("Toy Story (1995)");
+		//Movies.remove("Toy Story (1995)");
+		//
+		////DATA STRUCTURE
+		//StartTime = System.currentTimeMillis();
+		//Bucket[] buckets = buildQueryStructure(movies);
+		//EndTime = System.currentTimeMillis();
+		//System.out.println("Build data structure duration: " + duration);
+		//
+		////QUERY
+		//StartTime = System.currentTimeMillis();
+		//SparseVector result = query(buckets, q);
+		//EndTime = System.currentTimeMillis();
+		//System.out.println("Query time duration: " + duration);
+		//
+		//
+		//For (int i : result.getMap().keySet()) {
+		//	System.out.println(PreProcess.getFromGlobalIndex(i));
+		//}
+		//System.out.println("Done");
 	}
 
-	public static Bucket[] buildQueryStructure() {
+	public static Bucket[] buildQueryStructure(Map<String, SparseVector> movies) {
 		init();
 
 		//Pre process
-		List<SparseVector> vectors = new ArrayList<>();
+		//List<SparseVector> vectors = new ArrayList<>();
 
 		Bucket[] buckets = new Bucket[Constants.getDimensions()];
+		for (int i = 0; i < buckets.length; i++) {
+			buckets[i] = new Bucket();
+		}
 
 		//For each point
-		for (SparseVector sv : vectors) {
+		int count = 0;
+		for (SparseVector sv : movies.values()) {
 			for (int i = 0; i < Constants.getNumberOfHashFunctions(); i++) {
 				for (int x = 0; x < Constants.getDimensions(); x++){
 					if (sv.get(MinHashing.hash(i, x)) > THRESHOLD) {
 						buckets[x].add(sv);
 					}
 				}
+			}
+			count++;
+			if (count % 500 == 0) {
+				System.out.println(count);
 			}
 		}
 		return buckets;
@@ -86,10 +122,10 @@ public class Engine {
 	}
 
 	private static void setConstants(){
-		/*Constants.setAmountOfRandomVectors(amountOfRandomVectors);
-		Constants.setDimensions(dimensions);
-		Constants.setR(r);
-		Constants.setW(w);*/
-		Constants.setDimensions(3649941);
+		Constants.setAmountOfRandomVectors(5);
+		Constants.setR(1/2);
+		Constants.setW(2);
+		Constants.setDimensions(3_649_941);
+		Constants.setNumberOfHashFunctions(5);
 	}
 }
