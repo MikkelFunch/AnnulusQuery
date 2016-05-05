@@ -59,7 +59,7 @@ public class Constants {
 		numberOfHashFunctions = i;
 	}
 
-	public Map<Integer, SparseVector> getMovies() {
+	public static Map<Integer, SparseVector> getMovies() {
 		if (movies == null) {
 			Map<Integer, SparseVector> movies = new HashMap<Integer, SparseVector>();
 

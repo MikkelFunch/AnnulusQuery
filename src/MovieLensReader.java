@@ -82,7 +82,7 @@ public class MovieLensReader {
 			File csvData = new File(MOVIE_FILE);
 
 			// Map from movieId to movie
-			Map<Integer, String> movies = new HashMap<Integer, String>();
+			moviesCache = new HashMap<Integer, String>();
 
 			try {
 				CSVParser parser = CSVParser.parse(csvData, FILE_CHARSET, CSV_FORMAT);
@@ -97,19 +97,13 @@ public class MovieLensReader {
 					}
 					
 					if(imdbMovies.containsKey(title)) {
-						movies.put(movieId, title);
+						moviesCache.put(movieId, title);
 					}
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			moviesCache = movies;
 		}
 		return moviesCache;
-	}
-
-	public static void main(String[] args) {
-		loadUserRatings();
-		loadMovies();
 	}
 }
