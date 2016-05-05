@@ -1,5 +1,7 @@
-import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Map.Entry;
+import java.util.Map;
+import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -10,35 +12,41 @@ public class Engine {
 	
 	public static void main(String[] args) {
 		setConstants();
+		Map<Integer, SparseVector> imdMovsByMlId = Constants.getMovies();
+		System.out.println("loaded movies");
+		List<List<Entry<Integer,Double>>>  users = MovieLensReader.loadUserRatings();
+		System.out.println("loaded ratings");
+		Magic.assessMagic(users, imdMovsByMlId);
+
 		
-		//PRE PROCESS
-		long startTime = System.currentTimeMillis();
-		Map<String, SparseVector> movies = PreProcess.getIMDBMovies();
-		long endTime = System.currentTimeMillis();
-		long duration = (endTime - startTime);
-		System.out.println(String.format("Pre process duration: %d sec", (duration / 1000)));
-		
-		//Test data
-		SparseVector q = movies.get("Toy Story (1995)");
-		movies.remove("Toy Story (1995)");
-		
-		//DATA STRUCTURE
-		startTime = System.currentTimeMillis();
-		Bucket[] buckets = buildQueryStructure(movies);
-		endTime = System.currentTimeMillis();
-		System.out.println("Build data structure duration: " + duration);
-		
-		//QUERY
-		startTime = System.currentTimeMillis();
-		SparseVector result = query(buckets, q);
-		endTime = System.currentTimeMillis();
-		System.out.println("Query time duration: " + duration);
-		
-		
-		for (int i : result.getMap().keySet()) {
-			System.out.println(PreProcess.getFromGlobalIndex(i));
-		}
-		System.out.println("Done");
+		////PRE PROCESS
+		//Long startTime = System.currentTimeMillis();
+		//Map<String, SparseVector> movies = PreProcess.getIMDBMovies();
+		//Long endTime = System.currentTimeMillis();
+		//Long duration = (endTime - startTime);
+		//System.out.println(String.format("Pre process duration: %d sec", (duration / 1000)));
+		//
+		////Test data
+		//SparseVector q = movies.get("Toy Story (1995)");
+		//Movies.remove("Toy Story (1995)");
+		//
+		////DATA STRUCTURE
+		//StartTime = System.currentTimeMillis();
+		//Bucket[] buckets = buildQueryStructure(movies);
+		//EndTime = System.currentTimeMillis();
+		//System.out.println("Build data structure duration: " + duration);
+		//
+		////QUERY
+		//StartTime = System.currentTimeMillis();
+		//SparseVector result = query(buckets, q);
+		//EndTime = System.currentTimeMillis();
+		//System.out.println("Query time duration: " + duration);
+		//
+		//
+		//For (int i : result.getMap().keySet()) {
+		//	System.out.println(PreProcess.getFromGlobalIndex(i));
+		//}
+		//System.out.println("Done");
 	}
 
 	public static Bucket[] buildQueryStructure(Map<String, SparseVector> movies) {
