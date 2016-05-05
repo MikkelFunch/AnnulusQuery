@@ -14,7 +14,7 @@ public class PreProcess {
 	private static HashMap<String, SparseVector> IMDBmovies = new HashMap<>();
 	private static ArrayList<String> indices = new ArrayList<>();
 
-	private static String moviePattern = ".*\\d{4}\\)";
+	private static String moviePattern = ".*?(?=\\(\\d{4}\\))\\(\\d{4}\\)";//".*\\d{4}\\)";
 	private static Pattern pattern = Pattern.compile(moviePattern);
 	private static String lastMovie = "";
 	private static boolean ranBefore = false;
@@ -64,11 +64,12 @@ public class PreProcess {
 		Matcher m = pattern.matcher(movieLine);
 		if (m.find()) {
 			String movie = m.group(0);
-			if (movie.startsWith("The")) {
+			//if (movie.startsWith("The")) {
 				// Move "The" behind in the movie
-				movie = movie.substring(4, movie.length() - 7) + ", The " + movie.substring(movie.length() - 6);
-			}
-			if (movie != lastMovie) {
+				//movie = movie.substring(4, movie.length() - 7) + ", The " + movie.substring(movie.length() - 6);
+			//}
+			
+			if (!(movie.equals(lastMovie))) {
 				lastMovie = movie;
 				if (IMDBmovies.containsKey(movie)) {
 					SparseVector sv = IMDBmovies.get(movie);
