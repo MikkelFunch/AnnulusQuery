@@ -13,6 +13,8 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
+import main.java.mmas.serenderp.util.SparseVector;
+
 public class MovieLensReader {
 
 	private static final CSVFormat CSV_FORMAT = CSVFormat.DEFAULT.withHeader();
@@ -35,6 +37,9 @@ public class MovieLensReader {
 
 	public static List<List<Entry<Integer, Double>>> loadUserRatings() {
 		if (userRatingsCache == null) {
+			
+			Map<Integer, String> movies = loadMovies();
+			
 			File csvData = new File(RATING_FILE);
 
 			// List of Users of Ratings
@@ -56,7 +61,10 @@ public class MovieLensReader {
 						currentUser = new ArrayList<Entry<Integer, Double>>();
 						ratings.add(currentUser);
 					}
-					currentUser.add(new AbstractMap.SimpleEntry<Integer, Double>(movieId, rating));
+					
+					if(movies.containsKey(movieId)) {
+						currentUser.add(new AbstractMap.SimpleEntry<Integer, Double>(movieId, rating));
+					}
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -68,6 +76,9 @@ public class MovieLensReader {
 
 	public static Map<Integer, String> loadMovies() {
 		if (moviesCache == null) {
+			
+			Map<String, SparseVector> imdbMovies = PreProcess.getIMDBMovies();
+			
 			File csvData = new File(MOVIE_FILE);
 
 			// Map from movieId to movie
@@ -84,8 +95,10 @@ public class MovieLensReader {
 						title = title.replaceAll(", The[ ]+", " ");
 						title = "The " + title;
 					}
-
-					movies.put(movieId, title);
+					
+					if(imdbMovies.containsKey(title)) {
+						movies.put(movieId, title);
+					}
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
