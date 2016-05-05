@@ -29,7 +29,7 @@ public class SparseVector {
 	public void addEntry(int i, double d) {
 		if (vector.containsKey(i)) {
 			//this may be overkill
-			throw new RuntimeException("vector overwrite not permitted");
+			return;
 		}
 		if(nextAvailable >= size) {
 			throw new RuntimeException("Vector size overrun");
