@@ -53,6 +53,7 @@ public class Engine {
 		}
 
 		//For each point
+		int count = 0;
 		for (SparseVector sv : movies.values()) {
 			for (int i = 0; i < Constants.getNumberOfHashFunctions(); i++) {
 				for (int x = 0; x < Constants.getDimensions(); x++){
@@ -60,6 +61,10 @@ public class Engine {
 						buckets[x].add(sv);
 					}
 				}
+			}
+			count++;
+			if (count % 500 == 0) {
+				System.out.println(count);
 			}
 		}
 		return buckets;
