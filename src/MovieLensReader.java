@@ -106,9 +106,4 @@ public class MovieLensReader {
 		}
 		return moviesCache;
 	}
-
-	public static void main(String[] args) {
-		loadUserRatings();
-		loadMovies();
-	}
 }
