@@ -33,7 +33,6 @@ public class Quad implements Comparable<Quad> {
 	
 	@Override
 	public int compareTo(Quad o) {
-		// TODO Auto-generated method stub
-		return -1; // TODO: CHANGE!
+		return Double.compare(dotProduct, o.getDotProduct());
 	}
 }

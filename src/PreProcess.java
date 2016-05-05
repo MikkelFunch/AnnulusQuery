@@ -94,15 +94,15 @@ public class PreProcess {
 			if(line.isEmpty()) { //No movie or actor
 					continue;
 				} else if (!line.startsWith("\t")) { //Actor with movie
+				
 				//check if previous actor was added to a movie, remove if not
-					
 				if (!added) {
-						indices.remove(id);
-					}
+					indices.remove(id);
+				}
 		    		
 				id = indices.size();
 				try{
-				indices.add(line.substring(0, line.indexOf("\t")));
+					indices.add(line.substring(0, line.indexOf("\t")));
 				} catch(Exception e){//?
 					new UnexpectedException("");
 				}
@@ -184,7 +184,7 @@ public class PreProcess {
 		    		if (movie != lastMovie) {
 		    			lastMovie = movie;
 		    		}
-					SparseVector sv = new SparseVector(99999); //TODO: SIZE?
+					SparseVector sv = new SparseVector(Constants.getDimensions()); //TODO: SIZE?
 					IMDBmovies.put(movie, sv);
 		    	}
 		}
@@ -197,13 +197,7 @@ public class PreProcess {
 		insertActors();
 		insertActresses();
 		
-		
-		
-		//Get movies
-		//Get genres
-		//Get Actors
 		//Get ratings, 0 - 1
-		//Global indexes
 		return IMDBmovies;
 	}
 
@@ -212,7 +206,13 @@ public class PreProcess {
 		    String line;
 		    
 		    while ((line = br.readLine()) != null) {
-		    	Matcher m = pattern.matcher(line);
+	    		Matcher m = pattern.matcher(line);
+		    	
+		    	if (m.find()){
+		    		String movie = m.group(0);
+		    		String genre = line.substring(line.lastIndexOf("\t") +1 );
+		    		IMDBmovies.get(movie).addEntry(indices.indexOf(genre));
+		    	}
 		    }
 		} catch (Exception e) {
 			e.printStackTrace();

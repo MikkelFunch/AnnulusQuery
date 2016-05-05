@@ -18,7 +18,7 @@ public class Bucket {
 	
 	public void add(SparseVector vector){
 		for (int randomVectorIndex = 0; randomVectorIndex < Constants.getAmountOfRandomVectors(); randomVectorIndex++) {
-			double dotProduct = -1;//vector.dotProduct(RandomVectors.getRandomVector(randomVectorIndex)); TODO: CHANGE!
+			double dotProduct = SparseVector.dotProduct(vector, RandomVectors.getRandomVector(randomVectorIndex));
 			randomVectorDistances.get(randomVectorIndex).add(Pair.of(dotProduct, vector));
 		}
 	}

@@ -41,7 +41,7 @@ public class Engine {
 		for (Bucket bucket : queryStructure) {
 			for (int i = 0; i < Constants.getAmountOfRandomVectors(); i++) {
 				SparseVector v = bucket.poll(i).getRight();
-				double priorityValue = -1;//RandomVectors.getRandomVector(i).dotProduct(q.subtract(v)); TODO: CHANGE!
+				double priorityValue = SparseVector.dotProduct(SparseVector.subtract(v, q), RandomVectors.getRandomVector(i));
 				pq.add(new Quad(priorityValue, v, bucket.getList(i), i));
 			}
 		}
@@ -64,7 +64,7 @@ public class Engine {
 			nextToPq = next.getSortedLinkedList().poll();
 			if (nextToPq != null) {
 				int vectorIndex = next.getRandomVectorIndex();
-				double priorityValue = -1; //RandomVectors.getRandomVector(vectorIndex).dotProduct(q.subtract(next.getVector())); TODO:CHANGE!
+				double priorityValue = SparseVector.dotProduct(SparseVector.subtract(q, next.getVector()), RandomVectors.getRandomVector(vectorIndex));
 				pq.add(new Quad(priorityValue, nextToPq.getRight(), next.getSortedLinkedList(), vectorIndex));
 			}
 		} while(!(r/w < value && value < r*w));
