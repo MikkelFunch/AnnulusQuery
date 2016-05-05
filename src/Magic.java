@@ -6,14 +6,23 @@ import java.util.Map.Entry;
 
 public class Magic {
 	public static void assessMagic(List<List<Entry<Integer,Double>>> users, Map<Integer,SparseVector> movies) {
-		int vectorSize = movies.get(0).size();
+		int vectorSize = Constants.getDimensions();
 		for(List<Entry<Integer,Double>> user : users) {
 			SparseVector userAverageMovie = new SparseVector(vectorSize);
 			//Calculate the users movie-center, weighed by rating
 			for(int i=0; i<user.size(); i++) {
 				Entry<Integer,Double> rating = user.get(i);
 				SparseVector m = movies.get(rating.getKey());
+				if (null == m) {
+					throw new RuntimeException("Movie was null?");
+				}
+				if (null == rating.getValue()) {
+					throw new RuntimeException("Rating was null?");
+				}
 				m = multiply(m, rating.getValue());
+				if (null == m) {
+					throw new RuntimeException("Movie was null?");
+				}
 				userAverageMovie = add(userAverageMovie, m);
 			}
 			userAverageMovie = divide(userAverageMovie, user.size());

@@ -61,7 +61,7 @@ public class Constants {
 
 	public static Map<Integer, SparseVector> getMovies() {
 		if (movies == null) {
-			Map<Integer, SparseVector> movies = new HashMap<Integer, SparseVector>();
+			movies = new HashMap<Integer, SparseVector>();
 
 			Map<String, SparseVector> imdbMovies = PreProcess.getIMDBMovies();
 			Map<Integer, String> movielensMovies = MovieLensReader.loadMovies();
