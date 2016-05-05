@@ -10,7 +10,6 @@ public class Engine {
 	private static final double THRESHOLD = 0.3d;
 	
 	public static void main(String[] args) {
-		//PreProcess.getMovieLensMovies();
 		setConstants();
 		PreProcess.getIMDBMovies();
 	}

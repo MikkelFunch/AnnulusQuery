@@ -17,6 +17,7 @@ public class PreProcess {
 	private static String moviePattern = ".*\\d{4}\\)";
 	private static Pattern pattern = Pattern.compile(moviePattern);
 	private static String lastMovie = "";
+	private static boolean ranBefore = false;
 
 	private static void insertActorsActresses(String path) {
 		try (BufferedReader br = new BufferedReader(new FileReader(new File(path)))) {
@@ -107,6 +108,9 @@ public class PreProcess {
 	 * @return
 	 */
 	public static Map<String, SparseVector> getIMDBMovies() {
+		if (ranBefore ) {
+			return IMDBmovies;
+		}
 		insertGenres();
 
 		try (BufferedReader br = new BufferedReader(new FileReader(new File("data/imdb_movies.list")))) {
@@ -133,6 +137,7 @@ public class PreProcess {
 		insertActresses();
 
 		// Get ratings, 0 - 1
+		ranBefore = true;
 		return IMDBmovies;
 	}
 
