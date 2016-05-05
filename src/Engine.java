@@ -10,7 +10,8 @@ public class Engine {
 	private static final double THRESHOLD = 0.3d;
 	
 	public static void main(String[] args) {
-		//PreProcess.getMovieLensMovies();
+		setConstants();
+		PreProcess.getIMDBMovies();
 	}
 
 	public static Bucket[] buildQueryStructure() {
@@ -82,5 +83,6 @@ public class Engine {
 		Constants.setDimensions(dimensions);
 		Constants.setR(r);
 		Constants.setW(w);*/
+		Constants.setDimensions(3649941);
 	}
 }
