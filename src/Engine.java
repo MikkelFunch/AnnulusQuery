@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Map.Entry;
+import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -11,7 +13,12 @@ public class Engine {
 	
 	public static void main(String[] args) {
 		setConstants();
-		PreProcess.getIMDBMovies();
+		Map<Integer, SparseVector> imdMovsByMlId = Constants.getMovies();
+		System.out.println("loaded movies");
+		List<List<Entry<Integer,Double>>>  users = MovieLensReader.loadUserRatings();
+		System.out.println("loaded ratings");
+		Magic.assessMagic(users, imdMovsByMlId);
+
 	}
 
 	public static Bucket[] buildQueryStructure() {
