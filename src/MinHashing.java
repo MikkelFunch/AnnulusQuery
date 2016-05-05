@@ -17,10 +17,8 @@ public class MinHashing {
 		p = BigInteger.probablePrime(32, r);
 		
 		for (int i = 0; i < randomVectors; i++) {
-			do {
-				a[i] = r.nextInt();
-			} while (a[i] != 0);
-			b[i] = r.nextInt();
+			a[i] = r.nextInt(Integer.MAX_VALUE) + 1;
+			b[i] = r.nextInt(Integer.MAX_VALUE);
 		}
 	}
 

@@ -158,4 +158,9 @@ public class PreProcess {
 			e.printStackTrace();
 		}
 	}
+
+	
+	public static String getFromGlobalIndex(int i) {
+		return indices.get(i);
+	}
 }

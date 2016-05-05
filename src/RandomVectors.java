@@ -5,10 +5,10 @@ import org.apache.commons.math3.linear.RealVector;
 public class RandomVectors {
 	
 	//private static RandomVectorFunctions instance;
-	private static RealVector[] randomVectors;
+	private static RealVector[] randomVectors = new RealVector[Constants.getAmountOfRandomVectors()];
 	
 	private RandomVectors() {
-		randomVectors = new RealVector[Constants.getAmountOfRandomVectors()];
+		
 	}
 	
 	public static RealVector getRandomVector(int index) {
