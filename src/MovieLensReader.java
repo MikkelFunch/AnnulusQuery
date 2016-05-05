@@ -72,6 +72,11 @@ public class MovieLensReader {
 				int movieId = Integer.parseInt(record.get(MOVIE_ID));
 				String title = record.get(TITLE);
 				
+				if( title.matches("(.*), The[ ]+\\((.*)") ) {
+					title = title.replaceAll(", The[ ]+", " ");
+					title = "The " + title;
+				}
+				
 				movies.put(movieId, title);
 			}
 		} catch (IOException e) {
@@ -82,10 +87,7 @@ public class MovieLensReader {
 	}
 	
 	public static void main(String[] args) {
-		List<List<Entry<Integer, Double>>> ratings = loadUserRatings();
-		System.out.println(ratings.size());
-		
-		Map<Integer, String> movies = loadMovies();
-		System.out.println(movies.size());
+		loadUserRatings();
+		loadMovies();
 	}
 }
