@@ -29,7 +29,7 @@ public class Engine {
 
 		//DATA STRUCTURE
 		startTime = System.currentTimeMillis();
-		Bucket[] buckets = buildQueryStructure(movies);
+		Buckets buckets = buildQueryStructure(movies);
 		endTime = System.currentTimeMillis();
 		duration = (endTime - startTime);
 		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
@@ -48,14 +48,9 @@ public class Engine {
 		System.out.println("Done");
 	}
 
-	public static Bucket[] buildQueryStructure(Map<String, SparseVector> movies) {
+	public static Buckets buildQueryStructure(Map<String, SparseVector> movies) {
 		init();
-
-		//Pre process
-		Bucket[] buckets = new Bucket[Constants.getDimensions()]; //TODO: Bucket amounts
-		for (int i = 0; i < buckets.length; i++) {
-			buckets[i] = new Bucket();
-		}
+		Buckets buckets = new Buckets();
 
 		//For each point
 //		Long startTime = System.currentTimeMillis();
@@ -65,8 +60,7 @@ public class Engine {
 				continue;
 			}
 			for (int hashFunctionIndex = 0; hashFunctionIndex < Constants.getNumberOfHashFunctions(); hashFunctionIndex++) {
-				Bucket bucket = Bucket.getBucket(MinHashing.minHash(sv, hashFunctionIndex), hashFunctionIndex);
-				bucket.add(sv);
+				buckets.add(MinHashing.minHash(sv,hashFunctionIndex), hashFunctionIndex, sv);
 			}
 //			count++;
 //			if (count % 500 == 0) {
@@ -84,7 +78,7 @@ public class Engine {
 		return buckets;
 	}
 
-	public static SparseVector query(Bucket[] queryStructure, SparseVector q) { //N movie recommendations
+	public static SparseVector query(Buckets queryStructure, SparseVector q) { //N movie recommendations
 		PriorityQueue<Quad> pq = new PriorityQueue<>();
 		//TODO: hash query point
 		//Fill pq
