@@ -14,7 +14,7 @@ public class MinHashing {
 		a = new int[randomVectors];
 		b = new int[randomVectors];
 		m = Constants.getDimensions();
-		p = BigInteger.probablePrime(32, r);
+		p = BigInteger.probablePrime(32, r); //TODO: Bigger than m
 		
 		for (int i = 0; i < randomVectors; i++) {
 			a[i] = r.nextInt(Integer.MAX_VALUE) + 1;

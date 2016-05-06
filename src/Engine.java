@@ -51,9 +51,8 @@ public class Engine {
 		init();
 
 		//Pre process
-		//List<SparseVector> vectors = new ArrayList<>();
 
-		Bucket[] buckets = new Bucket[Constants.getDimensions()];
+		Bucket[] buckets = new Bucket[Constants.getDimensions()]; //TODO: Bucket amounts
 		for (int i = 0; i < buckets.length; i++) {
 			buckets[i] = new Bucket();
 		}
@@ -63,9 +62,10 @@ public class Engine {
 		int count = 0;
 		for (SparseVector sv : movies.values()) {
 			for (int i = 0; i < Constants.getNumberOfHashFunctions(); i++) {
-				for (int x = 0; x < Constants.getDimensions(); x++){
+				for (int x = 0; x < Constants.getDimensions(); x++){ //TODO: this ain't right
 					if (sv.get(MinHashing.hash(i, x)) > THRESHOLD) {
 						buckets[x].add(sv);
+						break;
 					}
 				}
 			}
