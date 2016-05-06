@@ -5,6 +5,8 @@ import main.java.mmas.serenderp.util.SparseVector;
 import java.util.LinkedList;
 import java.util.Iterator;
 
+import main.java.mmas.serenderp.util.SparseVector;
+
 public class Buckets implements Iterable<Bucket> {
 	private Map<Integer, Map<Integer, Bucket>> buckets;
 
@@ -30,14 +32,6 @@ public class Buckets implements Iterable<Bucket> {
 		Bucket b = getBucket(bucketIndex, hashfunctionIndex);
 		b.add(sv);
 	}
-
-	//public void forEach(Consumer<? super Bucket> action) {
-	//	for(Map<Integer, Bucket> bucketsForHash : buckets.values()) {
-	//		for(Bucket b : bucketsForHash.values()) {
-	//			action.accept(b);
-	//		}
-	//	}
-	//}
 
 	public Iterator<Bucket> iterator() {
 		LinkedList<Bucket> bucketList = new LinkedList();
