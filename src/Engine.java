@@ -31,12 +31,14 @@ public class Engine {
 		startTime = System.currentTimeMillis();
 		Bucket[] buckets = buildQueryStructure(movies);
 		endTime = System.currentTimeMillis();
+		duration = (endTime - startTime);
 		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
 
 		//QUERY
 		startTime = System.currentTimeMillis();
 		SparseVector result = query(buckets, q);
 		endTime = System.currentTimeMillis();
+		duration = (endTime - startTime);
 		System.out.println("Query time duration: " + duration);
 
 
@@ -79,7 +81,7 @@ public class Engine {
 
 	public static SparseVector query(Bucket[] queryStructure, SparseVector q) {
 		PriorityQueue<Quad> pq = new PriorityQueue<>();
-
+		
 		//Fill pq
 		for (Bucket bucket : queryStructure) {
 			for (int i = 0; i < Constants.getAmountOfRandomVectors(); i++) {
@@ -113,7 +115,7 @@ public class Engine {
 				double priorityValue = SparseVector.dotProduct(SparseVector.subtract(q, next.getVector()), RandomVectors.getRandomVector(vectorIndex));
 				pq.add(new Quad(priorityValue, nextToPq.getRight(), next.getSortedLinkedList(), vectorIndex));
 			}
-		} while(!(r/w < value && value < r*w));
+		} while(!(r/w < value && value < r*w)); //TODO: Approximate
 
 		return result;
 	}
