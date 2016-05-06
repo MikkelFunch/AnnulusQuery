@@ -154,11 +154,12 @@ public class SparseVector {
 	public Map<Integer,Double> getMap() {
 		return vector;
 	}
-	
+
 	public boolean hasActors() {
 		return nextAvailable <= 34;
 	}
 
+	@Override
 	public String toString() {
 		Map.Entry<Integer,Double>[] typePar = new Map.Entry[0];
 		Map.Entry<Integer,Double>[] vector = this.vector.entrySet().toArray(typePar);
