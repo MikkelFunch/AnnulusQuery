@@ -91,6 +91,9 @@ public class Engine {
 				pq.add(new Quad(priorityValue, v, bucket.getList(i), i));
 			}
 		}
+		for(Bucket bucket : queryStructure) {
+			bucket.sortLists();
+		}
 		
 		int r = Constants.getR();
 		int w = Constants.getW();

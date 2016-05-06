@@ -1,14 +1,16 @@
+import java.util.LinkedList;
+
 import org.apache.commons.lang3.tuple.Pair;
-import main.java.mmas.serenderp.util.SortedLinkedList;
+
 import main.java.mmas.serenderp.util.SparseVector;
 
 public class Quad implements Comparable<Quad> {
 	private double dotProduct;
 	private SparseVector vector;
-	private SortedLinkedList<Pair<Double, SparseVector>> list;
+	private LinkedList<Pair<Double, SparseVector>> list;
 	private int randomVectorIndex;
 	
-	public Quad(double d, SparseVector v, SortedLinkedList<Pair<Double, SparseVector>> l, int i){
+	public Quad(double d, SparseVector v, LinkedList<Pair<Double, SparseVector>> l, int i){
 		dotProduct = d;
 		vector = v;
 		list = l;
@@ -23,7 +25,7 @@ public class Quad implements Comparable<Quad> {
 		return vector;
 	}
 	
-	public SortedLinkedList<Pair<Double, SparseVector>> getSortedLinkedList(){
+	public LinkedList<Pair<Double, SparseVector>> getSortedLinkedList(){
 		return list;
 	}
 	
