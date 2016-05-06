@@ -8,8 +8,7 @@ import java.util.function.DoubleUnaryOperator;
 
 import org.apache.commons.math3.linear.RealVector;
 
-public class SparseVector {
-	private int size;
+public class SparseVector { private int size;
 	private int nextAvailable=0;
 	private Map<Integer,Double> vector;
 	
@@ -141,6 +140,11 @@ public class SparseVector {
 			i++;
 		}
 		return res;
+	}
+
+	public Map.Entry<Integer,Double>[] getNonZeroElements(){
+		Map.Entry<Integer,Double>[] typePar = new Map.Entry[0];
+		return this.vector.entrySet().toArray(typePar);
 	}
 
 	public static SparseVector pairwiseOp(SparseVector a, BinaryOperator<Double> f, SparseVector b) {
