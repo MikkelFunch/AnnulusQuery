@@ -28,7 +28,7 @@ public class PairOfDotProductAndVector extends Pair<Double, SparseVector> {
 		return vector;
 	}
 	
-	public Pair<Double, SparseVector> of(Double dotProduct, SparseVector vector) {
+	public static Pair<Double, SparseVector> of(Double dotProduct, SparseVector vector) {
 		return new PairOfDotProductAndVector(dotProduct, vector);
 	}
 	

@@ -2,6 +2,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
+
+import main.java.mmas.serenderp.util.PairOfDotProductAndVector;
 import main.java.mmas.serenderp.util.SortedLinkedList;
 import main.java.mmas.serenderp.util.SparseVector;
 
@@ -20,7 +22,7 @@ public class Bucket {
 	public void add(SparseVector vector){
 		for (int randomVectorIndex = 0; randomVectorIndex < Constants.getAmountOfRandomVectors(); randomVectorIndex++) {
 			double dotProduct = SparseVector.dotProduct(vector, RandomVectors.getRandomVector(randomVectorIndex));
-			randomVectorDistances.get(randomVectorIndex).add(Pair.of(dotProduct, vector));
+			randomVectorDistances.get(randomVectorIndex).add(PairOfDotProductAndVector.of(dotProduct, vector));
 		}
 	}
 	
