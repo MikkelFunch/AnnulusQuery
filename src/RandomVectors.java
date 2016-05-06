@@ -31,7 +31,7 @@ public class RandomVectors {
 		NormalDistribution nd = new NormalDistribution(1, 1);
 		double[] values = nd.sample(size);
 		
-		RealVector r = new ArrayRealVector(values);
+		RealVector r = new ArrayRealVector(values); //TODO: ARE THESE VALUES RIGHT
 		return r;
 	}
 }
