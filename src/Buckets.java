@@ -1,8 +1,11 @@
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 import main.java.mmas.serenderp.util.SparseVector;
+import java.util.LinkedList;
+import java.util.Iterator;
 
-public class Buckets {
+public class Buckets implements Iterable<Bucket> {
 	private Map<Integer, Map<Integer, Bucket>> buckets;
 
 	public Bucket getBucket(int bucketIndex, int hashfunctionIndex) { 
@@ -26,5 +29,21 @@ public class Buckets {
 	public void add(int bucketIndex, int hashfunctionIndex, SparseVector sv) {
 		Bucket b = getBucket(bucketIndex, hashfunctionIndex);
 		b.add(sv);
+	}
+
+	//public void forEach(Consumer<? super Bucket> action) {
+	//	for(Map<Integer, Bucket> bucketsForHash : buckets.values()) {
+	//		for(Bucket b : bucketsForHash.values()) {
+	//			action.accept(b);
+	//		}
+	//	}
+	//}
+
+	public Iterator<Bucket> iterator() {
+		LinkedList<Bucket> bucketList = new LinkedList();
+		for(Map<Integer, Bucket> bucketsForHash : buckets.values()) {
+			bucketList.addAll(bucketsForHash.values());
+		}
+		return bucketList.iterator();
 	}
 }

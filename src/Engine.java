@@ -82,7 +82,8 @@ public class Engine {
 		PriorityQueue<Quad> pq = new PriorityQueue<>();
 		//TODO: hash query point
 		//Fill pq
-		for (Bucket bucket : queryStructure) {
+		for (int hashIndex = 0; hashIndex < Constants.getNumberOfHashFunctions(); hashIndex++) {
+			Bucket bucket = queryStructure.getBucket(MinHashing.minHash(q, hashIndex), hashIndex);
 			for (int i = 0; i < Constants.getAmountOfRandomVectors(); i++) {
 				SparseVector p = bucket.poll(i).getRight();//TODO dont delete shit
 				double priorityValue = calculatePriorityValue(p, q, i);
