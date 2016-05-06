@@ -1,4 +1,4 @@
-import java.math.BigInteger;
+import java.util.Map;
 import java.util.Random;
 
 import main.java.mmas.serenderp.util.SparseVector;
@@ -32,13 +32,24 @@ public class MinHashing {
 	}
 	
 	public static int minHash(SparseVector sparseVector, int hashFunctionIndex) {
-		for(int result = 1; result<m; result++) {
-			if(sparseVector.get(hash(hashFunctionIndex, result)) > 0) return result;
+		int minIndex = Integer.MAX_VALUE;
+		for(Map.Entry<Integer, Double> value : sparseVector.getNonZeroElements()) {
+			int index = hash(hashFunctionIndex, value.getKey());
+			if(index < minIndex) {
+				minIndex = index;
+			}
 		}
-		//should never get here (but does)
-		System.out.println("Vector had no non-zeros by a permutation:\n" + sparseVector);
-		return 0;
+		return minIndex;
 	}
+	
+//	public static int minHash(SparseVector sparseVector, int hashFunctionIndex) {
+//		for(int result = 1; result<m; result++) {
+//			if(sparseVector.get(hash(hashFunctionIndex, result)) > 0) return result;
+//		}
+//		//TODO: should never get here (but does)
+//		//System.out.println("Vector had no non-zeros by a permutation:\n" + sparseVector);
+//		return 0;
+//	}
 	
 	private static int hash(int i, int x) {
 		//int dim = Constants.getDimensions();

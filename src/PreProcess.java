@@ -167,7 +167,7 @@ public class PreProcess {
 					String movie = m.group(4);
 					SparseVector sv = IMDBmovies.get(movie);
 					if (sv != null) {
-						sv.addEntry(0, rating/2);
+						sv.addEntry(0, rating/2); //TODO: normalize year
 					}
 				}
 			}

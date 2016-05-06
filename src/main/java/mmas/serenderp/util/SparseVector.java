@@ -8,6 +8,8 @@ import java.util.function.DoubleUnaryOperator;
 
 import org.apache.commons.math3.linear.RealVector;
 
+import com.sun.org.apache.bcel.internal.Constants;
+
 public class SparseVector { private int size;
 	private int nextAvailable=0;
 	private Map<Integer,Double> vector;

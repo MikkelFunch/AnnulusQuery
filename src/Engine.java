@@ -1,12 +1,11 @@
-import java.util.PriorityQueue;
 import java.util.Map;
+import java.util.PriorityQueue;
 
 import org.apache.commons.lang3.tuple.Pair;
 
 import main.java.mmas.serenderp.util.SparseVector;
 
 public class Engine {
-	private static final double THRESHOLD = 0.3d;
 
 	public static void main(String[] args) {
 		setConstants();
@@ -32,7 +31,7 @@ public class Engine {
 		startTime = System.currentTimeMillis();
 		Bucket[] buckets = buildQueryStructure(movies);
 		endTime = System.currentTimeMillis();
-		System.out.println("Build data structure duration: " + duration);
+		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
 
 		//QUERY
 		startTime = System.currentTimeMillis();
@@ -57,8 +56,8 @@ public class Engine {
 		}
 
 		//For each point
-		Long startTime = System.currentTimeMillis();
-		int count = 0;
+//		Long startTime = System.currentTimeMillis();
+//		int count = 0;
 		for (SparseVector sv : movies.values()) {
 			if (!sv.hasActors()) {
 				continue;
@@ -67,13 +66,13 @@ public class Engine {
 				Bucket bucket = Bucket.getBucket(MinHashing.minHash(sv, hashFunctionIndex), hashFunctionIndex);
 				bucket.add(sv);
 			}
-			count++;
-			if (count % 500 == 0) {
-				Long endTime = System.currentTimeMillis();
-				Long duration = (endTime - startTime);
-				System.out.println(count + " - Duration: " + (duration / 1000));
-				startTime = System.currentTimeMillis();
-			}
+//			count++;
+//			if (count % 500 == 0) {
+//				Long endTime = System.currentTimeMillis();
+//				Long duration = (endTime - startTime);
+//				System.out.println(count + " - Duration: " + (duration / 1000));
+//				startTime = System.currentTimeMillis();
+//			}
 		}
 		return buckets;
 	}
@@ -128,7 +127,7 @@ public class Engine {
 		Constants.setAmountOfRandomVectors(5);
 		Constants.setR(1/2);
 		Constants.setW(2);
-		Constants.setDimensions(3_649_941);
+		Constants.setDimensions(3_649_941+2);
 		Constants.setNumberOfHashFunctions(5);
 	}
 }
