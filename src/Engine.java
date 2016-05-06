@@ -1,7 +1,5 @@
 import java.util.PriorityQueue;
-import java.util.Map.Entry;
 import java.util.Map;
-import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -61,6 +59,7 @@ public class Engine {
 		}
 
 		//For each point
+		Long startTime = System.currentTimeMillis();
 		int count = 0;
 		for (SparseVector sv : movies.values()) {
 			for (int i = 0; i < Constants.getNumberOfHashFunctions(); i++) {
@@ -71,8 +70,11 @@ public class Engine {
 				}
 			}
 			count++;
+			Long endTime = System.currentTimeMillis();
+			Long duration = (endTime - startTime);
 			if (count % 500 == 0) {
-				System.out.println(count);
+				System.out.println(count + " - Duration: " + (duration / 1000));
+				startTime = System.currentTimeMillis();
 			}
 		}
 		return buckets;
