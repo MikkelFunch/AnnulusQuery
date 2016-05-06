@@ -49,7 +49,7 @@ public class Bucket {
 	public LinkedList<Pair<Double, SparseVector>> getList(int i) {
 		return randomVectorDistances.get(i);
 	}
-	
+
 	private static <T extends Comparable<? super T>> boolean isSorted(Iterable<T> iterable) {
 		Iterator<T> iter = iterable.iterator();
 		if (!iter.hasNext()) {
@@ -65,7 +65,6 @@ public class Bucket {
 		}
 		return true;
 	}
-	
 	/**
 	 * Class used for sorting on the dot product
 	 * @author andreas
