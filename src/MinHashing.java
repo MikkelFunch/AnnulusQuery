@@ -1,30 +1,48 @@
 import java.math.BigInteger;
 import java.util.Random;
 
+import main.java.mmas.serenderp.util.SparseVector;
+
 public class MinHashing {
 	private static int a[];
 	private static int b[];
-	private static BigInteger p;
+	private static int p = 2147483647;
 	private static int m;
 	
 	public static void init(){
 		Random r = new Random();
 		
-		int randomVectors = Constants.getAmountOfRandomVectors();
-		a = new int[randomVectors];
-		b = new int[randomVectors];
+		int numberOfHashFunctions = Constants.getNumberOfHashFunctions();
+		a = new int[numberOfHashFunctions];
+		b = new int[numberOfHashFunctions];
 		m = Constants.getDimensions();
-		p = BigInteger.probablePrime(32, r); //TODO: Bigger than m
 		
-		for (int i = 0; i < randomVectors; i++) {
-			a[i] = r.nextInt(Integer.MAX_VALUE) + 1;
-			b[i] = r.nextInt(Integer.MAX_VALUE);
+		for(int i = 0; i < numberOfHashFunctions; i++){
+			a[i] = nextNonZeroInt(r) % p;
+			b[i] = r.nextInt();
 		}
 	}
 
-	public static int hash(int i, int x) {
-		int result = (((a[i] * x) + b[i]) % p.intValue()) % m;
-		
+	private static int nextNonZeroInt(Random r) {
+		int i = r.nextInt();
+		if (i == 0) {
+			i = nextNonZeroInt(r);
+		}
+		return i;
+	}
+	
+	public static int minHash(SparseVector sparseVector, int hashFunctionIndex) {
+		for(int result = 1; result<m; result++) {
+			if(sparseVector.get(hash(hashFunctionIndex, result)) > 0) return result;
+		}
+		//should never get here (but does)
+		System.out.println("Vector had no non-zeros by a permutation:\n" + sparseVector);
+		return 0;
+	}
+	
+	private static int hash(int i, int x) {
+		//int dim = Constants.getDimensions();
+		int result = (((a[i] * x) + b[i]) % p) % m;
 		return result;
 	}
 }
