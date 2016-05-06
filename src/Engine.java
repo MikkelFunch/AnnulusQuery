@@ -7,40 +7,40 @@ import main.java.mmas.serenderp.util.SparseVector;
 
 public class Engine {
 	private static final double THRESHOLD = 0.3d;
-	
+
 	public static void main(String[] args) {
 		setConstants();
-//		Map<Integer, SparseVector> imdMovsByMlId = Constants.getMovies();
-//		System.out.println("loaded movies");
-//		List<List<Entry<Integer,Double>>>  users = MovieLensReader.loadUserRatings();
-//		System.out.println("loaded ratings");
-//		Magic.assessMagic(users, imdMovsByMlId);
+		//		Map<Integer, SparseVector> imdMovsByMlId = Constants.getMovies();
+		//		System.out.println("loaded movies");
+		//		List<List<Entry<Integer,Double>>>  users = MovieLensReader.loadUserRatings();
+		//		System.out.println("loaded ratings");
+		//		Magic.assessMagic(users, imdMovsByMlId);
 
-		
+
 		//PRE PROCESS
 		Long startTime = System.currentTimeMillis();
 		Map<String, SparseVector> movies = PreProcess.getIMDBMovies();
 		Long endTime = System.currentTimeMillis();
 		Long duration = (endTime - startTime);
 		System.out.println(String.format("Pre process duration: %d sec", (duration / 1000)));
-		
+
 		//Test data
 		SparseVector q = movies.get("Toy Story (1995)");
 		movies.remove("Toy Story (1995)");
-		
+
 		//DATA STRUCTURE
 		startTime = System.currentTimeMillis();
 		Bucket[] buckets = buildQueryStructure(movies);
 		endTime = System.currentTimeMillis();
 		System.out.println("Build data structure duration: " + duration);
-		
+
 		//QUERY
 		startTime = System.currentTimeMillis();
 		SparseVector result = query(buckets, q);
 		endTime = System.currentTimeMillis();
 		System.out.println("Query time duration: " + duration);
-		
-		
+
+
 		for (int i : result.getMap().keySet()) {
 			System.out.println(PreProcess.getFromGlobalIndex(i));
 		}
@@ -63,13 +63,9 @@ public class Engine {
 			if (!sv.hasActors()) {
 				continue;
 			}
-			for (int i = 0; i < Constants.getNumberOfHashFunctions(); i++) {
-				for (int x = 0; x < Constants.getDimensions(); x++){ //TODO: this ain't right
-					if (sv.get(MinHashing.hash(i, x)) > THRESHOLD) {
-						buckets[x].add(sv);
-						break;
-					}
-				}
+			for (int hashFunctionIndex = 0; hashFunctionIndex < Constants.getNumberOfHashFunctions(); hashFunctionIndex++) {
+				Bucket bucket = Bucket.getBucket(MinHashing.minHash(sv, hashFunctionIndex), hashFunctionIndex);
+				bucket.add(sv);
 			}
 			count++;
 			if (count % 500 == 0) {
@@ -84,7 +80,7 @@ public class Engine {
 
 	public static SparseVector query(Bucket[] queryStructure, SparseVector q) {
 		PriorityQueue<Quad> pq = new PriorityQueue<>();
-		
+
 		//Fill pq
 		for (Bucket bucket : queryStructure) {
 			for (int i = 0; i < Constants.getAmountOfRandomVectors(); i++) {
@@ -96,10 +92,10 @@ public class Engine {
 		for(Bucket bucket : queryStructure) {
 			bucket.sortLists();
 		}
-		
+
 		int r = Constants.getR();
 		int w = Constants.getW();
-		
+
 		double value;
 		SparseVector result = null;
 		Pair<Double, SparseVector> nextToPq;
