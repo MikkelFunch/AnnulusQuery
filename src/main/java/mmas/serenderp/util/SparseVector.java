@@ -154,4 +154,8 @@ public class SparseVector {
 	public Map<Integer,Double> getMap() {
 		return vector;
 	}
+	
+	public boolean hasActors() {
+		return nextAvailable <= 34;
+	}
 }

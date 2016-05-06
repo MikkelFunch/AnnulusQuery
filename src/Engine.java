@@ -51,7 +51,6 @@ public class Engine {
 		init();
 
 		//Pre process
-
 		Bucket[] buckets = new Bucket[Constants.getDimensions()]; //TODO: Bucket amounts
 		for (int i = 0; i < buckets.length; i++) {
 			buckets[i] = new Bucket();
@@ -61,6 +60,9 @@ public class Engine {
 		Long startTime = System.currentTimeMillis();
 		int count = 0;
 		for (SparseVector sv : movies.values()) {
+			if (!sv.hasActors()) {
+				continue;
+			}
 			for (int i = 0; i < Constants.getNumberOfHashFunctions(); i++) {
 				for (int x = 0; x < Constants.getDimensions(); x++){ //TODO: this ain't right
 					if (sv.get(MinHashing.hash(i, x)) > THRESHOLD) {

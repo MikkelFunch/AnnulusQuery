@@ -119,6 +119,7 @@ public class PreProcess {
 			return IMDBmovies;
 		}
 		indices.add("average rating");
+		indices.add("year");
 		insertGenres();
 
 		try (BufferedReader br = new BufferedReader(new FileReader(new File("data/imdb_movies.list")))) {
@@ -133,6 +134,7 @@ public class PreProcess {
 						lastMovie = movie;
 					}
 					SparseVector sv = new SparseVector(Constants.getDimensions());
+					sv.addEntry(1, Double.parseDouble(movie.substring(movie.length() - 5, movie.length() - 1)));
 					IMDBmovies.put(movie, sv);
 				}
 			}
@@ -142,8 +144,8 @@ public class PreProcess {
 			e.printStackTrace();
 		}
 
-		addGenresToMovies();
 		insertRatings();
+		addGenresToMovies();
 		insertActors();
 		insertActresses();
 
@@ -163,7 +165,10 @@ public class PreProcess {
 				if (m.find()) {
 					double rating = Double.parseDouble(m.group(3));
 					String movie = m.group(4);
-					IMDBmovies.get(movie).addEntry(0, rating); //TODO: Should this be normalized MarkT aka SugeMalle
+					SparseVector sv = IMDBmovies.get(movie);
+					if (sv != null) {
+						sv.addEntry(0, rating/2);
+					}
 				}
 			}
 		} catch (FileNotFoundException e) {
