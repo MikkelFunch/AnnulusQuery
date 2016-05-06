@@ -6,17 +6,16 @@ import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import main.java.mmas.serenderp.util.PairOfDotProductAndVector;
 import main.java.mmas.serenderp.util.SparseVector;
 
 public class Bucket {
-	private List<LinkedList<PairOfDotProductAndVector>> randomVectorDistances;
+	private List<LinkedList<Pair<Double, SparseVector>>> randomVectorDistances;
 	
 	public Bucket() {
 		int amountOfRandomVectors = Constants.getAmountOfRandomVectors();
-		randomVectorDistances = new ArrayList<LinkedList<PairOfDotProductAndVector>>();
+		randomVectorDistances = new ArrayList<LinkedList<Pair<Double, SparseVector>>>();
 		for (int i = 0; i < amountOfRandomVectors; i++) {
-			randomVectorDistances.add(new LinkedList<PairOfDotProductAndVector>());
+			randomVectorDistances.add(new LinkedList<Pair<Double, SparseVector>>());
 		}
 	}
 	
@@ -28,10 +27,10 @@ public class Bucket {
 	}
 	
 	public void sortLists() {
-		for (LinkedList<PairOfDotProductAndVector> linkedList : randomVectorDistances) {
+		for (LinkedList<Pair<Double, SparseVector>> linkedList : randomVectorDistances) {
 			Collections.sort(linkedList);
 		}
-		for (LinkedList<PairOfDotProductAndVector> linkedList : randomVectorDistances) {
+		for (LinkedList<Pair<Double, SparseVector>> linkedList : randomVectorDistances) {
 			assert isSorted(linkedList);
 		}
 	}
@@ -44,7 +43,7 @@ public class Bucket {
 		return randomVectorDistances.get(i).poll();
 	}
 
-	public LinkedList<PairOfDotProductAndVector> getList(int i) {
+	public LinkedList<Pair<Double, SparseVector>> getList(int i) {
 		return randomVectorDistances.get(i);
 	}
 	
@@ -62,5 +61,45 @@ public class Bucket {
 			t = t2;
 		}
 		return true;
+	}
+	
+	/**
+	 * Class used for sorting on the dot product
+	 * @author andreas
+	 */
+	private static class PairOfDotProductAndVector extends Pair<Double, SparseVector> {
+		
+		private static final long serialVersionUID = 1641706246223715462L;
+		private Double dotProduct;
+		private SparseVector vector;
+		
+		private PairOfDotProductAndVector(Double dotProduct, SparseVector vector) {
+			this.dotProduct = dotProduct;
+			this.vector = vector;
+		}
+
+		@Override
+		public SparseVector setValue(SparseVector value) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Double getLeft() {
+			return dotProduct;
+		}
+
+		@Override
+		public SparseVector getRight() {
+			return vector;
+		}
+		
+		public static Pair<Double, SparseVector> of(Double dotProduct, SparseVector vector) {
+			return new PairOfDotProductAndVector(dotProduct, vector);
+		}
+		
+		@Override
+		public int compareTo(Pair<Double, SparseVector> other) {
+			return this.getLeft().compareTo(other.getLeft());
+		}
 	}
 }
