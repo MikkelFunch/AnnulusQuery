@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.rmi.UnexpectedException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,7 +41,7 @@ public class PreProcess {
 					id = indices.size();
 					try {
 						indices.add(line.substring(0, line.indexOf("\t")));
-					} catch (Exception e) {// ?
+					} catch (Exception e) {//TODO: ?
 						new UnexpectedException("");
 					}
 					// add actor to movie
@@ -55,7 +57,9 @@ public class PreProcess {
 					}
 				}
 			}
-		} catch (Exception e) {
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -98,7 +102,9 @@ public class PreProcess {
 			while ((line = br.readLine()) != null) {
 				indices.add(line);
 			}
-		} catch (Exception e) {
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -112,6 +118,7 @@ public class PreProcess {
 		if (ranBefore ) {
 			return IMDBmovies;
 		}
+		indices.add("average rating");
 		insertGenres();
 
 		try (BufferedReader br = new BufferedReader(new FileReader(new File("data/imdb_movies.list")))) {
@@ -129,17 +136,41 @@ public class PreProcess {
 					IMDBmovies.put(movie, sv);
 				}
 			}
-		} catch (Exception e) {
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		addGenresToMovies();
+		insertRatings();
 		insertActors();
 		insertActresses();
 
 		// Get ratings, 0 - 1
 		ranBefore = true;
 		return IMDBmovies;
+	}
+
+	private static void insertRatings() {
+		try (BufferedReader br = new BufferedReader(new FileReader(new File("data/ratings.list")))) {
+			Pattern ratingsPattern = Pattern.compile("\\s+(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(" + moviePattern + ")");
+			
+			String line;
+
+			while ((line = br.readLine()) != null) {
+				Matcher m = ratingsPattern.matcher(line);
+				if (m.find()) {
+					double rating = Double.parseDouble(m.group(3));
+					String movie = m.group(4);
+					IMDBmovies.get(movie).addEntry(0, rating); //TODO: Should this be normalized MarkT aka SugeMalle
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private static void addGenresToMovies() {
@@ -155,7 +186,9 @@ public class PreProcess {
 					IMDBmovies.get(movie).addEntry(indices.indexOf(genre), 1d);
 				}
 			}
-		} catch (Exception e) {
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
