@@ -70,9 +70,9 @@ public class Engine {
 				}
 			}
 			count++;
-			Long endTime = System.currentTimeMillis();
-			Long duration = (endTime - startTime);
 			if (count % 500 == 0) {
+				Long endTime = System.currentTimeMillis();
+				Long duration = (endTime - startTime);
 				System.out.println(count + " - Duration: " + (duration / 1000));
 				startTime = System.currentTimeMillis();
 			}
@@ -90,6 +90,9 @@ public class Engine {
 				double priorityValue = SparseVector.dotProduct(SparseVector.subtract(v, q), RandomVectors.getRandomVector(i));
 				pq.add(new Quad(priorityValue, v, bucket.getList(i), i));
 			}
+		}
+		for(Bucket bucket : queryStructure) {
+			bucket.sortLists();
 		}
 		
 		int r = Constants.getR();
