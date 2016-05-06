@@ -1,4 +1,7 @@
 import java.util.Map;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.ListIterator;
 import java.util.PriorityQueue;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -9,11 +12,19 @@ public class Engine {
 
 	public static void main(String[] args) {
 		setConstants();
-		//		Map<Integer, SparseVector> imdMovsByMlId = Constants.getMovies();
-		//		System.out.println("loaded movies");
-		//		List<List<Entry<Integer,Double>>>  users = MovieLensReader.loadUserRatings();
-		//		System.out.println("loaded ratings");
-		//		Magic.assessMagic(users, imdMovsByMlId);
+
+		int c,r,w;
+		c = Constants.getC();
+		r = Constants.getR();
+		w = Constants.getW();
+
+		Map<Integer, SparseVector> imdMovsByMlId = Constants.getMovies();
+		System.out.println("loaded movies");
+		List<List<Entry<Integer,Double>>>  users = MovieLensReader.loadUserRatings();
+		System.out.println("loaded ratings");
+		Magic.assessMagic(users, imdMovsByMlId);
+
+		System.exit(0);
 
 
 		//PRE PROCESS
@@ -36,7 +47,7 @@ public class Engine {
 
 		//QUERY
 		startTime = System.currentTimeMillis();
-		SparseVector result = query(buckets, q);
+		SparseVector result = query(buckets, c, r, w, q);
 		endTime = System.currentTimeMillis();
 		duration = (endTime - startTime);
 		System.out.println("Query time duration: " + duration);
@@ -78,39 +89,40 @@ public class Engine {
 		return buckets;
 	}
 
-	public static SparseVector query(Buckets queryStructure, SparseVector q) { //N movie recommendations
+	public static SparseVector query(Buckets queryStructure, double c, int r, int w, SparseVector q) { //N movie recommendations
+		w *= c;
+
 		PriorityQueue<Quad> pq = new PriorityQueue<>();
-		//TODO: hash query point
 		//Fill pq
 		for (int hashIndex = 0; hashIndex < Constants.getNumberOfHashFunctions(); hashIndex++) {
 			Bucket bucket = queryStructure.getBucket(MinHashing.minHash(q, hashIndex), hashIndex);
 			for (int i = 0; i < Constants.getAmountOfRandomVectors(); i++) {
-				SparseVector p = bucket.poll(i).getRight();//TODO dont delete shit
+				//NullPointerexception thrown here
+				SparseVector p = bucket.getHead(i);
 				double priorityValue = calculatePriorityValue(p, q, i);
-				pq.add(new Quad(priorityValue, p, bucket.getList(i), i)); //TODO add list index
+				ListIterator<Pair<Double, SparseVector>> predLink = bucket.getList(i).listIterator(1);
+				pq.add(new Quad(priorityValue, p, predLink, i));
 			}
 		}
 		
-		int r = Constants.getR(); //TODO: move, add c
-		int w = Constants.getW();
-
 		double distance;
 		SparseVector result = null;
-		Pair<Double, SparseVector> nextToPq;
 		do{
-			Quad next = pq.poll();
-			if (next == null) {
+			//Queue empty
+			if (pq.isEmpty()) {
 				return null;
 			}
-			distance = q.distanceTo(next.getVector());
-			result = next.getVector();
-			nextToPq = next.getSortedLinkedList().poll();
-			if (nextToPq != null) {
-				int vectorIndex = next.getRandomVectorIndex();
-				double priorityValue = calculatePriorityValue(next.getVector(), q, vectorIndex);
-				pq.add(new Quad(priorityValue, nextToPq.getRight(), next.getSortedLinkedList(), vectorIndex));
+			Quad currentPoint = pq.poll();
+			distance = q.distanceTo(currentPoint.getVector());
+			result = currentPoint.getVector();
+			ListIterator<Pair<Double,SparseVector>> predLink  = currentPoint.getPredecessor();
+			if(predLink.hasNext()){
+				Pair<Double, SparseVector> next = predLink.next();
+				int vectorIndex = currentPoint.getRandomVectorIndex();
+				double priorityValue = calculatePriorityValue(next.getRight(), q, vectorIndex);
+				pq.add(new Quad(priorityValue, next.getRight(), predLink, vectorIndex));
 			}
-		} while(!(r/w < distance && distance < r*w)); //TODO: Approximate
+		} while(!(r/w < distance && distance < r*w));
 
 		return result;
 	}
@@ -126,8 +138,9 @@ public class Engine {
 
 	private static void setConstants(){
 		Constants.setAmountOfRandomVectors(5);
-		Constants.setR(1/2);
-		Constants.setW(2);
+		Constants.setR(4);
+		Constants.setW(6);
+		Constants.setC(2);
 		Constants.setDimensions(3_649_941+2);
 		Constants.setNumberOfHashFunctions(5);
 	}

@@ -5,13 +5,14 @@ import java.util.LinkedList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Comparator;
 
 import main.java.mmas.serenderp.util.SparseVector;
 
 import org.apache.commons.lang3.tuple.Pair;
 
 public class Bucket {
-	private List<LinkedList<Pair<Double, SparseVector>>> randomVectorDistances;
+	public List<LinkedList<Pair<Double, SparseVector>>> randomVectorDistances;
 	private static Map<Integer, Map<Integer, Bucket>> buckets;
 
 	public Bucket() {
@@ -31,40 +32,39 @@ public class Bucket {
 	
 	public void sortLists() {
 		for (LinkedList<Pair<Double, SparseVector>> linkedList : randomVectorDistances) {
-			Collections.sort(linkedList);
+			//inverted comparator
+			Comparator cmp = new Comparator<Pair<Double,SparseVector>>(){
+				@Override
+				public int compare(Pair<Double,SparseVector> p1, Pair<Double,SparseVector> p2) {
+					return p2.compareTo(p1);
+				}
+			};
+			Collections.sort(linkedList, cmp);
 		}
-		for (LinkedList<Pair<Double, SparseVector>> linkedList : randomVectorDistances) {
-			assert isSorted(linkedList);
-		}
+
 	}
-	
+
 	public SparseVector getHead(int i){
+		if(null == randomVectorDistances) {
+			throw new RuntimeException("wtf?");
+		}
+		if(null == randomVectorDistances.get(i)) {
+			throw new RuntimeException("wtf?");
+		}
+		if(null == randomVectorDistances.get(i).peek()) {
+			throw new RuntimeException("wtf?");
+		}
 		return randomVectorDistances.get(i).peek().getRight();
 	}
 
 	public Pair<Double, SparseVector> poll(int i) {
-		return randomVectorDistances.get(i).poll();
+		return randomVectorDistances.get(i).peek();
 	}
 
 	public LinkedList<Pair<Double, SparseVector>> getList(int i) {
 		return randomVectorDistances.get(i);
 	}
 
-	private static <T extends Comparable<? super T>> boolean isSorted(Iterable<T> iterable) {
-		Iterator<T> iter = iterable.iterator();
-		if (!iter.hasNext()) {
-			return true;
-		}
-		T t = iter.next();
-		while (iter.hasNext()) {
-			T t2 = iter.next();
-			if (t.compareTo(t2) > 0) {
-				return false;
-			}
-			t = t2;
-		}
-		return true;
-	}
 	/**
 	 * Class used for sorting on the dot product
 	 * @author andreas
