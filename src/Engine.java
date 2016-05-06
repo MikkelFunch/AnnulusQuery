@@ -18,13 +18,13 @@ public class Engine {
 		r = Constants.getR();
 		w = Constants.getW();
 
-		Map<Integer, SparseVector> imdMovsByMlId = Constants.getMovies();
-		System.out.println("loaded movies");
-		List<List<Entry<Integer,Double>>>  users = MovieLensReader.loadUserRatings();
-		System.out.println("loaded ratings");
-		Magic.assessMagic(users, imdMovsByMlId);
+		//Map<Integer, SparseVector> imdMovsByMlId = Constants.getMovies();
+		//System.out.println("loaded movies");
+		//List<List<Entry<Integer,Double>>>  users = MovieLensReader.loadUserRatings();
+		//System.out.println("loaded ratings");
+		//Magic.assessMagic(users, imdMovsByMlId);
 
-		System.exit(0);
+		//System.exit(0);
 
 
 		//PRE PROCESS
@@ -138,8 +138,8 @@ public class Engine {
 
 	private static void setConstants(){
 		Constants.setAmountOfRandomVectors(5);
-		Constants.setR(4);
-		Constants.setW(6);
+		Constants.setR(2000);
+		Constants.setW(3);
 		Constants.setC(2);
 		Constants.setDimensions(3_649_941+2);
 		Constants.setNumberOfHashFunctions(5);

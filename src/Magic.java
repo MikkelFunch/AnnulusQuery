@@ -13,20 +13,10 @@ public class Magic {
 			for(int i=0; i<user.size(); i++) {
 				Entry<Integer,Double> rating = user.get(i);
 				SparseVector m = movies.get(rating.getKey());
-				if (null == m) {
-					throw new RuntimeException("Movie was null?");
-				}
-				if (null == rating.getValue()) {
-					throw new RuntimeException("Rating was null?");
-				}
 				m = multiply(m, rating.getValue());
-				if (null == m) {
-					throw new RuntimeException("Movie was null?");
-				}
 				userAverageMovie = add(userAverageMovie, m);
 			}
 			userAverageMovie = divide(userAverageMovie, user.size());
-			System.out.println("avg movie: " + userAverageMovie);
 			double[] distances = new double[user.size()];
 			//Calculate distances from center
 			for(int i=0; i<user.size(); i++) {
@@ -36,10 +26,14 @@ public class Magic {
 			}
 
 			double avgDist=0;
+			double maxDist=0;
 			for (double d : distances){
 				avgDist += d;
+				maxDist = Math.max(d, maxDist);
 			}
-			System.out.println("avg dist: " + avgDist/user.size());
+			System.out.println("User with " + distances.length + " rated movs");
+			System.out.println("avg dist: " + avgDist/distances.length);
+			System.out.println("max dist: " + maxDist);
 		}
 	}
 }
