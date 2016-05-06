@@ -97,6 +97,10 @@ public class SparseVector { private int size;
 	public static SparseVector subtract(SparseVector a, SparseVector b) {
 		return pairwiseOp(a,(x,y) -> x-y ,b);
 	}
+	
+	public SparseVector subtract(SparseVector that) {
+		return SparseVector.subtract(this, that);
+	}
 
 	public static SparseVector multiply(SparseVector v, double k) {
 		return mapIgnoreDefault(v, (x) -> x*k);
@@ -111,6 +115,10 @@ public class SparseVector { private int size;
 		v = mapIgnoreDefault(v1, (x) -> Math.pow(x,2));
 		double sumOfSquares = foldIgnoreDefault(v, (x,y) -> x+y, 0d);
 		return Math.sqrt(sumOfSquares);
+	}
+	
+	public double distanceTo(SparseVector that) {
+		return SparseVector.distance(this, that);
 	}
 
 	public static <A> A foldIgnoreDefault (SparseVector v, BiFunction<Double,A,A> f, A def) {

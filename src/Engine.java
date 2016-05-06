@@ -76,48 +76,52 @@ public class Engine {
 //				startTime = System.currentTimeMillis();
 //			}
 		}
+		
+		for(Bucket bucket : buckets) {
+			bucket.sortLists();
+		}
+		
 		return buckets;
 	}
 
-	public static SparseVector query(Bucket[] queryStructure, SparseVector q) {
+	public static SparseVector query(Bucket[] queryStructure, SparseVector q) { //N movie recommendations
 		PriorityQueue<Quad> pq = new PriorityQueue<>();
-		
+		//TODO: hash query point
 		//Fill pq
 		for (Bucket bucket : queryStructure) {
 			for (int i = 0; i < Constants.getAmountOfRandomVectors(); i++) {
-				SparseVector v = bucket.poll(i).getRight();
-				double priorityValue = SparseVector.dotProduct(SparseVector.subtract(v, q), RandomVectors.getRandomVector(i));
-				pq.add(new Quad(priorityValue, v, bucket.getList(i), i));
+				SparseVector p = bucket.poll(i).getRight();//TODO dont delete shit
+				double priorityValue = calculatePriorityValue(p, q, i);
+				pq.add(new Quad(priorityValue, p, bucket.getList(i), i)); //TODO add list index
 			}
 		}
-		for(Bucket bucket : queryStructure) {
-			bucket.sortLists();
-		}
-
-		int r = Constants.getR();
+		
+		int r = Constants.getR(); //TODO: move, add c
 		int w = Constants.getW();
 
-		double value;
+		double distance;
 		SparseVector result = null;
 		Pair<Double, SparseVector> nextToPq;
 		do{
-			//ADD NEXT ELEMENT TO pq
 			Quad next = pq.poll();
 			if (next == null) {
-				result = null;
-				break;
+				return null;
 			}
-			value = next.getDotProduct();
+			distance = q.distanceTo(next.getVector());
 			result = next.getVector();
 			nextToPq = next.getSortedLinkedList().poll();
 			if (nextToPq != null) {
 				int vectorIndex = next.getRandomVectorIndex();
-				double priorityValue = SparseVector.dotProduct(SparseVector.subtract(q, next.getVector()), RandomVectors.getRandomVector(vectorIndex));
+				double priorityValue = calculatePriorityValue(next.getVector(), q, vectorIndex);
 				pq.add(new Quad(priorityValue, nextToPq.getRight(), next.getSortedLinkedList(), vectorIndex));
 			}
-		} while(!(r/w < value && value < r*w)); //TODO: Approximate
+		} while(!(r/w < distance && distance < r*w)); //TODO: Approximate
 
 		return result;
+	}
+	
+	private static double calculatePriorityValue(SparseVector p, SparseVector q, int randomVectorIndex){
+		return SparseVector.dotProduct(p.subtract(q), RandomVectors.getRandomVector(randomVectorIndex));
 	}
 
 	private static void init() {
