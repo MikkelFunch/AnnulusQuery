@@ -1,8 +1,14 @@
-import main.java.mmas.serenderp.util.SparseVector;
-import static main.java.mmas.serenderp.util.SparseVector.*;
+package main.java.mmas.serenderp;
+import static main.java.mmas.serenderp.util.SparseVector.add;
+import static main.java.mmas.serenderp.util.SparseVector.distance;
+import static main.java.mmas.serenderp.util.SparseVector.divide;
+import static main.java.mmas.serenderp.util.SparseVector.multiply;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import main.java.mmas.serenderp.util.SparseVector;
 
 public class Magic {
 	public static void assessMagic(List<List<Entry<Integer,Double>>> users, Map<Integer,SparseVector> movies) {

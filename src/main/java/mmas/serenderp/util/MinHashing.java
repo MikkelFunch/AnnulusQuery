@@ -1,7 +1,8 @@
+package main.java.mmas.serenderp.util;
 import java.util.Map;
 import java.util.Random;
 
-import main.java.mmas.serenderp.util.SparseVector;
+import main.java.mmas.serenderp.Constants;
 
 public class MinHashing {
 	private static int a[];

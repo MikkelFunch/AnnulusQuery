@@ -1,3 +1,4 @@
+package main.java.mmas.serenderp.util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -8,7 +9,8 @@ import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import main.java.mmas.serenderp.util.SparseVector;
+import main.java.mmas.serenderp.Constants;
+import main.java.mmas.serenderp.RandomVectors;
 
 public class Bucket {
 	private List<LinkedList<Pair<Double, SparseVector>>> randomVectorDistances;
