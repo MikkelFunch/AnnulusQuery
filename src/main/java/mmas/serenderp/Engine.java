@@ -5,11 +5,11 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.PriorityQueue;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import main.java.mmas.serenderp.util.Bucket;
 import main.java.mmas.serenderp.util.MinHashing;
 import main.java.mmas.serenderp.util.SparseVector;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 public class Engine {
 
@@ -96,8 +96,15 @@ public class Engine {
 			if (bucket.getSize() > 40000) {
 				count++;
 			}
+			//System.out.println("Bucket count: " + bucket.getSize());
 		}
-		System.out.println("Big buckets: " + count);
+		
+		
+		for (int i = 0; i < buckets.getAmountOfBuckets(); i++) {
+			System.out.println(i + "-bucket count: " + buckets.getBucket(i, 0));
+		}
+		
+		//System.out.println("Big buckets: " + count);
 
 		return buckets;
 	}
@@ -144,7 +151,6 @@ public class Engine {
 				if(++pointsEvaluated % 1000 == 0) {
 					System.out.println(String.format("%d points evaluated", pointsEvaluated));
 				}
-				System.out.println("Distance: " + distance);
 			} while (!(r / w < distance && distance < r * w));
 			resultList.add(tempResult);
 		}
@@ -163,11 +169,11 @@ public class Engine {
 	}
 
 	private static void setConstants() {
-		Constants.setAmountOfRandomVectors(6);
+		Constants.setAmountOfRandomVectors(5);
 		Constants.setR(3);
 		Constants.setW(2);
 		Constants.setC(1.4);
 		Constants.setDimensions(3_649_941 + 2);
-		Constants.setNumberOfHashFunctions(15);
+		Constants.setNumberOfHashFunctions(5);
 	}
 }
