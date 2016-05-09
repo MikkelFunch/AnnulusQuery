@@ -126,4 +126,21 @@ public class SparseVectorTest {
 			assertEquals("vectorelem is correct", subarr[i], sub.get(i), 0);
 		}
 	}
+	
+	@Test
+	public void testDistanceMeasure() {
+		SparseVector a = new SparseVector(4);
+		SparseVector b = new SparseVector(4);
+		
+		a.addEntry(-7);
+		a.addEntry(-4);
+		a.addEntry(3);
+		
+		b.addEntry(17);
+		b.addEntry(6);
+		b.addEntry(2.5);
+		
+		double distance = SparseVector.distance(a, b);
+		assertEquals(26.004807, distance, 0.00001);
+	}
 }
