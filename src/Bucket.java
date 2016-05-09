@@ -1,15 +1,14 @@
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Comparator;
-
-import main.java.mmas.serenderp.util.SparseVector;
 
 import org.apache.commons.lang3.tuple.Pair;
+
+import main.java.mmas.serenderp.util.SparseVector;
 
 public class Bucket {
 	public List<LinkedList<Pair<Double, SparseVector>>> randomVectorDistances;
@@ -30,6 +29,7 @@ public class Bucket {
 		}
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void sortLists() {
 		for (LinkedList<Pair<Double, SparseVector>> linkedList : randomVectorDistances) {
 			//inverted comparator
@@ -52,7 +52,7 @@ public class Bucket {
 			throw new RuntimeException("wtf?");
 		}
 		if(null == randomVectorDistances.get(i).peek()) {
-			throw new RuntimeException("wtf?");
+			return null;
 		}
 		return randomVectorDistances.get(i).peek().getRight();
 	}

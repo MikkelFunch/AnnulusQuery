@@ -1,4 +1,3 @@
-import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -106,14 +105,16 @@ public class Engine {
 			for (int i = 0; i < Constants.getAmountOfRandomVectors(); i++) {
 				// NullPointerexception thrown here
 				SparseVector p = bucket.getHead(i);
-				double priorityValue = calculatePriorityValue(p, q, i);
-				ListIterator<Pair<Double, SparseVector>> predLink = bucket.getList(i).listIterator(1);
-				pq.add(new Quad(priorityValue, p, predLink, i));
+				if (p != null) {
+					double priorityValue = calculatePriorityValue(p, q, i);
+					ListIterator<Pair<Double, SparseVector>> predLink = bucket.getList(i).listIterator(1);
+					pq.add(new Quad(priorityValue, p, predLink, i));
+				}
 			}
 		}
 		
 		int pointsEvaluated = 0;
-
+		
 		double distance;
 		SparseVector tempResult = null;
 		List<SparseVector> resultList = new ArrayList<>(n);

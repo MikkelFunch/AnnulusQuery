@@ -3,7 +3,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.rmi.UnexpectedException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,11 +38,7 @@ public class PreProcess {
 					}
 
 					id = indices.size();
-					try {
-						indices.add(line.substring(0, line.indexOf("\t")));
-					} catch (Exception e) {//TODO: ?
-						new UnexpectedException("");
-					}
+					indices.add(line.substring(0, line.indexOf("\t")));
 					// add actor to movie
 					String movieLine = line.substring(line.lastIndexOf("\t") + 1);
 					if (insertActorToMovie(movieLine, id)) {

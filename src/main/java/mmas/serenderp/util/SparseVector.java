@@ -2,7 +2,6 @@ package main.java.mmas.serenderp.util;
 
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.BiFunction;
@@ -42,7 +41,7 @@ public class SparseVector { private int size;
 			//this may be overkill
 			return;
 		}
-		if(nextAvailable >= size) {
+		if(nextAvailable > size) {
 			throw new RuntimeException("Vector size overrun");
 		}
 		nextAvailable = i+1;

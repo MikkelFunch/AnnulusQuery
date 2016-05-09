@@ -1,9 +1,7 @@
 import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Consumer;
-import main.java.mmas.serenderp.util.SparseVector;
-import java.util.LinkedList;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
 
 import main.java.mmas.serenderp.util.SparseVector;
 
@@ -34,7 +32,7 @@ public class Buckets implements Iterable<Bucket> {
 	}
 
 	public Iterator<Bucket> iterator() {
-		LinkedList<Bucket> bucketList = new LinkedList();
+		LinkedList<Bucket> bucketList = new LinkedList<Bucket>();
 		for(Map<Integer, Bucket> bucketsForHash : buckets.values()) {
 			bucketList.addAll(bucketsForHash.values());
 		}
