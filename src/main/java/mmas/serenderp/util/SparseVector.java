@@ -9,12 +9,19 @@ import java.util.function.DoubleUnaryOperator;
 import org.apache.commons.math3.linear.RealVector;
 
 public class SparseVector { private int size;
+
+	private String movieTitle;
 	private int nextAvailable=0;
 	private Map<Integer,Double> vector;
 	
 	public SparseVector(int size) {
 		this.size=size;
 		this.vector = new TreeMap<Integer,Double>();
+	}
+	
+	public SparseVector(int size, String movieTitle) {
+		this(size);
+		this.movieTitle = movieTitle;
 	}
 
 	//add at last available index
@@ -169,6 +176,10 @@ public class SparseVector { private int size;
 
 	public boolean hasActors() {
 		return nextAvailable > 34;
+	}
+	
+	public String getMovieTitle() {
+		return movieTitle == null ? "" : movieTitle;
 	}
 
 	@Override

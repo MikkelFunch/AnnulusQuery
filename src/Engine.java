@@ -1,7 +1,5 @@
-import java.util.Map;
-import java.util.List;
-import java.util.Map.Entry;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.PriorityQueue;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -13,46 +11,46 @@ public class Engine {
 	public static void main(String[] args) {
 		setConstants();
 
-		int c,r,w;
+		int c, r, w;
 		c = Constants.getC();
 		r = Constants.getR();
 		w = Constants.getW();
 
-		//Map<Integer, SparseVector> imdMovsByMlId = Constants.getMovies();
-		//System.out.println("loaded movies");
-		//List<List<Entry<Integer,Double>>>  users = MovieLensReader.loadUserRatings();
-		//System.out.println("loaded ratings");
-		//Magic.assessMagic(users, imdMovsByMlId);
+		// Map<Integer, SparseVector> imdMovsByMlId = Constants.getMovies();
+		// System.out.println("loaded movies");
+		// List<List<Entry<Integer,Double>>> users =
+		// MovieLensReader.loadUserRatings();
+		// System.out.println("loaded ratings");
+		// Magic.assessMagic(users, imdMovsByMlId);
 
-		//System.exit(0);
+		// System.exit(0);
 
-
-		//PRE PROCESS
+		// PRE PROCESS
 		Long startTime = System.currentTimeMillis();
 		Map<String, SparseVector> movies = PreProcess.getIMDBMovies();
 		Long endTime = System.currentTimeMillis();
 		Long duration = (endTime - startTime);
 		System.out.println(String.format("Pre process duration: %d sec", (duration / 1000)));
 
-		//Test data
+		// Test data
 		SparseVector q = movies.get("Toy Story (1995)");
 		movies.remove("Toy Story (1995)");
 
-		//DATA STRUCTURE
+		// DATA STRUCTURE
 		startTime = System.currentTimeMillis();
 		Buckets buckets = buildQueryStructure(movies);
 		endTime = System.currentTimeMillis();
 		duration = (endTime - startTime);
 		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
 
-		//QUERY
+		// QUERY
 		startTime = System.currentTimeMillis();
 		SparseVector result = query(buckets, c, r, w, q);
 		endTime = System.currentTimeMillis();
 		duration = (endTime - startTime);
 		System.out.println("Query time duration: " + duration);
 
-
+		System.out.println(String.format("The movie \"%s\" was found as serendipitous", result.getMovieTitle()));
 		for (int i : result.getMap().keySet()) {
 			System.out.println(PreProcess.getFromGlobalIndex(i));
 		}
@@ -63,71 +61,74 @@ public class Engine {
 		init();
 		Buckets buckets = new Buckets();
 
-		//For each point
-//		Long startTime = System.currentTimeMillis();
-//		int count = 0;
+		// For each point
+		// Long startTime = System.currentTimeMillis();
+		// int count = 0;
 		for (SparseVector sv : movies.values()) {
 			if (!sv.hasActors()) {
 				continue;
 			}
-			for (int hashFunctionIndex = 0; hashFunctionIndex < Constants.getNumberOfHashFunctions(); hashFunctionIndex++) {
-				buckets.add(MinHashing.minHash(sv,hashFunctionIndex), hashFunctionIndex, sv);
+			for (int hashFunctionIndex = 0; hashFunctionIndex < Constants
+					.getNumberOfHashFunctions(); hashFunctionIndex++) {
+				buckets.add(MinHashing.minHash(sv, hashFunctionIndex), hashFunctionIndex, sv);
 			}
-//			count++;
-//			if (count % 500 == 0) {
-//				Long endTime = System.currentTimeMillis();
-//				Long duration = (endTime - startTime);
-//				System.out.println(count + " - Duration: " + (duration / 1000));
-//				startTime = System.currentTimeMillis();
-//			}
+			// count++;
+			// if (count % 500 == 0) {
+			// Long endTime = System.currentTimeMillis();
+			// Long duration = (endTime - startTime);
+			// System.out.println(count + " - Duration: " + (duration / 1000));
+			// startTime = System.currentTimeMillis();
+			// }
 		}
-		
-		for(Bucket bucket : buckets) {
+
+		for (Bucket bucket : buckets) {
 			bucket.sortLists();
 		}
-		
+
 		return buckets;
 	}
 
-	public static SparseVector query(Buckets queryStructure, double c, int r, int w, SparseVector q) { //N movie recommendations
+	public static SparseVector query(Buckets queryStructure, double c, int r, int w, SparseVector q) { // N
+																										// movie
+																										// recommendations
 		w *= c;
 
 		PriorityQueue<Quad> pq = new PriorityQueue<>();
-		//Fill pq
+		// Fill pq
 		for (int hashIndex = 0; hashIndex < Constants.getNumberOfHashFunctions(); hashIndex++) {
 			Bucket bucket = queryStructure.getBucket(MinHashing.minHash(q, hashIndex), hashIndex);
 			for (int i = 0; i < Constants.getAmountOfRandomVectors(); i++) {
-				//NullPointerexception thrown here
+				// NullPointerexception thrown here
 				SparseVector p = bucket.getHead(i);
 				double priorityValue = calculatePriorityValue(p, q, i);
 				ListIterator<Pair<Double, SparseVector>> predLink = bucket.getList(i).listIterator(1);
 				pq.add(new Quad(priorityValue, p, predLink, i));
 			}
 		}
-		
+
 		double distance;
 		SparseVector result = null;
-		do{
-			//Queue empty
+		do {
+			// Queue empty
 			if (pq.isEmpty()) {
 				return null;
 			}
 			Quad currentPoint = pq.poll();
 			distance = q.distanceTo(currentPoint.getVector());
 			result = currentPoint.getVector();
-			ListIterator<Pair<Double,SparseVector>> predLink  = currentPoint.getPredecessor();
-			if(predLink.hasNext()){
+			ListIterator<Pair<Double, SparseVector>> predLink = currentPoint.getPredecessor();
+			if (predLink.hasNext()) {
 				Pair<Double, SparseVector> next = predLink.next();
 				int vectorIndex = currentPoint.getRandomVectorIndex();
 				double priorityValue = calculatePriorityValue(next.getRight(), q, vectorIndex);
 				pq.add(new Quad(priorityValue, next.getRight(), predLink, vectorIndex));
 			}
-		} while(!(r/w < distance && distance < r*w));
+		} while (!(r / w < distance && distance < r * w));
 
 		return result;
 	}
-	
-	private static double calculatePriorityValue(SparseVector p, SparseVector q, int randomVectorIndex){
+
+	private static double calculatePriorityValue(SparseVector p, SparseVector q, int randomVectorIndex) {
 		return SparseVector.dotProduct(p.subtract(q), RandomVectors.getRandomVector(randomVectorIndex));
 	}
 
@@ -136,12 +137,12 @@ public class Engine {
 		MinHashing.init();
 	}
 
-	private static void setConstants(){
+	private static void setConstants() {
 		Constants.setAmountOfRandomVectors(5);
 		Constants.setR(2000);
 		Constants.setW(3);
 		Constants.setC(2);
-		Constants.setDimensions(3_649_941+2);
+		Constants.setDimensions(3_649_941 + 2);
 		Constants.setNumberOfHashFunctions(5);
 	}
 }
