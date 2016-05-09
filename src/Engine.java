@@ -87,9 +87,14 @@ public class Engine {
 			// }
 		}
 
+		int count = 0;
 		for (Bucket bucket : buckets) {
 			bucket.sortLists();
+			if (bucket.getSize() > 40000) {
+				count++;
+			}
 		}
+		System.out.println("Big buckets: " + count);
 
 		return buckets;
 	}
@@ -101,7 +106,7 @@ public class Engine {
 		// Fill pq
 		for (int hashIndex = 0; hashIndex < Constants.getNumberOfHashFunctions(); hashIndex++) {
 			Bucket bucket = queryStructure.getBucket(MinHashing.minHash(q, hashIndex), hashIndex);
-			System.out.println(String.format("Bucket has %d elements", bucket.randomVectorDistances.get(0).size()));
+			System.out.println(String.format("Bucket has %d elements", bucket.getList(0).size()));
 			for (int i = 0; i < Constants.getAmountOfRandomVectors(); i++) {
 				// NullPointerexception thrown here
 				SparseVector p = bucket.getHead(i);
@@ -136,6 +141,7 @@ public class Engine {
 				if(++pointsEvaluated % 1000 == 0) {
 					System.out.println(String.format("%d points evaluated", pointsEvaluated));
 				}
+				System.out.println("Distance: " + distance);
 			} while (!(r / w < distance && distance < r * w));
 			resultList.add(tempResult);
 		}

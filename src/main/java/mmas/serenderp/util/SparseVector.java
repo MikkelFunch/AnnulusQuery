@@ -120,7 +120,7 @@ public class SparseVector { private int size;
 
 	public static double distance(SparseVector v1, SparseVector v2) {
 		SparseVector v = subtract(v1,v2);
-		v = mapIgnoreDefault(v1, (x) -> Math.pow(x,2));
+		v = mapIgnoreDefault(v, (x) -> Math.pow(x,2));
 		double sumOfSquares = foldIgnoreDefault(v, (x,y) -> x+y, 0d);
 		return Math.sqrt(sumOfSquares);
 	}

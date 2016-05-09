@@ -11,7 +11,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import main.java.mmas.serenderp.util.SparseVector;
 
 public class Bucket {
-	public List<LinkedList<Pair<Double, SparseVector>>> randomVectorDistances;
+	private List<LinkedList<Pair<Double, SparseVector>>> randomVectorDistances;
+	private int size;
 	private static Map<Integer, Map<Integer, Bucket>> buckets;
 
 	public Bucket() {
@@ -27,6 +28,7 @@ public class Bucket {
 			double dotProduct = SparseVector.dotProduct(vector, RandomVectors.getRandomVector(randomVectorIndex));
 			randomVectorDistances.get(randomVectorIndex).add(PairOfDotProductAndVector.of(dotProduct, vector)); //TODO: performance in sorting
 		}
+		size++;
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -121,5 +123,9 @@ public class Bucket {
 		}
 		
 		return bucket;
+	}
+	
+	public int getSize(){
+		return size;
 	}
 }
