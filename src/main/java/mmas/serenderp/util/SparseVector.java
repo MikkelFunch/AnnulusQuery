@@ -1,6 +1,9 @@
 package main.java.mmas.serenderp.util;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
@@ -10,6 +13,8 @@ import org.apache.commons.math3.linear.RealVector;
 
 public class SparseVector { private int size;
 
+	@SuppressWarnings("unchecked")
+	private static final Map.Entry<Integer,Double>[] typePar = new Map.Entry[0];
 	private String movieTitle;
 	private int nextAvailable=0;
 	private Map<Integer,Double> vector;
@@ -61,7 +66,6 @@ public class SparseVector { private int size;
 	}
 
 	public static double dotProduct(SparseVector a, SparseVector b) {
-		Map.Entry<Integer,Double>[] typePar = new Map.Entry[0];
 		Map.Entry<Integer,Double>[] vectorA = a.vector.entrySet().toArray(typePar);
 		Map.Entry<Integer,Double>[] vectorB = b.vector.entrySet().toArray(typePar);
 
@@ -127,7 +131,6 @@ public class SparseVector { private int size;
 	}
 
 	public static <A> A foldIgnoreDefault (SparseVector v, BiFunction<Double,A,A> f, A def) {
-		Map.Entry<Integer,Double>[] typePar = new Map.Entry[0];
 		Map.Entry<Integer,Double>[] vector = v.vector.entrySet().toArray(typePar);
 
 		for(int i = 0; i < vector.length;  i++) {
@@ -140,7 +143,6 @@ public class SparseVector { private int size;
 	}
 
 	public static SparseVector mapIgnoreDefault(SparseVector v, DoubleUnaryOperator f) {
-		Map.Entry<Integer,Double>[] typePar = new Map.Entry[0];
 		Map.Entry<Integer,Double>[] vector = v.vector.entrySet().toArray(typePar);
 
 		SparseVector res = new SparseVector(v.size());
@@ -158,14 +160,18 @@ public class SparseVector { private int size;
 	}
 
 	public Map.Entry<Integer,Double>[] getNonZeroElements(){
-		Map.Entry<Integer,Double>[] typePar = new Map.Entry[0];
 		return this.vector.entrySet().toArray(typePar);
 	}
 
 	public static SparseVector pairwiseOp(SparseVector a, BinaryOperator<Double> f, SparseVector b) {
 		SparseVector res = new SparseVector(a.size());
-		for (int i = 0; i < b.size(); i++) {
-			res.addEntry(f.apply(a.get(i), b.get(i)));
+		
+		Set<Integer> unionIndices = new HashSet<Integer>();
+		unionIndices.addAll(a.vector.keySet());
+		unionIndices.addAll(b.vector.keySet());
+		
+		for(Integer i : unionIndices) {
+			res.addEntry(i, f.apply(a.get(i), b.get(i)));
 		}
 		return res;
 	}
@@ -184,7 +190,6 @@ public class SparseVector { private int size;
 
 	@Override
 	public String toString() {
-		Map.Entry<Integer,Double>[] typePar = new Map.Entry[0];
 		Map.Entry<Integer,Double>[] vector = this.vector.entrySet().toArray(typePar);
 
 		String res = "[";

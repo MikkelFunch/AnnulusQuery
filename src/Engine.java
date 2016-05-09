@@ -75,8 +75,7 @@ public class Engine {
 			if (!sv.hasActors()) {
 				continue;
 			}
-			for (int hashFunctionIndex = 0; hashFunctionIndex < Constants
-					.getNumberOfHashFunctions(); hashFunctionIndex++) {
+			for (int hashFunctionIndex = 0; hashFunctionIndex < Constants.getNumberOfHashFunctions(); hashFunctionIndex++) {
 				buckets.add(MinHashing.minHash(sv, hashFunctionIndex), hashFunctionIndex, sv);
 			}
 			// count++;
@@ -113,6 +112,8 @@ public class Engine {
 				pq.add(new Quad(priorityValue, p, predLink, i));
 			}
 		}
+		
+		int pointsEvaluated = 0;
 
 		int pointsEvaluated = 0;
 		
