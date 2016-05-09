@@ -1,3 +1,4 @@
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -94,9 +95,7 @@ public class Engine {
 		return buckets;
 	}
 
-	public static List<SparseVector> query(Buckets queryStructure, double c, double r, double w, SparseVector q, int n) { // N
-																										// movie
-																										// recommendations
+	public static List<SparseVector> query(Buckets queryStructure, double c, double r, double w, SparseVector q, int n) {
 		w *= c;
 
 		PriorityQueue<Quad> pq = new PriorityQueue<>();
@@ -133,7 +132,7 @@ public class Engine {
 					double priorityValue = calculatePriorityValue(next.getRight(), q, vectorIndex);
 					pq.add(new Quad(priorityValue, next.getRight(), predLink, vectorIndex));
 				}
-				if(++pointsEvaluated % 10 == 0) {
+				if(++pointsEvaluated % 1000 == 0) {
 					System.out.println(String.format("%d points evaluated", pointsEvaluated));
 				}
 			} while (!(r / w < distance && distance < r * w));
@@ -154,11 +153,11 @@ public class Engine {
 	}
 
 	private static void setConstants() {
-		Constants.setAmountOfRandomVectors(5);
+		Constants.setAmountOfRandomVectors(6);
 		Constants.setR(3);
-		Constants.setW(1.2);
+		Constants.setW(2);
 		Constants.setC(1.4);
 		Constants.setDimensions(3_649_941 + 2);
-		Constants.setNumberOfHashFunctions(5);
+		Constants.setNumberOfHashFunctions(15);
 	}
 }
