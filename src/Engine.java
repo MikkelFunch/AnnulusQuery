@@ -13,7 +13,7 @@ public class Engine {
 	public static void main(String[] args) {
 		setConstants();
 
-		int c, r, w;
+		double c, r, w;
 		c = Constants.getC();
 		r = Constants.getR();
 		w = Constants.getW();
@@ -50,11 +50,16 @@ public class Engine {
 		List<SparseVector> result = query(buckets, c, r, w, q, 1);
 		endTime = System.currentTimeMillis();
 		duration = (endTime - startTime);
-		System.out.println("Query time duration: " + duration);
 
-		for (int i : result.get(0).getMap().keySet()) {
+		System.out.println(String.format("Query time duration: %d sec", (duration / 1000)));
+
+		if (result.isEmpty()) {
+			System.out.println("No result was found");
+		} else {
 			System.out.println(String.format("The movie \"%s\" was found as serendipitous", result.get(0).getMovieTitle()));
-			System.out.println(PreProcess.getFromGlobalIndex(i));
+			for (int i : result.get(0).getMap().keySet()) {
+				System.out.println(PreProcess.getFromGlobalIndex(i));
+			}
 		}
 		System.out.println("Done");
 	}
@@ -90,9 +95,9 @@ public class Engine {
 		return buckets;
 	}
 
-	public static List<SparseVector> query(Buckets queryStructure, double c, int r, int w, SparseVector q, int n) { // N
-																												// movie
-																												// recommendations
+	public static List<SparseVector> query(Buckets queryStructure, double c, double r, double w, SparseVector q, int n) { // N
+																										// movie
+																										// recommendations
 		w *= c;
 
 		PriorityQueue<Quad> pq = new PriorityQueue<>();
@@ -113,7 +118,6 @@ public class Engine {
 		List<SparseVector> resultList = new ArrayList<>(n);
 		for (int i = 0; i < n; i++) {
 			do {
-				// Queue empty
 				if (pq.isEmpty()) {
 					return resultList;
 				}
@@ -146,9 +150,9 @@ public class Engine {
 
 	private static void setConstants() {
 		Constants.setAmountOfRandomVectors(5);
-		Constants.setR(2000);
-		Constants.setW(3);
-		Constants.setC(2);
+		Constants.setR(3);
+		Constants.setW(1.2);
+		Constants.setC(1.4);
 		Constants.setDimensions(3_649_941 + 2);
 		Constants.setNumberOfHashFunctions(5);
 	}
