@@ -75,8 +75,7 @@ public class Engine {
 			if (!sv.hasActors()) {
 				continue;
 			}
-			for (int hashFunctionIndex = 0; hashFunctionIndex < Constants
-					.getNumberOfHashFunctions(); hashFunctionIndex++) {
+			for (int hashFunctionIndex = 0; hashFunctionIndex < Constants.getNumberOfHashFunctions(); hashFunctionIndex++) {
 				buckets.add(MinHashing.minHash(sv, hashFunctionIndex), hashFunctionIndex, sv);
 			}
 			// count++;
@@ -113,6 +112,8 @@ public class Engine {
 				pq.add(new Quad(priorityValue, p, predLink, i));
 			}
 		}
+		
+		int pointsEvaluated = 0;
 
 		double distance;
 		SparseVector tempResult = null;
@@ -131,6 +132,9 @@ public class Engine {
 					int vectorIndex = currentPoint.getRandomVectorIndex();
 					double priorityValue = calculatePriorityValue(next.getRight(), q, vectorIndex);
 					pq.add(new Quad(priorityValue, next.getRight(), predLink, vectorIndex));
+				}
+				if(++pointsEvaluated % 10 == 0) {
+					System.out.println(String.format("%d points evaluated", pointsEvaluated));
 				}
 			} while (!(r / w < distance && distance < r * w));
 			resultList.add(tempResult);
