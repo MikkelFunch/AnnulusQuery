@@ -11,7 +11,7 @@ public class MinHashing {
 	private static int m;
 	
 	public static void init(){
-		Random r = new Random();
+		Random r = new Random(42);
 		
 		int numberOfHashFunctions = Constants.getNumberOfHashFunctions();
 		a = new int[numberOfHashFunctions];
