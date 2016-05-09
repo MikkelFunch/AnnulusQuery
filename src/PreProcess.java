@@ -133,7 +133,7 @@ public class PreProcess {
 					if (movie != lastMovie) {
 						lastMovie = movie;
 					}
-					SparseVector sv = new SparseVector(Constants.getDimensions());
+					SparseVector sv = new SparseVector(Constants.getDimensions(), movie);
 					sv.addEntry(1, Double.parseDouble(movie.substring(movie.length() - 5, movie.length() - 1)));
 					IMDBmovies.put(movie, sv);
 				}

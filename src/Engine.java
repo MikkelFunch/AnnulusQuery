@@ -1,8 +1,7 @@
-import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.PriorityQueue;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -54,6 +53,7 @@ public class Engine {
 		System.out.println("Query time duration: " + duration);
 
 		for (int i : result.get(0).getMap().keySet()) {
+			System.out.println(String.format("The movie \"%s\" was found as serendipitous", result.get(0).getMovieTitle()));
 			System.out.println(PreProcess.getFromGlobalIndex(i));
 		}
 		System.out.println("Done");
