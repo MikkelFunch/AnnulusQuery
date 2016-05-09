@@ -101,6 +101,7 @@ public class Engine {
 		// Fill pq
 		for (int hashIndex = 0; hashIndex < Constants.getNumberOfHashFunctions(); hashIndex++) {
 			Bucket bucket = queryStructure.getBucket(MinHashing.minHash(q, hashIndex), hashIndex);
+			System.out.println(String.format("Bucket has %d elements", bucket.randomVectorDistances.get(0).size()));
 			for (int i = 0; i < Constants.getAmountOfRandomVectors(); i++) {
 				// NullPointerexception thrown here
 				SparseVector p = bucket.getHead(i);
