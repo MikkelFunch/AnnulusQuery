@@ -160,11 +160,11 @@ public class Engine {
 	}
 
 	private static void setConstants() {
-		Constants.setAmountOfRandomVectors(6);
+		Constants.setAmountOfRandomVectors(5);
 		Constants.setR(3);
 		Constants.setW(2);
 		Constants.setC(1.4);
 		Constants.setDimensions(3_649_941 + 2);
-		Constants.setNumberOfHashFunctions(15);
+		Constants.setNumberOfHashFunctions(5);
 	}
 }
