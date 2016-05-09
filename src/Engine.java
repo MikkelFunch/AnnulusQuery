@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -45,16 +47,17 @@ public class Engine {
 
 		// QUERY
 		startTime = System.currentTimeMillis();
-		SparseVector result = query(buckets, c, r, w, q);
+		List<SparseVector> result = query(buckets, c, r, w, q, 1);
 		endTime = System.currentTimeMillis();
 		duration = (endTime - startTime);
+
 		System.out.println(String.format("Query time duration: %d sec", (duration / 1000)));
 
-		if (result == null) {
+		if (result.isEmpty()) {
 			System.out.println("No result was found");
 		} else {
-			System.out.println(String.format("The movie \"%s\" was found as serendipitous", result.getMovieTitle()));
-			for (int i : result.getMap().keySet()) {
+			System.out.println(String.format("The movie \"%s\" was found as serendipitous", result.get(0).getMovieTitle()));
+			for (int i : result.get(0).getMap().keySet()) {
 				System.out.println(PreProcess.getFromGlobalIndex(i));
 			}
 		}
@@ -92,7 +95,7 @@ public class Engine {
 		return buckets;
 	}
 
-	public static SparseVector query(Buckets queryStructure, double c, double r, double w, SparseVector q) { // N
+	public static List<SparseVector> query(Buckets queryStructure, double c, double r, double w, SparseVector q, int n) { // N
 																										// movie
 																										// recommendations
 		w *= c;
@@ -112,24 +115,29 @@ public class Engine {
 		}
 
 		double distance;
-		SparseVector result = null;
-		do {
-			if (pq.isEmpty()) {
-				return null;
-			}
-			Quad currentPoint = pq.poll();
-			distance = q.distanceTo(currentPoint.getVector());
-			result = currentPoint.getVector();
-			ListIterator<Pair<Double, SparseVector>> predLink = currentPoint.getPredecessor();
-			if (predLink.hasNext()) {
-				Pair<Double, SparseVector> next = predLink.next();
-				int vectorIndex = currentPoint.getRandomVectorIndex();
-				double priorityValue = calculatePriorityValue(next.getRight(), q, vectorIndex);
-				pq.add(new Quad(priorityValue, next.getRight(), predLink, vectorIndex));
-			}
-		} while (!(r / w < distance && distance < r * w));
-
-		return result;
+		SparseVector tempResult = null;
+		List<SparseVector> resultList = new ArrayList<>(n);
+		for (int i = 0; i < n; i++) {
+			do {
+				if (pq.isEmpty()) {
+					return resultList;
+				}
+				Quad currentPoint = pq.poll();
+				tempResult = currentPoint.getVector();
+				distance = q.distanceTo(tempResult);
+				ListIterator<Pair<Double, SparseVector>> predLink = currentPoint.getPredecessor();
+				if (predLink.hasNext()) {
+					Pair<Double, SparseVector> next = predLink.next();
+					int vectorIndex = currentPoint.getRandomVectorIndex();
+					double priorityValue = calculatePriorityValue(next.getRight(), q, vectorIndex);
+					pq.add(new Quad(priorityValue, next.getRight(), predLink, vectorIndex));
+				}
+			} while (!(r / w < distance && distance < r * w));
+			resultList.add(tempResult);
+		}
+		
+		//Check annulus correctness
+		return resultList;
 	}
 
 	private static double calculatePriorityValue(SparseVector p, SparseVector q, int randomVectorIndex) {
