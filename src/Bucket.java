@@ -13,7 +13,6 @@ import main.java.mmas.serenderp.util.SparseVector;
 public class Bucket {
 	private List<LinkedList<Pair<Double, SparseVector>>> randomVectorDistances;
 	private int size;
-	private static Map<Integer, Map<Integer, Bucket>> buckets;
 
 	public Bucket() {
 		int amountOfRandomVectors = Constants.getAmountOfRandomVectors();
@@ -105,24 +104,6 @@ public class Bucket {
 		public int compareTo(Pair<Double, SparseVector> other) {
 			return this.getLeft().compareTo(other.getLeft());
 		}
-	}
-
-	public static Bucket getBucket(int bucketIndex, int hashfunctionIndex) { 
-		if(buckets == null) {
-			buckets = new HashMap<Integer, Map<Integer, Bucket>>();
-			for(int i = 0; i < Constants.getNumberOfHashFunctions(); i++) {
-				buckets.put(i, new HashMap<Integer, Bucket>());
-			}
-		}
-		
-		Map<Integer, Bucket> bucketsOfHashfunction = buckets.get(hashfunctionIndex);
-		Bucket bucket = bucketsOfHashfunction.get(bucketIndex);
-		if(bucket == null) {
-			bucket = new Bucket();
-			bucketsOfHashfunction.put(bucketIndex, bucket);
-		}
-		
-		return bucket;
 	}
 	
 	public int getSize(){

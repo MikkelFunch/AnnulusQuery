@@ -38,4 +38,8 @@ public class Buckets implements Iterable<Bucket> {
 		}
 		return bucketList.iterator();
 	}
+	
+	public int getAmountOfBuckets(){
+		return buckets.size();
+	}
 }

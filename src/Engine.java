@@ -93,8 +93,15 @@ public class Engine {
 			if (bucket.getSize() > 40000) {
 				count++;
 			}
+			//System.out.println("Bucket count: " + bucket.getSize());
 		}
-		System.out.println("Big buckets: " + count);
+		
+		
+		for (int i = 0; i < buckets.getAmountOfBuckets(); i++) {
+			System.out.println(i + "-bucket count: " + buckets.getBucket(i, 0));
+		}
+		
+		//System.out.println("Big buckets: " + count);
 
 		return buckets;
 	}
@@ -141,7 +148,6 @@ public class Engine {
 				if(++pointsEvaluated % 1000 == 0) {
 					System.out.println(String.format("%d points evaluated", pointsEvaluated));
 				}
-				System.out.println("Distance: " + distance);
 			} while (!(r / w < distance && distance < r * w));
 			resultList.add(tempResult);
 		}
