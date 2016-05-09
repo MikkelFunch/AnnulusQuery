@@ -42,7 +42,7 @@ public class SparseVector { private int size;
 			//this may be overkill
 			return;
 		}
-		if(nextAvailable >= size) {
+		if(nextAvailable > size) {
 			throw new RuntimeException("Vector size overrun");
 		}
 		nextAvailable = i+1;

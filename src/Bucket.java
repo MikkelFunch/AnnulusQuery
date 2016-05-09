@@ -52,7 +52,7 @@ public class Bucket {
 			throw new RuntimeException("wtf?");
 		}
 		if(null == randomVectorDistances.get(i).peek()) {
-			throw new RuntimeException("wtf?");
+			return null;
 		}
 		return randomVectorDistances.get(i).peek().getRight();
 	}

@@ -107,14 +107,14 @@ public class Engine {
 			for (int i = 0; i < Constants.getAmountOfRandomVectors(); i++) {
 				// NullPointerexception thrown here
 				SparseVector p = bucket.getHead(i);
-				double priorityValue = calculatePriorityValue(p, q, i);
-				ListIterator<Pair<Double, SparseVector>> predLink = bucket.getList(i).listIterator(1);
-				pq.add(new Quad(priorityValue, p, predLink, i));
+				if (p != null) {
+					double priorityValue = calculatePriorityValue(p, q, i);
+					ListIterator<Pair<Double, SparseVector>> predLink = bucket.getList(i).listIterator(1);
+					pq.add(new Quad(priorityValue, p, predLink, i));
+				}
 			}
 		}
 		
-		int pointsEvaluated = 0;
-
 		int pointsEvaluated = 0;
 		
 		double distance;
@@ -135,7 +135,7 @@ public class Engine {
 					double priorityValue = calculatePriorityValue(next.getRight(), q, vectorIndex);
 					pq.add(new Quad(priorityValue, next.getRight(), predLink, vectorIndex));
 				}
-				if(++pointsEvaluated % 10 == 0) {
+				if(++pointsEvaluated % 100 == 0) {
 					System.out.println(String.format("%d points evaluated", pointsEvaluated));
 				}
 			} while (!(r / w < distance && distance < r * w));
@@ -158,9 +158,9 @@ public class Engine {
 	private static void setConstants() {
 		Constants.setAmountOfRandomVectors(5);
 		Constants.setR(3);
-		Constants.setW(1.2);
+		Constants.setW(2);
 		Constants.setC(1.4);
 		Constants.setDimensions(3_649_941 + 2);
-		Constants.setNumberOfHashFunctions(5);
+		Constants.setNumberOfHashFunctions(14);
 	}
 }
