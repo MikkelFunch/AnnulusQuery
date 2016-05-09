@@ -65,8 +65,8 @@ public class SparseVector { private int size;
 	}
 
 	public static double dotProduct(SparseVector a, SparseVector b) {
-		Map.Entry<Integer,Double>[] vectorA = a.vector.entrySet().toArray(typePar);
-		Map.Entry<Integer,Double>[] vectorB = b.vector.entrySet().toArray(typePar);
+		Map.Entry<Integer,Double>[] vectorA = a.getNonZeroElements();
+		Map.Entry<Integer,Double>[] vectorB = b.getNonZeroElements();
 
 		double dotProduct = 0.0;
 		int i = 0, j = 0;
@@ -120,7 +120,7 @@ public class SparseVector { private int size;
 
 	public static double distance(SparseVector v1, SparseVector v2) {
 		SparseVector v = subtract(v1,v2);
-		v = mapIgnoreDefault(v1, (x) -> Math.pow(x,2));
+		v = mapIgnoreDefault(v, (x) -> Math.pow(x,2));
 		double sumOfSquares = foldIgnoreDefault(v, (x,y) -> x+y, 0d);
 		return Math.sqrt(sumOfSquares);
 	}
@@ -130,7 +130,7 @@ public class SparseVector { private int size;
 	}
 
 	public static <A> A foldIgnoreDefault (SparseVector v, BiFunction<Double,A,A> f, A def) {
-		Map.Entry<Integer,Double>[] vector = v.vector.entrySet().toArray(typePar);
+		Map.Entry<Integer,Double>[] vector = v.getNonZeroElements();
 
 		for(int i = 0; i < vector.length;  i++) {
 			Map.Entry<Integer,Double> pair = vector[i];
@@ -142,7 +142,7 @@ public class SparseVector { private int size;
 	}
 
 	public static SparseVector mapIgnoreDefault(SparseVector v, DoubleUnaryOperator f) {
-		Map.Entry<Integer,Double>[] vector = v.vector.entrySet().toArray(typePar);
+		Map.Entry<Integer,Double>[] vector = v.getNonZeroElements();
 
 		SparseVector res = new SparseVector(v.size());
 
@@ -189,7 +189,7 @@ public class SparseVector { private int size;
 
 	@Override
 	public String toString() {
-		Map.Entry<Integer,Double>[] vector = this.vector.entrySet().toArray(typePar);
+		Map.Entry<Integer,Double>[] vector = getNonZeroElements();
 
 		String res = "[";
 		for(Map.Entry<Integer, Double> entry : vector) {

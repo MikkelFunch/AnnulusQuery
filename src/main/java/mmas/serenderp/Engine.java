@@ -1,3 +1,4 @@
+package main.java.mmas.serenderp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -6,6 +7,8 @@ import java.util.PriorityQueue;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import main.java.mmas.serenderp.util.Bucket;
+import main.java.mmas.serenderp.util.MinHashing;
 import main.java.mmas.serenderp.util.SparseVector;
 
 public class Engine {
