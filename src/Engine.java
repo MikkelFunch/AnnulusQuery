@@ -114,6 +114,8 @@ public class Engine {
 			}
 		}
 
+		int pointsEvaluated = 0;
+		
 		double distance;
 		SparseVector tempResult = null;
 		List<SparseVector> resultList = new ArrayList<>(n);
@@ -131,6 +133,9 @@ public class Engine {
 					int vectorIndex = currentPoint.getRandomVectorIndex();
 					double priorityValue = calculatePriorityValue(next.getRight(), q, vectorIndex);
 					pq.add(new Quad(priorityValue, next.getRight(), predLink, vectorIndex));
+				}
+				if(++pointsEvaluated % 10 == 0) {
+					System.out.println(String.format("%d points evaluated", pointsEvaluated));
 				}
 			} while (!(r / w < distance && distance < r * w));
 			resultList.add(tempResult);
