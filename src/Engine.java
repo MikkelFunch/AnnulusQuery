@@ -11,7 +11,7 @@ public class Engine {
 	public static void main(String[] args) {
 		setConstants();
 
-		int c, r, w;
+		double c, r, w;
 		c = Constants.getC();
 		r = Constants.getR();
 		w = Constants.getW();
@@ -48,11 +48,15 @@ public class Engine {
 		SparseVector result = query(buckets, c, r, w, q);
 		endTime = System.currentTimeMillis();
 		duration = (endTime - startTime);
-		System.out.println("Query time duration: " + duration);
+		System.out.println(String.format("Query time duration: %d sec", (duration / 1000)));
 
-		System.out.println(String.format("The movie \"%s\" was found as serendipitous", result.getMovieTitle()));
-		for (int i : result.getMap().keySet()) {
-			System.out.println(PreProcess.getFromGlobalIndex(i));
+		if (result == null) {
+			System.out.println("No result was found");
+		} else {
+			System.out.println(String.format("The movie \"%s\" was found as serendipitous", result.getMovieTitle()));
+			for (int i : result.getMap().keySet()) {
+				System.out.println(PreProcess.getFromGlobalIndex(i));
+			}
 		}
 		System.out.println("Done");
 	}
@@ -88,7 +92,7 @@ public class Engine {
 		return buckets;
 	}
 
-	public static SparseVector query(Buckets queryStructure, double c, int r, int w, SparseVector q) { // N
+	public static SparseVector query(Buckets queryStructure, double c, double r, double w, SparseVector q) { // N
 																										// movie
 																										// recommendations
 		w *= c;
@@ -109,7 +113,6 @@ public class Engine {
 		double distance;
 		SparseVector result = null;
 		do {
-			// Queue empty
 			if (pq.isEmpty()) {
 				return null;
 			}
@@ -139,9 +142,9 @@ public class Engine {
 
 	private static void setConstants() {
 		Constants.setAmountOfRandomVectors(5);
-		Constants.setR(2000);
-		Constants.setW(3);
-		Constants.setC(2);
+		Constants.setR(3);
+		Constants.setW(1.2);
+		Constants.setC(1.4);
 		Constants.setDimensions(3_649_941 + 2);
 		Constants.setNumberOfHashFunctions(5);
 	}
