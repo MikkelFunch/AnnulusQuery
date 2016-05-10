@@ -14,7 +14,7 @@ import main.java.mmas.serenderp.util.SparseVector;
 public class Engine {
 
 	public static void main(String[] args) {
-		setConstants();
+		init();
 
 		double c, r, w;
 		c = Constants.getC();
@@ -60,7 +60,6 @@ public class Engine {
 	}
 
 	public static Buckets buildQueryStructure(Map<String, SparseVector> movies) {
-		init();
 		Buckets buckets = new Buckets();
 
 		// For each point
