@@ -76,6 +76,7 @@ public class Engine {
 				System.out.println("No result was found");
 			} else {
 				System.out.println(String.format("The movie \"%s\" was found as serendipitous", result.get(0).getMovieTitle()));
+				System.out.println(String.format("The distance between the query point and the serendipitous movie is: %d", result.get(0).distanceTo(q)));
 //				for (int i : result.get(0).getMap().keySet()) {
 //					System.out.println(PreProcess.getFromGlobalIndex(i));
 //				}
