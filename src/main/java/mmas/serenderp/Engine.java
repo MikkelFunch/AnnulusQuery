@@ -14,7 +14,7 @@ import org.apache.commons.lang3.tuple.Pair;
 public class Engine {
 
 	public static void main(String[] args) {
-		setConstants();
+		init();
 
 		double c, r, w;
 		c = Constants.getC();
@@ -68,7 +68,6 @@ public class Engine {
 	}
 
 	public static Buckets buildQueryStructure(Map<String, SparseVector> movies) {
-		init();
 		Buckets buckets = new Buckets();
 
 		// For each point
@@ -89,17 +88,6 @@ public class Engine {
 			// startTime = System.currentTimeMillis();
 			// }
 		}
-
-		int count = 0;
-		for (Bucket bucket : buckets) {
-			bucket.sortLists();
-			if (bucket.getSize() > 40000) {
-				System.out.println("Bucket count: " + bucket.getSize());
-				count++;
-			}
-			
-		}
-		System.out.println("Big buckets: " + count);
 
 		return buckets;
 	}
