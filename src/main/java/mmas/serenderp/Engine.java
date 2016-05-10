@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Scanner;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -29,9 +30,9 @@ public class Engine {
 		System.out.println(String.format("Pre process duration: %d sec", (duration / 1000)));
 
 		// Test data
-		final String movieName = "Toy Story (1995)";
-		SparseVector q = movies.get(movieName);
-		movies.remove(movieName);
+//		final String movieName = "Toy Story (1995)";
+//		SparseVector q = movies.get(movieName);
+//		movies.remove(movieName);
 
 		// DATA STRUCTURE
 		startTime = System.currentTimeMillis();
@@ -39,27 +40,52 @@ public class Engine {
 		endTime = System.currentTimeMillis();
 		duration = (endTime - startTime);
 		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
+		
+		Scanner scanner = new Scanner(System.in);
+		String movieName;
+		SparseVector q;
+		while(true) {
+			System.out.println("What movie do you want to use as query point?");
+			movieName = scanner.nextLine();
+			
+			if("exit".equals(movieName)) {
+				break;
+			}
+			
+			q = movies.get(movieName);
+			System.out.println(q == null ? "Movie was not found" : "Movie was found");
+			if(null == q) { 
+				continue;
+			}
+			
+			System.out.println("Enter value of c");
+			c = scanner.nextDouble();
+			System.out.println("Enter value of r");
+			r = scanner.nextDouble();
+			System.out.println("Enter value of w");
+			w = scanner.nextDouble();
+			// QUERY
+			startTime = System.currentTimeMillis();
+			List<SparseVector> result = query(buckets, c, r, w, q, 1);
+			endTime = System.currentTimeMillis();
+			duration = (endTime - startTime);
 
-		// QUERY
-		startTime = System.currentTimeMillis();
-		List<SparseVector> result = query(buckets, c, r, w, q, 1);
-		endTime = System.currentTimeMillis();
-		duration = (endTime - startTime);
+			System.out.println(String.format("Query time duration: %d sec", (duration / 1000)));
 
-		System.out.println(String.format("Query time duration: %d sec", (duration / 1000)));
-
-		if (result.isEmpty()) {
-			System.out.println("No result was found");
-		} else {
-			System.out.println(String.format("The movie \"%s\" was found as serendipitous", result.get(0).getMovieTitle()));
-			for (int i : result.get(0).getMap().keySet()) {
-				System.out.println(PreProcess.getFromGlobalIndex(i));
+			if (result.isEmpty()) {
+				System.out.println("No result was found");
+			} else {
+				System.out.println(String.format("The movie \"%s\" was found as serendipitous", result.get(0).getMovieTitle()));
+				System.out.println(String.format("The distance between the query point and the serendipitous movie is: %d", result.get(0).distanceTo(q)));
+//				for (int i : result.get(0).getMap().keySet()) {
+//					System.out.println(PreProcess.getFromGlobalIndex(i));
+//				}
 			}
 		}
-		System.out.println("Done");
+		scanner.close();
 	}
 
-	public static Buckets buildQueryStructure(Map<String, SparseVector> movies) {
+	private static Buckets buildQueryStructure(Map<String, SparseVector> movies) {
 		Buckets buckets = new Buckets();
 
 		// For each point
@@ -93,7 +119,7 @@ public class Engine {
 		return buckets;
 	}
 
-	public static List<SparseVector> query(Buckets queryStructure, double c, double r, double w, SparseVector q, int n) {
+	private static List<SparseVector> query(Buckets queryStructure, double c, double r, double w, SparseVector q, int n) {
 		w *= c;
 
 		PriorityQueue<Quad> pq = new PriorityQueue<>();
@@ -101,7 +127,7 @@ public class Engine {
 		
 		for(int bandIndex = 0; bandIndex < Constants.getNumberOfBands(); bandIndex++) {
 			Bucket bucket = queryStructure.getBucket(bandIndex, MinHashing.minHash(q, bandIndex));
-			System.out.println(String.format("Bucket has %d elements", bucket.getList(0).size()));
+//			System.out.println(String.format("Bucket has %d elements", bucket.getList(0).size()));
 			for (int i = 0; i < Constants.getAmountOfRandomVectors(); i++) {
 				// NullPointerexception thrown here
 				SparseVector p = bucket.getHead(i);
