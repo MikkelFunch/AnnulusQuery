@@ -49,7 +49,15 @@ public class LinearAnnulus {
 //		Random r = new Random(42);
 		Engine.setConstants();
 		
+		
+		// PRE PROCESS
+		Long startTime = System.currentTimeMillis();
+		
 		Map<String, SparseVector> map = PreProcess.getIMDBMovies();
+		
+		Long endTime = System.currentTimeMillis();
+		Long duration = (endTime - startTime);
+		System.out.println(String.format("Pre process duration: %d sec", (duration / 1000)));
 //		for (int i = 0; i < 1_000_000; i++) {
 //			RealVector rv = new ArrayRealVector();
 //			for (int j = 0; j < 100; j++) {
@@ -59,16 +67,16 @@ public class LinearAnnulus {
 //			movies.add(m);
 //		}
 		
-		SparseVector q = map.get("Toy Story (1995)");
-		map.remove("Toy Story (1995)");
+		SparseVector q = map.get("Titanic (1997)");
+		map.remove("Titanic (1997)");
 		Collection<SparseVector> movies = map.values();
 		
-		Long startTime = System.currentTimeMillis();
+		startTime = System.currentTimeMillis();
 
-		Collection<SparseVector> result = query(movies, q, 3, 2, 1.4d, 1);
+		Collection<SparseVector> result = query(movies, q, 15d, 3d, 3d, Integer.MAX_VALUE);
 		
-		Long endTime = System.currentTimeMillis();
-		Long duration = (endTime - startTime);
+		endTime = System.currentTimeMillis();
+		duration = (endTime - startTime);
 		System.out.println(String.format("Query time duration: %d sec", (duration / 1000)));
 
 		
@@ -77,7 +85,7 @@ public class LinearAnnulus {
 			System.out.println("No result was found");
 		} else {
 			for (SparseVector sparseVector : result) {
-				System.out.println("Movie found: " + sparseVector.getMovieTitle());
+				System.out.println("Movie found: " + sparseVector.getMovieTitle() + " - With distance: " + q.distanceTo(sparseVector));
 			}
 //			System.out.println(String.format("The movie \"%s\" was found as serendipitous", result.get(0).getMovieTitle()));
 //			for (int i : result.iterator()) {
