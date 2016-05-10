@@ -73,7 +73,7 @@ public class LinearAnnulus {
 		
 		startTime = System.currentTimeMillis();
 
-		Collection<SparseVector> result = query(movies, q, 15d, 3d, 3d, 10);
+		Collection<SparseVector> result = query(movies, q, 15d, 3d, 3d, Integer.MAX_VALUE);
 		
 		endTime = System.currentTimeMillis();
 		duration = (endTime - startTime);
