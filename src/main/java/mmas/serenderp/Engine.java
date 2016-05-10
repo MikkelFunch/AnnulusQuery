@@ -178,7 +178,7 @@ public class Engine {
 		MinHashing.init();
 	}
 
-	private static void setConstants() {
+	public static void setConstants() {
 		Constants.setAmountOfRandomVectors(5);
 		Constants.setR(20);
 		Constants.setW(1.85);
