@@ -94,17 +94,12 @@ public class Engine {
 		for (Bucket bucket : buckets) {
 			bucket.sortLists();
 			if (bucket.getSize() > 40000) {
+				System.out.println("Bucket count: " + bucket.getSize());
 				count++;
 			}
-			//System.out.println("Bucket count: " + bucket.getSize());
+			
 		}
-		
-		
-		for (int i = 0; i < buckets.getAmountOfBuckets(); i++) {
-			System.out.println(i + "-bucket count: " + buckets.getBucket(i, 0));
-		}
-		
-		//System.out.println("Big buckets: " + count);
+		System.out.println("Big buckets: " + count);
 
 		return buckets;
 	}
