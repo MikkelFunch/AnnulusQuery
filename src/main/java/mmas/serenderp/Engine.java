@@ -5,11 +5,11 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.PriorityQueue;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import main.java.mmas.serenderp.util.Bucket;
 import main.java.mmas.serenderp.util.MinHashing;
 import main.java.mmas.serenderp.util.SparseVector;
-
-import org.apache.commons.lang3.tuple.Pair;
 
 public class Engine {
 
@@ -21,15 +21,6 @@ public class Engine {
 		r = Constants.getR();
 		w = Constants.getW();
 
-		// Map<Integer, SparseVector> imdMovsByMlId = Constants.getMovies();
-		// System.out.println("loaded movies");
-		// List<List<Entry<Integer,Double>>> users =
-		// MovieLensReader.loadUserRatings();
-		// System.out.println("loaded ratings");
-		// Magic.assessMagic(users, imdMovsByMlId);
-
-		// System.exit(0);
-
 		// PRE PROCESS
 		Long startTime = System.currentTimeMillis();
 		Map<String, SparseVector> movies = PreProcess.getIMDBMovies();
@@ -38,8 +29,9 @@ public class Engine {
 		System.out.println(String.format("Pre process duration: %d sec", (duration / 1000)));
 
 		// Test data
-		SparseVector q = movies.get("Toy Story (1995)");
-		movies.remove("Toy Story (1995)");
+		final String movieName = "Toy Story (1995)";
+		SparseVector q = movies.get(movieName);
+		movies.remove(movieName);
 
 		// DATA STRUCTURE
 		startTime = System.currentTimeMillis();
@@ -72,26 +64,23 @@ public class Engine {
 		Buckets buckets = new Buckets();
 
 		// For each point
-		// Long startTime = System.currentTimeMillis();
-		// int count = 0;
 		for (SparseVector sv : movies.values()) {
 			if (!sv.hasActors()) {
 				continue;
 			}
-			for (int hashFunctionIndex = 0; hashFunctionIndex < Constants.getNumberOfHashFunctions(); hashFunctionIndex++) {
-				buckets.add(MinHashing.minHash(sv, hashFunctionIndex), hashFunctionIndex, sv);
+			
+			List<List<Integer>> minHash = MinHashing.minHash(sv);
+			for(int band = 0; band < Constants.getNumberOfBands(); band++) {
+				buckets.add(band, minHash.get(band), sv);
 			}
-			// count++;
-			// if (count % 500 == 0) {
-			// Long endTime = System.currentTimeMillis();
-			// Long duration = (endTime - startTime);
-			// System.out.println(count + " - Duration: " + (duration / 1000));
-			// startTime = System.currentTimeMillis();
-			// }
 		}
 
+		int largestBucketCount = 0;
 		int count = 0;
 		for (Bucket bucket : buckets) {
+			if(largestBucketCount < bucket.getSize()) {
+				largestBucketCount = bucket.getSize();
+			}
 			bucket.sortLists();
 			if (bucket.getSize() > 40000) {
 				System.out.println("Bucket count: " + bucket.getSize());
@@ -100,6 +89,7 @@ public class Engine {
 			
 		}
 		System.out.println("Big buckets: " + count);
+		System.out.println(String.format("Largest bucket has %d elements", largestBucketCount));
 
 		return buckets;
 	}
@@ -109,8 +99,9 @@ public class Engine {
 
 		PriorityQueue<Quad> pq = new PriorityQueue<>();
 		// Fill pq
-		for (int hashIndex = 0; hashIndex < Constants.getNumberOfHashFunctions(); hashIndex++) {
-			Bucket bucket = queryStructure.getBucket(MinHashing.minHash(q, hashIndex), hashIndex);
+		
+		for(int bandIndex = 0; bandIndex < Constants.getNumberOfBands(); bandIndex++) {
+			Bucket bucket = queryStructure.getBucket(bandIndex, MinHashing.minHash(q, bandIndex));
 			System.out.println(String.format("Bucket has %d elements", bucket.getList(0).size()));
 			for (int i = 0; i < Constants.getAmountOfRandomVectors(); i++) {
 				// NullPointerexception thrown here
@@ -165,10 +156,10 @@ public class Engine {
 
 	private static void setConstants() {
 		Constants.setAmountOfRandomVectors(5);
-		Constants.setR(3);
-		Constants.setW(2);
-		Constants.setC(1.4);
-		Constants.setDimensions(3_649_941 + 2);
-		Constants.setNumberOfHashFunctions(5);
+		Constants.setR(20);
+		Constants.setW(1.85);
+		Constants.setC(1.41);
+		Constants.setDimensions(3_649_941);// + 2);
+		Constants.setNumberOfBandsAndHashFunctionsPerBand(10, 2);
 	}
 }

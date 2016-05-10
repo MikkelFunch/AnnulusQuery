@@ -1,4 +1,6 @@
 package main.java.mmas.serenderp.util;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -11,7 +13,7 @@ public class MinHashing {
 	private static int m;
 	
 	public static void init(){
-		Random r = new Random(42);
+		Random r = new Random(1337);
 		
 		int numberOfHashFunctions = Constants.getNumberOfHashFunctions();
 		a = new int[numberOfHashFunctions];
@@ -32,7 +34,27 @@ public class MinHashing {
 		return i;
 	}
 	
-	public static int minHash(SparseVector sparseVector, int hashFunctionIndex) {
+	public static List<List<Integer>> minHash(SparseVector vector) {
+		List<List<Integer>> bucketSignatures = new ArrayList<List<Integer>>();
+		
+		for(int band = 0; band < Constants.getNumberOfBands(); band++) {
+			bucketSignatures.add(minHash(vector, band));
+		}
+		return bucketSignatures;
+		
+	}
+	
+	public static List<Integer> minHash(SparseVector vector, int bandIndex) {
+		List<Integer> bandSignature = new ArrayList<Integer>();
+		
+		for(int hashFunction = 0; hashFunction < Constants.getHashFunctionsPerBand(); hashFunction++) {
+			int hashValue = minHashWithHashFunction(vector, (bandIndex * Constants.getHashFunctionsPerBand()) + hashFunction);
+			bandSignature.add(hashValue);
+		}
+		return bandSignature;
+	}
+	
+	private static int minHashWithHashFunction(SparseVector sparseVector, int hashFunctionIndex) {
 		int minIndex = Integer.MAX_VALUE;
 		for(Map.Entry<Integer, Double> value : sparseVector.getNonZeroElements()) {
 			int index = hash(hashFunctionIndex, value.getKey());
@@ -43,17 +65,7 @@ public class MinHashing {
 		return minIndex;
 	}
 	
-//	public static int minHash(SparseVector sparseVector, int hashFunctionIndex) {
-//		for(int result = 1; result<m; result++) {
-//			if(sparseVector.get(hash(hashFunctionIndex, result)) > 0) return result;
-//		}
-//		//TODO: should never get here (but does)
-//		//System.out.println("Vector had no non-zeros by a permutation:\n" + sparseVector);
-//		return 0;
-//	}
-	
 	private static int hash(int i, int x) {
-		//int dim = Constants.getDimensions();
 		int result = (((a[i] * x) + b[i]) % p) % m;
 		return result;
 	}
