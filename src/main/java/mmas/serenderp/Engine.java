@@ -76,7 +76,7 @@ public class Engine {
 				System.out.println("No result was found");
 			} else {
 				System.out.println(String.format("The movie \"%s\" was found as serendipitous", result.get(0).getMovieTitle()));
-				System.out.println(String.format("The distance between the query point and the serendipitous movie is: %d", result.get(0).distanceTo(q)));
+				System.out.println(String.format("The distance between the query point and the serendipitous movie is: %f", result.get(0).distanceTo(q)));
 //				for (int i : result.get(0).getMap().keySet()) {
 //					System.out.println(PreProcess.getFromGlobalIndex(i));
 //				}
@@ -90,7 +90,7 @@ public class Engine {
 
 		// For each point
 		for (SparseVector sv : movies.values()) {
-			if (!sv.hasActors()) {
+			if (!sv.hasActors() || sv.getNonZeroElements().length < 10) {
 				continue;
 			}
 			
@@ -121,12 +121,17 @@ public class Engine {
 
 	private static List<SparseVector> query(Buckets queryStructure, double c, double r, double w, SparseVector q, int n) {
 		w *= c;
+		boolean allAloneInThisWorld = true;
 
 		PriorityQueue<Quad> pq = new PriorityQueue<>();
 		// Fill pq
 		
 		for(int bandIndex = 0; bandIndex < Constants.getNumberOfBands(); bandIndex++) {
 			Bucket bucket = queryStructure.getBucket(bandIndex, MinHashing.minHash(q, bandIndex));
+			if(bucket.getList(0).size() > 1) {
+				System.out.println("Number of movies in the same bucket was " + bucket.getList(0).size());
+				allAloneInThisWorld = false;
+			}
 //			System.out.println(String.format("Bucket has %d elements", bucket.getList(0).size()));
 			for (int i = 0; i < Constants.getAmountOfRandomVectors(); i++) {
 				// NullPointerexception thrown here
@@ -137,6 +142,10 @@ public class Engine {
 					pq.add(new Quad(priorityValue, p, predLink, i));
 				}
 			}
+		}
+		
+		if(allAloneInThisWorld) {
+			System.out.println("This movies is all alone in this world");
 		}
 		
 		int pointsEvaluated = 0;
