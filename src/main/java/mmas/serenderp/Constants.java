@@ -9,7 +9,21 @@ public class Constants {
 	private static int dimensions;
 	private static int amountOfRandomVectors;
 	private static double r, w, c;
-	private static int numberOfHashFunctions;
+	private static int numberOfHashFunctions, hashFunctionsPerBand, numberOfBands;
+	
+	public static void setNumberOfBandsAndHashFunctionsPerBand(int numberOfBands, int hashFunctionsPerBand) {
+		Constants.numberOfBands = numberOfBands;
+		Constants.hashFunctionsPerBand = hashFunctionsPerBand;
+		numberOfHashFunctions = numberOfBands * hashFunctionsPerBand;
+	}
+
+	public static int getNumberOfBands() {
+		return numberOfBands;
+	}
+
+	public static int getHashFunctionsPerBand() {
+		return hashFunctionsPerBand;
+	}
 
 	private static Map<Integer, SparseVector> movies;
 
@@ -55,10 +69,6 @@ public class Constants {
 
 	public static int getNumberOfHashFunctions() {
 		return numberOfHashFunctions;
-	}
-
-	public static void setNumberOfHashFunctions(int i) {
-		numberOfHashFunctions = i;
 	}
 
 	public static Map<Integer, SparseVector> getMovies() {

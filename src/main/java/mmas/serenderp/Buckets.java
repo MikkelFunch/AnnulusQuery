@@ -2,40 +2,42 @@ package main.java.mmas.serenderp;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import main.java.mmas.serenderp.util.Bucket;
 import main.java.mmas.serenderp.util.SparseVector;
 
 public class Buckets implements Iterable<Bucket> {
-	private Map<Integer, Map<Integer, Bucket>> buckets;
-
-	public Bucket getBucket(int bucketIndex, int hashfunctionIndex) { 
-		if(buckets == null) {
-			buckets = new HashMap<Integer, Map<Integer, Bucket>>();
-			for(int i = 0; i < Constants.getNumberOfHashFunctions(); i++) {
-				buckets.put(i, new HashMap<Integer, Bucket>());
-			}
+	// Map from band index to band hash sequence to bucket
+	private Map<Integer, Map<List<Integer>, Bucket>> buckets = new HashMap<Integer, Map<List<Integer>, Bucket>>();
+	
+	public Bucket getBucket(int bandIndex, List<Integer> bandHashSequence) {
+		Map<List<Integer>, Bucket> hashSequenceToBucketMap = buckets.get(bandIndex);
+		
+		// If the map has not been initialized, do so and put the map into buckets
+		if(hashSequenceToBucketMap == null) {
+			hashSequenceToBucketMap = new HashMap<List<Integer>, Bucket>();
+			buckets.put(bandIndex, hashSequenceToBucketMap);
 		}
-
-		Map<Integer, Bucket> bucketsOfHashfunction = buckets.get(hashfunctionIndex);
-		Bucket bucket = bucketsOfHashfunction.get(bucketIndex);
+		
+		// If the bucket has not been initialized, do so and put the bucket into the map
+		Bucket bucket = hashSequenceToBucketMap.get(bandHashSequence);
 		if(bucket == null) {
 			bucket = new Bucket();
-			bucketsOfHashfunction.put(bucketIndex, bucket);
+			hashSequenceToBucketMap.put(bandHashSequence, bucket);
 		}
-
+		
 		return bucket;
 	}
 
-	public void add(int bucketIndex, int hashfunctionIndex, SparseVector sv) {
-		Bucket b = getBucket(bucketIndex, hashfunctionIndex);
-		b.add(sv);
+	public void add(int bandIndex, List<Integer> bandHashSequence, SparseVector vector) {
+		getBucket(bandIndex, bandHashSequence).add(vector);
 	}
 
 	public Iterator<Bucket> iterator() {
 		LinkedList<Bucket> bucketList = new LinkedList<Bucket>();
-		for(Map<Integer, Bucket> bucketsForHash : buckets.values()) {
+		for(Map<List<Integer>, Bucket> bucketsForHash : buckets.values()) {
 			bucketList.addAll(bucketsForHash.values());
 		}
 		return bucketList.iterator();
