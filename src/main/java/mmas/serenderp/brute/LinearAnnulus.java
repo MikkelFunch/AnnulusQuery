@@ -47,8 +47,6 @@ public class LinearAnnulus {
 	//poor man's unit test (more like idiot's (hey! (well what did you expect?)))
 	public static void main(String[] args) {
 //		Random r = new Random(42);
-		Engine.setConstants();
-		
 		
 		// PRE PROCESS
 		Long startTime = System.currentTimeMillis();

@@ -1,4 +1,5 @@
 package main.java.mmas.serenderp;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -6,7 +7,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Scanner;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -14,6 +14,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import main.java.mmas.serenderp.util.Bucket;
 import main.java.mmas.serenderp.util.MinHashing;
 import main.java.mmas.serenderp.util.SparseVector;
+
+import static main.java.mmas.serenderp.Constants.*;
 
 public class Engine {
 
@@ -29,9 +31,9 @@ public class Engine {
 		
 		
 		double c, r, w;
-		c = Constants.getC();
-		r = Constants.getR();
-		w = Constants.getW();
+		c = C;
+		r = R;
+		w = W;
 
 		// PRE PROCESS
 		Long startTime = System.currentTimeMillis();
@@ -123,7 +125,7 @@ public class Engine {
 			}
 			
 			List<List<Integer>> minHash = MinHashing.minHash(sv);
-			for(int band = 0; band < Constants.getNumberOfBands(); band++) {
+			for(int band = 0; band < NUMBER_OF_BANDS; band++) {
 				buckets.add(band, minHash.get(band), sv);
 			}
 		}
@@ -154,14 +156,14 @@ public class Engine {
 		PriorityQueue<Quad> pq = new PriorityQueue<>();
 		// Fill pq
 		
-		for(int bandIndex = 0; bandIndex < Constants.getNumberOfBands(); bandIndex++) {
+		for(int bandIndex = 0; bandIndex < NUMBER_OF_BANDS; bandIndex++) {
 			Bucket bucket = queryStructure.getBucket(bandIndex, MinHashing.minHash(q, bandIndex));
 			if(bucket.getList(0).size() > 1) {
 				System.out.println("Number of movies in the same bucket was " + bucket.getList(0).size());
 				allAloneInThisWorld = false;
 			}
 //			System.out.println(String.format("Bucket has %d elements", bucket.getList(0).size()));
-			for (int i = 0; i < Constants.getAmountOfRandomVectors(); i++) {
+			for (int i = 0; i < AMOUNT_OF_RANDOM_VECTORS; i++) {
 				// NullPointerexception thrown here
 				SparseVector p = bucket.getHead(i);
 				if (p != null) {
@@ -212,16 +214,6 @@ public class Engine {
 	}
 
 	private static void init() {
-		setConstants();
 		MinHashing.init();
-	}
-
-	public static void setConstants() {
-		Constants.setAmountOfRandomVectors(4);
-		Constants.setR(20);
-		Constants.setW(1.85);
-		Constants.setC(1.41);
-		Constants.setDimensions(4_080_356);// + 2);
-		Constants.setNumberOfBandsAndHashFunctionsPerBand(7, 2);
 	}
 }

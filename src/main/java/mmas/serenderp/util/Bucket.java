@@ -1,4 +1,5 @@
 package main.java.mmas.serenderp.util;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -7,15 +8,15 @@ import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import main.java.mmas.serenderp.Constants;
 import main.java.mmas.serenderp.RandomVectors;
+import static main.java.mmas.serenderp.Constants.*;
 
 public class Bucket {
 	private List<LinkedList<Pair<Double, SparseVector>>> randomVectorDistances;
 	private int size;
 
 	public Bucket() {
-		int amountOfRandomVectors = Constants.getAmountOfRandomVectors();
+		int amountOfRandomVectors = AMOUNT_OF_RANDOM_VECTORS;
 		randomVectorDistances = new ArrayList<LinkedList<Pair<Double, SparseVector>>>();
 		for (int i = 0; i < amountOfRandomVectors; i++) {
 			randomVectorDistances.add(new LinkedList<Pair<Double, SparseVector>>());
@@ -23,7 +24,7 @@ public class Bucket {
 	}
 	
 	public void add(SparseVector vector){
-		for (int randomVectorIndex = 0; randomVectorIndex < Constants.getAmountOfRandomVectors(); randomVectorIndex++) {
+		for (int randomVectorIndex = 0; randomVectorIndex < AMOUNT_OF_RANDOM_VECTORS; randomVectorIndex++) {
 			double dotProduct = SparseVector.dotProduct(vector, RandomVectors.getRandomVector(randomVectorIndex));
 			randomVectorDistances.get(randomVectorIndex).add(PairOfDotProductAndVector.of(dotProduct, vector)); //TODO: performance in sorting
 		}
