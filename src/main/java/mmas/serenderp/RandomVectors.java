@@ -21,9 +21,7 @@ public class RandomVectors {
 	private static RealVector[] randomVectors = new RealVector[Constants.getAmountOfRandomVectors()];
 	private static RandomGenerator[] rngs = createRngs();
 	
-	private RandomVectors() {
-		
-	}
+	private RandomVectors() { /* Hide constructor */ }
 	
 	public static RealVector getRandomVector(int index) {
 		if (randomVectors[index] == null) {
@@ -46,8 +44,7 @@ public class RandomVectors {
 		NormalDistribution nd = new NormalDistribution(1, 1);
 		double[] values = nd.sample(size);
 		
-		RealVector r = new ArrayRealVector(values); //TODO: ARE THESE VALUES RIGHT
-		return r;
+		return new ArrayRealVector(values); //TODO: ARE THESE VALUES RIGHT
 	}
 	
 	private static void writeToFile(RealVector vector, int index) {
