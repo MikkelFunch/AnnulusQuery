@@ -37,7 +37,7 @@ public class Engine {
 
 		// PRE PROCESS
 		Long startTime = System.currentTimeMillis();
-		Map<String, SparseVector> movies = PreProcess.getIMDBMovies();
+		Map<String, SparseVector> movies = IMDBReader.getIMDBMovies();
 		Long endTime = System.currentTimeMillis();
 		Long duration = (endTime - startTime);
 		System.out.println(String.format("Pre process duration: %d sec", (duration / 1000)));
@@ -49,7 +49,7 @@ public class Engine {
 
 		// DATA STRUCTURE
 		startTime = System.currentTimeMillis();
-		Buckets buckets = buildQueryStructure(movies);
+		Buckets buckets = PreProcess.buildQueryStructure(movies);
 		endTime = System.currentTimeMillis();
 		duration = (endTime - startTime);
 		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
@@ -113,40 +113,6 @@ public class Engine {
 			}
 		}
 		scanner.close();
-	}
-
-	private static Buckets buildQueryStructure(Map<String, SparseVector> movies) {
-		Buckets buckets = new Buckets();
-
-		// For each point
-		for (SparseVector sv : movies.values()) {
-			if (!sv.hasActors() || sv.getNonZeroElements().length < 10) {
-				continue;
-			}
-			
-			List<List<Integer>> minHash = MinHashing.minHash(sv);
-			for(int band = 0; band < NUMBER_OF_BANDS; band++) {
-				buckets.add(band, minHash.get(band), sv);
-			}
-		}
-
-		int largestBucketCount = 0;
-		int count = 0;
-		for (Bucket bucket : buckets) {
-			if(largestBucketCount < bucket.getSize()) {
-				largestBucketCount = bucket.getSize();
-			}
-			bucket.sortLists();
-			if (bucket.getSize() > 40000) {
-				System.out.println("Bucket count: " + bucket.getSize());
-				count++;
-			}
-			
-		}
-		System.out.println("Big buckets: " + count);
-		System.out.println(String.format("Largest bucket has %d elements", largestBucketCount));
-
-		return buckets;
 	}
 
 	private static List<SparseVector> query(Buckets queryStructure, double c, double r, double w, SparseVector q, int n) {

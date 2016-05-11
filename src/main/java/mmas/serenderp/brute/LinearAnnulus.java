@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import main.java.mmas.serenderp.Engine;
+import main.java.mmas.serenderp.IMDBReader;
 import main.java.mmas.serenderp.PreProcess;
 import main.java.mmas.serenderp.util.SparseVector;
 
@@ -51,7 +52,7 @@ public class LinearAnnulus {
 		// PRE PROCESS
 		Long startTime = System.currentTimeMillis();
 		
-		Map<String, SparseVector> map = PreProcess.getIMDBMovies();
+		Map<String, SparseVector> map = IMDBReader.getIMDBMovies();
 		
 		Long endTime = System.currentTimeMillis();
 		Long duration = (endTime - startTime);
