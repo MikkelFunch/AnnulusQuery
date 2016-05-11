@@ -1,5 +1,8 @@
 package main.java.mmas.serenderp;
 
+import static main.java.mmas.serenderp.Constants.AMOUNT_OF_RANDOM_VECTORS;
+import static main.java.mmas.serenderp.Constants.DIMENSIONS;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,13 +11,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
 
-import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.apache.commons.math3.random.RandomGenerator;
 
-import static main.java.mmas.serenderp.Constants.*;
+import main.java.mmas.serenderp.util.MathTool;
 
 public class RandomVectors {
 	
@@ -37,16 +39,17 @@ public class RandomVectors {
 	}
 	
 	private static RealVector createRandomVector(int size, RandomGenerator rng) {
-		NormalDistribution nd = new NormalDistribution(rng, 1, 1);
-		return new ArrayRealVector(nd.sample(size));
+		double[] values = MathTool.normalDistribution(size, rng);
+		return new ArrayRealVector(values);
 	}
 	
 	private static RealVector createRandomVector(int size) {
+		double[] values = new double[size];
+		for (int i = 0; i < size; i++){
+			values[i] = MathTool.normalDistribution();
+		}
 		
-		NormalDistribution nd = new NormalDistribution(1, 1);
-		double[] values = nd.sample(size);
-		
-		return new ArrayRealVector(values); //TODO: ARE THESE VALUES RIGHT
+		return new ArrayRealVector(values);
 	}
 	
 	private static void writeToFile(RealVector vector, int index) {
