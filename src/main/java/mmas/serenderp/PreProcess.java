@@ -114,8 +114,8 @@ public class PreProcess {
 		if (ranBefore ) {
 			return IMDBmovies;
 		}
-		indices.add("average rating");
-		indices.add("year");
+//		indices.add("average rating");
+//		indices.add("year");
 		insertGenres();
 
 		try (BufferedReader br = new BufferedReader(new FileReader(new File("data/imdb_movies.list")))) {
@@ -130,7 +130,7 @@ public class PreProcess {
 						lastMovie = movie;
 					}
 					SparseVector sv = new SparseVector(Constants.getDimensions(), movie);
-					sv.addEntry(1, Double.parseDouble(movie.substring(movie.length() - 5, movie.length() - 1)));
+//					sv.addEntry(1, Double.parseDouble(movie.substring(movie.length() - 5, movie.length() - 1)));
 					IMDBmovies.put(movie, sv);
 				}
 			}
@@ -140,7 +140,7 @@ public class PreProcess {
 			e.printStackTrace();
 		}
 
-		insertRatings();
+//		insertRatings();
 		addGenresToMovies();
 		insertActors();
 		insertActresses();

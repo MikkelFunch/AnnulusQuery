@@ -1,61 +1,99 @@
 package main.java.mmas.serenderp.brute;
 
-import java.util.Random;
-
 import java.util.Collection;
-import java.util.ArrayList;
-import java.util.stream.Stream;
+import java.util.Map;
 import java.util.stream.Collectors;
-import org.apache.commons.math3.linear.RealVector;
-import org.apache.commons.math3.linear.ArrayRealVector;
+import java.util.stream.Stream;
+
+import main.java.mmas.serenderp.Engine;
+import main.java.mmas.serenderp.PreProcess;
+import main.java.mmas.serenderp.util.SparseVector;
 
 //Brute force implementation of annulus query.
 //Uses on a tentative internal movie representation, since a global one does not exist.
 public class LinearAnnulus {
-	public static Collection<Movie> query(Collection<Movie> searchSpace, Movie q, double innerRadius, double outerRadius) {
-		return query(searchSpace.stream(), q, innerRadius, outerRadius);
+	public static Collection<SparseVector> query(Collection<SparseVector> searchSpace, SparseVector q, double r, double w, double c, int n) {
+		return query(searchSpace.stream(), q, r, w, c, n);
 	}
 
-	public static Collection<Movie> queryParallel(Collection<Movie> searchSpace, Movie q, double innerRadius, double outerRadius) {
-		return query(searchSpace.stream().parallel(), q, innerRadius, outerRadius);
+	public static Collection<SparseVector> queryParallel(Collection<SparseVector> searchSpace, SparseVector q, double r, double w, double c, int n) {
+		return query(searchSpace.stream().parallel(), q, r, w, c, n);
 	}
 
-	private static Collection<Movie> query(Stream<Movie> searchSpace, Movie q, double innerRadius, double outerRadius) {
-		return searchSpace.filter(m -> {
-			double d = m.getVector().getDistance(q.getVector());
-			return innerRadius <= d && d <= outerRadius;
-		}).collect(Collectors.toList());
+	private static Collection<SparseVector> query(Stream<SparseVector> stream, SparseVector q, double r, final double w, double c, int n) {
+		
+		return stream.filter(m -> {
+			double d = m.distanceTo(q);
+			double wc = w * c;
+			return (r / wc < d && d < r * wc);
+		}).limit(n).collect(Collectors.toList());
 	}
 
 
-	private static class Movie {
-		private String name;
-		private RealVector v;
-
-		public Movie(String n, RealVector v){
-			this.name=n;
-			this.v=v;
-		}
-
-		public RealVector getVector() {
-			return v;
-		}
-	}
+//	private static class Movie {
+//		private String name;
+//		private RealVector v;
+//
+//		public Movie(String n, RealVector v){
+//			this.name=n;
+//			this.v=v;
+//		}
+//
+//		public RealVector getVector() {
+//			return v;
+//		}
+//	}
 
 	//poor man's unit test (more like idiot's (hey! (well what did you expect?)))
 	public static void main(String[] args) {
-		Random r = new Random(42);
-		ArrayList<Movie> movies = new ArrayList<Movie>();
-		for (int i = 0; i < 1_000_000; i++) {
-			RealVector rv = new ArrayRealVector();
-			for (int j = 0; j < 100; j++) {
-				rv = rv.append(r.nextDouble());
-			}
-			Movie m = new Movie(new Integer(r.nextInt()).toString(), rv);
-			movies.add(m);
-		}
+//		Random r = new Random(42);
+		Engine.setConstants();
+		
+		
+		// PRE PROCESS
+		Long startTime = System.currentTimeMillis();
+		
+		Map<String, SparseVector> map = PreProcess.getIMDBMovies();
+		
+		Long endTime = System.currentTimeMillis();
+		Long duration = (endTime - startTime);
+		System.out.println(String.format("Pre process duration: %d sec", (duration / 1000)));
+//		for (int i = 0; i < 1_000_000; i++) {
+//			RealVector rv = new ArrayRealVector();
+//			for (int j = 0; j < 100; j++) {
+//				rv = rv.append(r.nextDouble());
+//			}
+//			Movie m = new Movie(new Integer(r.nextInt()).toString(), rv);
+//			movies.add(m);
+//		}
+		
+		SparseVector q = map.get("Titanic (1997)");
+		map.remove("Titanic (1997)");
+		Collection<SparseVector> movies = map.values();
+		
+		startTime = System.currentTimeMillis();
 
-		Collection<Movie> results = query(movies, movies.get(r.nextInt(movies.size())), Math.sqrt(11), Math.sqrt(12));
-		System.out.println(results.size());
+		Collection<SparseVector> result = query(movies, q, 15d, 3d, 3d, Integer.MAX_VALUE);
+		
+		endTime = System.currentTimeMillis();
+		duration = (endTime - startTime);
+		System.out.println(String.format("Query time duration: %d sec", (duration / 1000)));
+
+		
+		
+		if (result.isEmpty()) {
+			System.out.println("No result was found");
+		} else {
+			for (SparseVector sparseVector : result) {
+				System.out.println("Movie found: " + sparseVector.getMovieTitle() + " - With distance: " + q.distanceTo(sparseVector));
+			}
+//			System.out.println(String.format("The movie \"%s\" was found as serendipitous", result.get(0).getMovieTitle()));
+//			for (int i : result.iterator()) {
+//				System.out.println(PreProcess.getFromGlobalIndex(i));
+//			}
+		}
+		System.out.println("Done");
+		//Collection<SparseVector> results = query(movies, movies.get(r.nextInt(movies.size())), Math.sqrt(11), Math.sqrt(12));
+		//System.out.println(results.size());
 	}
 }
