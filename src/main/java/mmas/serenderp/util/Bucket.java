@@ -3,11 +3,13 @@ package main.java.mmas.serenderp.util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.ConcurrentModificationException;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import main.java.mmas.serenderp.IMDBReader;
 import main.java.mmas.serenderp.RandomVectors;
 import static main.java.mmas.serenderp.Constants.*;
 
@@ -66,6 +68,10 @@ public class Bucket {
 	public LinkedList<Pair<Double, SparseVector>> getList(int i) {
 		return randomVectorDistances.get(i);
 	}
+	
+	public int getSize(){
+		return size;
+	}
 
 	/**
 	 * Class used for sorting on the dot product
@@ -80,6 +86,9 @@ public class Bucket {
 		private PairOfDotProductAndVector(Double dotProduct, SparseVector vector) {
 			this.dotProduct = dotProduct;
 			this.vector = vector;
+		}
+
+		public PairOfDotProductAndVector() {
 		}
 
 		@Override
@@ -105,9 +114,27 @@ public class Bucket {
 		public int compareTo(Pair<Double, SparseVector> other) {
 			return this.getLeft().compareTo(other.getLeft());
 		}
-	}
-	
-	public int getSize(){
-		return size;
+		
+		private void setVector(SparseVector v) {
+			vector = v;
+		}
+
+		private void setDotProduct(double d) {
+			dotProduct = d;
+		}
+		
+		private void writeObject(java.io.ObjectOutputStream s) throws java.io.IOException{
+			s.writeDouble(dotProduct);
+			s.writeInt(IMDBReader.getIndex(vector));
+		}
+		
+	    private void readObject(java.io.ObjectInputStream s) throws java.io.IOException, ClassNotFoundException {
+	    	double d = s.readDouble();
+	    	int i = s.readInt();
+	    	
+	    	PairOfDotProductAndVector p = new PairOfDotProductAndVector();
+	    	p.setDotProduct(d);
+	    	p.setVector(IMDBReader.getSparseVector(i));
+        }
 	}
 }

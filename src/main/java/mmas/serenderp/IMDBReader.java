@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.management.RuntimeErrorException;
+
 import main.java.mmas.serenderp.util.SparseVector;
 
 public class IMDBReader {
@@ -23,6 +25,9 @@ public class IMDBReader {
 	private static Pattern pattern = Pattern.compile(moviePattern);
 	private static String lastMovie = "";
 	private static boolean ranBefore = false;
+	
+	private static Map<Integer, SparseVector> indexToVectorMap;
+	private static Map<SparseVector, Integer> vectorToIndexMap;
 
 	private static void insertActorsActresses(String path) {
 		try (BufferedReader br = new BufferedReader(new FileReader(new File(path)))) {
@@ -206,4 +211,51 @@ public class IMDBReader {
 	public static int getGlobalIndicesSize() {
 		return indices.size();
 	}
+	
+	public static int getIndex(SparseVector sv){
+		if (vectorToIndexMap == null) {
+			initIndexToVectorMaps();
+		}
+		Integer i = vectorToIndexMap.get(sv);
+		if (i == null) {
+			throw new RuntimeException("Map didn't contain vector. Should not happen");
+		}
+		return i;
+	}
+	
+	public static SparseVector getSparseVector(int i){
+		if (indexToVectorMap == null) {
+			initIndexToVectorMaps();
+		}
+		SparseVector sv = indexToVectorMap.get(i);
+		if (sv == null) {
+			throw new RuntimeException("Map didn't contain id. Should not happen");
+		}
+		return sv;
+	}
+
+	private static void initIndexToVectorMaps() {
+		if (ranBefore) {
+			vectorToIndexMap = new  HashMap<SparseVector, Integer>();
+			indexToVectorMap = new HashMap<Integer, SparseVector>();
+			int id = 0;
+			for (String s : indices) {
+				SparseVector sv = IMDBmovies.get(s);
+				vectorToIndexMap.put(sv, id);
+				indexToVectorMap.put(id, sv);
+			}
+		}
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
