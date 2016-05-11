@@ -1,30 +1,29 @@
 package main.java.mmas.serenderp;
-import main.java.mmas.serenderp.brute.LinearAnnulus;
-
-import static main.java.mmas.serenderp.Constants.*;
-import main.java.mmas.serenderp.util.SparseVector;
+import static main.java.mmas.serenderp.Constants.DIMENSIONS;
 import static main.java.mmas.serenderp.util.SparseVector.add;
 import static main.java.mmas.serenderp.util.SparseVector.distance;
 import static main.java.mmas.serenderp.util.SparseVector.divide;
 import static main.java.mmas.serenderp.util.SparseVector.multiply;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
-import java.util.Collection;
 import java.util.Set;
+
+import main.java.mmas.serenderp.brute.LinearAnnulus;
+import main.java.mmas.serenderp.util.SparseVector;
 
 public class Magic {
 	public static int numberOfRatedMoviesForEligibility = 50;
 	
 	public static SparseVector getUserQueryPoint(List<Entry<Integer,Double>> userRatings, Map<Integer,SparseVector> movies, int numberOfMoviesToCalculateFrom) {
-		SparseVector userAverageMovie = new SparseVector(Constants.getDimensions());
+		SparseVector userAverageMovie = new SparseVector(Constants.DIMENSIONS);
 		//Calculate the user's movie-center, weighed by rating
 		List<Entry<Integer,Double>> topRatings = getTopMovies(userRatings, numberOfMoviesToCalculateFrom);
 		double averageRating = calculateAverageRating(topRatings);

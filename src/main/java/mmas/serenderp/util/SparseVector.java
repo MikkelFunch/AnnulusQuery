@@ -8,6 +8,8 @@ import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.DoubleUnaryOperator;
 
+import main.java.mmas.serenderp.Constants;
+
 import org.apache.commons.math3.linear.RealVector;
 
 public class SparseVector {
@@ -16,6 +18,7 @@ public class SparseVector {
 
 	@SuppressWarnings("unchecked")
 	private static final Map.Entry<Integer,Double>[] typePar = new Map.Entry[0];
+	private static final SparseVector origo = new SparseVector(Constants.DIMENSIONS);
 	private String movieTitle;
 	private int nextAvailable=0;
 	private Map<Integer,Double> vector;
@@ -129,6 +132,10 @@ public class SparseVector {
 	
 	public double distanceTo(SparseVector that) {
 		return SparseVector.distance(this, that);
+	}
+	
+	public double length() {
+		return distanceTo(origo);
 	}
 
 	public static <A> A foldIgnoreDefault (SparseVector v, BiFunction<Double,A,A> f, A def) {

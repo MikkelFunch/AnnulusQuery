@@ -16,12 +16,11 @@ import org.junit.Test;
 public class MagicTest {
 	@Test
 	public void testUserQueryPoint() {
-		Constants.setDimensions(4);
 		Map<Integer, SparseVector> movies = getExampleMovies();
 		List<Entry<Integer, Double>> userRatings = getUserRatings();
 		
-		Magic.getUserQueryPoint(userRatings, movies, 2);
-		
+		SparseVector userQueryPoint = Magic.getUserQueryPoint(userRatings, movies, 2);
+
 	}
 	
 	private List<Entry<Integer, Double>> getUserRatings() {
