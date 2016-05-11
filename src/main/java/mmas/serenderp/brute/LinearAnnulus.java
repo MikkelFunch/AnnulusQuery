@@ -5,8 +5,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import main.java.mmas.serenderp.Engine;
-import main.java.mmas.serenderp.PreProcess;
+import main.java.mmas.serenderp.IMDBReader;
 import main.java.mmas.serenderp.util.SparseVector;
 
 //Brute force implementation of annulus query.
@@ -47,13 +46,11 @@ public class LinearAnnulus {
 	//poor man's unit test (more like idiot's (hey! (well what did you expect?)))
 	public static void main(String[] args) {
 //		Random r = new Random(42);
-		Engine.setConstants();
-		
 		
 		// PRE PROCESS
 		Long startTime = System.currentTimeMillis();
 		
-		Map<String, SparseVector> map = PreProcess.getIMDBMovies();
+		Map<String, SparseVector> map = IMDBReader.getIMDBMovies();
 		
 		Long endTime = System.currentTimeMillis();
 		Long duration = (endTime - startTime);
