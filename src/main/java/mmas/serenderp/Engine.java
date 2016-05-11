@@ -40,7 +40,9 @@ public class Engine {
 		endTime = System.currentTimeMillis();
 		duration = (endTime - startTime);
 		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
-		
+	}
+
+	private static void consoleUi(Buckets buckets, Map<String, SparseVector> movies) {
 		Scanner scanner = new Scanner(System.in);
 		String movieName;
 		SparseVector q;
@@ -59,16 +61,16 @@ public class Engine {
 			}
 			
 			System.out.println("Enter value of c");
-			c = scanner.nextDouble();
+			double c = scanner.nextDouble();
 			System.out.println("Enter value of r");
-			r = scanner.nextDouble();
+			double r = scanner.nextDouble();
 			System.out.println("Enter value of w");
-			w = scanner.nextDouble();
+			double w = scanner.nextDouble();
 			// QUERY
-			startTime = System.currentTimeMillis();
+			long startTime = System.currentTimeMillis();
 			List<SparseVector> result = query(buckets, c, r, w, q, 1);
-			endTime = System.currentTimeMillis();
-			duration = (endTime - startTime);
+			long endTime = System.currentTimeMillis();
+			long duration = (endTime - startTime);
 
 			System.out.println(String.format("Query time duration: %d sec", (duration / 1000)));
 
@@ -189,11 +191,11 @@ public class Engine {
 	}
 
 	public static void setConstants() {
-		Constants.setAmountOfRandomVectors(5);
+		Constants.setAmountOfRandomVectors(4);
 		Constants.setR(20);
 		Constants.setW(1.85);
 		Constants.setC(1.41);
 		Constants.setDimensions(3_649_941);// + 2);
-		Constants.setNumberOfBandsAndHashFunctionsPerBand(10, 2);
+		Constants.setNumberOfBandsAndHashFunctionsPerBand(7, 2);
 	}
 }
