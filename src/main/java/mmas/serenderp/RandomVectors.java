@@ -19,7 +19,7 @@ public class RandomVectors {
 	private static final String FILE_NAME = "RandomVector";
 	
 	private static RealVector[] randomVectors = new RealVector[Constants.getAmountOfRandomVectors()];
-	private static RandomGenerator[] rngs = createRngs();
+	private static int[] seeds = createSeeds();
 	
 	private RandomVectors() { /* Hide constructor */ }
 	
@@ -31,7 +31,7 @@ public class RandomVectors {
 	}
 	
 	public static RealVector getGeneratedRandomVector(int index) {
-		return createRandomVector(Constants.getDimensions(), rngs[index]);
+		return createRandomVector(Constants.getDimensions(), new JDKRandomGenerator(seeds[index]));
 	}
 	
 	private static RealVector createRandomVector(int size, RandomGenerator rng) {
@@ -120,12 +120,12 @@ public class RandomVectors {
 		
 	}
 	
-	private static RandomGenerator[] createRngs () {
-			RandomGenerator[] rngs = new RandomGenerator[Constants.getAmountOfRandomVectors()];
-			Random rng = new Random();
-			for(int i = 0; i < Constants.getAmountOfRandomVectors(); i++) {
-				rngs[i] = new JDKRandomGenerator(rng.nextInt());
-			}
-			return rngs;
+	private static int[] createSeeds() {
+		int[] seeds = new int[Constants.getAmountOfRandomVectors()];
+		Random rng = new Random();
+		for(int i = 0; i < Constants.getAmountOfRandomVectors(); i++) {
+			seeds[i] = rng.nextInt();
+		}
+		return seeds;
 	}
 }
