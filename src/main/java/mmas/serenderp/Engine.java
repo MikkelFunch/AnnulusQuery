@@ -6,6 +6,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Scanner;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -18,7 +19,15 @@ public class Engine {
 
 	public static void main(String[] args) {
 		init();
-
+		
+		Map<Integer, SparseVector> movies = Constants.getMovies();
+		List<List<Entry<Integer,Double>>> users = MovieLensReader.loadUserRatings();
+		
+		Magic.assessMagic(users, movies);
+		
+		
+		
+		/*
 		double c, r, w;
 		c = Constants.getC();
 		r = Constants.getR();
@@ -42,6 +51,7 @@ public class Engine {
 		endTime = System.currentTimeMillis();
 		duration = (endTime - startTime);
 		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
+		*/
 	}
 
 	private static void consoleUi(Buckets buckets, Map<String, SparseVector> movies) {

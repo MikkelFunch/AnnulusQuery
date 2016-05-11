@@ -15,7 +15,7 @@ public class Magic {
 		int vectorSize = Constants.getDimensions();
 		for(List<Entry<Integer,Double>> user : users) {
 			SparseVector userAverageMovie = new SparseVector(vectorSize);
-			//Calculate the users movie-center, weighed by rating
+			//Calculate the user's movie-center, weighed by rating
 			for(int i=0; i<user.size(); i++) {
 				Entry<Integer,Double> rating = user.get(i);
 				SparseVector m = movies.get(rating.getKey());
