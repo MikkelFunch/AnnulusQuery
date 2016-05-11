@@ -28,7 +28,7 @@ public class IMDBReader {
 		try (BufferedReader br = new BufferedReader(new FileReader(new File(path)))) {
 			String line;
 			boolean added = true;
-			int id = indices.size(); //TODO: Why?
+			int id = indices.size();
 			
 			while ((line = br.readLine()) != null) {
 				if (line.isEmpty()) { // No movie or actor
