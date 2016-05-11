@@ -94,26 +94,4 @@ s	/***
 		}
 		return sumOfRatings/(double)userRatings.size();
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }
