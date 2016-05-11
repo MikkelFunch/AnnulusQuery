@@ -6,70 +6,13 @@ import java.util.Map;
 import main.java.mmas.serenderp.util.SparseVector;
 
 public class Constants {
-	private static int dimensions;
-	private static int amountOfRandomVectors;
-	private static double r, w, c;
-	private static int numberOfHashFunctions, hashFunctionsPerBand, numberOfBands;
-	
-	public static void setNumberOfBandsAndHashFunctionsPerBand(int numberOfBands, int hashFunctionsPerBand) {
-		Constants.numberOfBands = numberOfBands;
-		Constants.hashFunctionsPerBand = hashFunctionsPerBand;
-		numberOfHashFunctions = numberOfBands * hashFunctionsPerBand;
-	}
-
-	public static int getNumberOfBands() {
-		return numberOfBands;
-	}
-
-	public static int getHashFunctionsPerBand() {
-		return hashFunctionsPerBand;
-	}
-
+	public static final int DIMENSIONS = 3_649_941;
+	public static final int AMOUNT_OF_RANDOM_VECTORS = 4;
+	public static final double R = 20, W = 1.85, C = 1.41;
+	public static final int NUMBER_OF_BANDS = 2;
+	public static final int HASH_FUNCTIONS_PER_BAND = 7;
+	public static final int NUMBER_OF_HASH_FUNCTIONS = NUMBER_OF_BANDS * HASH_FUNCTIONS_PER_BAND;
 	private static Map<Integer, SparseVector> movies;
-
-	public static int getDimensions() {
-		return dimensions;
-	}
-
-	public static void setDimensions(int dimensions) {
-		Constants.dimensions = dimensions;
-	}
-
-	public static int getAmountOfRandomVectors() {
-		return amountOfRandomVectors;
-	}
-
-	public static void setAmountOfRandomVectors(int amountOfRandomVectors) {
-		Constants.amountOfRandomVectors = amountOfRandomVectors;
-	}
-
-	public static double getR() {
-		return r;
-	}
-
-	public static void setR(double r) {
-		Constants.r = r;
-	}
-
-	public static double getW() {
-		return w;
-	}
-
-	public static void setW(double w) {
-		Constants.w = w;
-	}
-	
-	public static double getC(){
-		return c;
-	}
-	
-	public static void setC(double c) {
-		Constants.c = c;
-	}
-
-	public static int getNumberOfHashFunctions() {
-		return numberOfHashFunctions;
-	}
 
 	public static Map<Integer, SparseVector> getMovies() {
 		if (movies == null) {

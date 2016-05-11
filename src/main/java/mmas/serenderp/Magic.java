@@ -1,4 +1,5 @@
 package main.java.mmas.serenderp;
+
 import static main.java.mmas.serenderp.util.SparseVector.add;
 import static main.java.mmas.serenderp.util.SparseVector.distance;
 import static main.java.mmas.serenderp.util.SparseVector.divide;
@@ -11,12 +12,13 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import main.java.mmas.serenderp.util.SparseVector;
+import static main.java.mmas.serenderp.Constants.*;
 
 public class Magic {
 	public static int numberOfRatedMoviesForEligibility = 50;
 	
 	public static void assessMagic(List<List<Entry<Integer,Double>>> users, Map<Integer,SparseVector> movies) {
-		int vectorSize = Constants.getDimensions();
+		int vectorSize = DIMENSIONS;
 		for(List<Entry<Integer,Double>> user : users) {
 			SparseVector userAverageMovie = new SparseVector(vectorSize);
 			//Calculate the user's movie-center, weighed by rating
@@ -47,7 +49,7 @@ public class Magic {
 		}
 	}
 	
-s	/***
+	/***
 	 * Returns less than zero if the user did not rate any of the recommendations
 	 */
 	public static double calculateSerendipityForUser(Map<Integer,Double> userRatings, List<Integer> recommendations) {

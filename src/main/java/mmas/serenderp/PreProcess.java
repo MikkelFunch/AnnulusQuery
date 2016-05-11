@@ -1,4 +1,5 @@
 package main.java.mmas.serenderp;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,6 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import main.java.mmas.serenderp.util.SparseVector;
+import static main.java.mmas.serenderp.Constants.*;
 
 public class PreProcess {
 	private static HashMap<String, SparseVector> IMDBmovies = new HashMap<>();
@@ -129,7 +131,7 @@ public class PreProcess {
 					if (movie != lastMovie) {
 						lastMovie = movie;
 					}
-					SparseVector sv = new SparseVector(Constants.getDimensions(), movie);
+					SparseVector sv = new SparseVector(DIMENSIONS, movie);
 //					sv.addEntry(1, Double.parseDouble(movie.substring(movie.length() - 5, movie.length() - 1)));
 					IMDBmovies.put(movie, sv);
 				}

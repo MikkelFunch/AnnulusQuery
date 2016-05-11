@@ -14,24 +14,26 @@ import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.apache.commons.math3.random.RandomGenerator;
 
+import static main.java.mmas.serenderp.Constants.*;
+
 public class RandomVectors {
 	
 	private static final String FILE_NAME = "RandomVector";
 	
-	private static RealVector[] randomVectors = new RealVector[Constants.getAmountOfRandomVectors()];
+	private static RealVector[] randomVectors = new RealVector[AMOUNT_OF_RANDOM_VECTORS];
 	private static int[] seeds = createSeeds();
 	
 	private RandomVectors() { /* Hide constructor */ }
 	
 	public static RealVector getRandomVector(int index) {
 		if (randomVectors[index] == null) {
-			randomVectors[index] = createRandomVector(Constants.getDimensions());
+			randomVectors[index] = createRandomVector(DIMENSIONS);
 		}
 		return randomVectors[index];
 	}
 	
 	public static RealVector getGeneratedRandomVector(int index) {
-		return createRandomVector(Constants.getDimensions(), new JDKRandomGenerator(seeds[index]));
+		return createRandomVector(DIMENSIONS, new JDKRandomGenerator(seeds[index]));
 	}
 	
 	private static RealVector createRandomVector(int size, RandomGenerator rng) {
@@ -121,9 +123,9 @@ public class RandomVectors {
 	}
 	
 	private static int[] createSeeds() {
-		int[] seeds = new int[Constants.getAmountOfRandomVectors()];
+		int[] seeds = new int[AMOUNT_OF_RANDOM_VECTORS];
 		Random rng = new Random();
-		for(int i = 0; i < Constants.getAmountOfRandomVectors(); i++) {
+		for(int i = 0; i < AMOUNT_OF_RANDOM_VECTORS; i++) {
 			seeds[i] = rng.nextInt();
 		}
 		return seeds;
