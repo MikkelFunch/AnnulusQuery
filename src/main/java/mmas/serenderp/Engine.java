@@ -6,6 +6,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Scanner;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -18,7 +19,15 @@ public class Engine {
 
 	public static void main(String[] args) {
 		init();
-
+		/*
+		Map<Integer, SparseVector> movies = Constants.getMovies();
+		List<List<Entry<Integer,Double>>> users = MovieLensReader.loadUserRatings();
+		
+		Magic.assessMagic(users, movies);
+		*/
+		
+		
+		
 		double c, r, w;
 		c = Constants.getC();
 		r = Constants.getR();
@@ -43,10 +52,14 @@ public class Engine {
 		duration = (endTime - startTime);
 		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
 		
+	}
+
+	private static void consoleUi(Buckets buckets, Map<String, SparseVector> movies) {
 		Scanner scanner = new Scanner(System.in);
 		String movieName = null;
 		SparseVector q;
 		while(true) {
+			Double r = null,w = null,c = null;
 			System.out.println("What movie do you want to use as query point?");
 			String newMovieName = scanner.nextLine();
 			if(!StringUtils.isEmpty(newMovieName)) {
@@ -79,10 +92,10 @@ public class Engine {
 				w = Double.parseDouble(newW);
 			}
 			// QUERY
-			startTime = System.currentTimeMillis();
+			long startTime = System.currentTimeMillis();
 			List<SparseVector> result = query(buckets, c, r, w, q, Integer.MAX_VALUE);
-			endTime = System.currentTimeMillis();
-			duration = (endTime - startTime);
+			long endTime = System.currentTimeMillis();
+			long duration = (endTime - startTime);
 
 			System.out.println(String.format("Query time duration: %d sec", (duration / 1000)));
 
@@ -204,11 +217,11 @@ public class Engine {
 	}
 
 	public static void setConstants() {
-		Constants.setAmountOfRandomVectors(5);
+		Constants.setAmountOfRandomVectors(4);
 		Constants.setR(20);
 		Constants.setW(1.85);
 		Constants.setC(1.41);
 		Constants.setDimensions(3_649_941);// + 2);
-		Constants.setNumberOfBandsAndHashFunctionsPerBand(10, 2);
+		Constants.setNumberOfBandsAndHashFunctionsPerBand(7, 2);
 	}
 }
