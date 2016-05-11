@@ -78,7 +78,7 @@ public class MovieLensReader {
 	public static Map<Integer, String> loadMovies() {
 		if (moviesCache == null) {
 			
-			Map<String, SparseVector> imdbMovies = PreProcess.getIMDBMovies();
+			Map<String, SparseVector> imdbMovies = IMDBReader.getIMDBMovies();
 			
 			File csvData = new File(MOVIE_FILE);
 
