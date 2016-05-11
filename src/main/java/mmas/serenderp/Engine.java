@@ -42,6 +42,8 @@ public class Engine {
 		endTime = System.currentTimeMillis();
 		duration = (endTime - startTime);
 		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
+
+		Magic.testSuccessProbability(buckets, movies);
 	}
 
 	private static void consoleUi(Buckets buckets, Map<String, SparseVector> movies) {
@@ -137,7 +139,7 @@ public class Engine {
 		return buckets;
 	}
 
-	private static List<SparseVector> query(Buckets queryStructure, double c, double r, double w, SparseVector q, int n) {
+	public static List<SparseVector> query(Buckets queryStructure, double c, double r, double w, SparseVector q, int n) {
 		w *= c;
 		boolean allAloneInThisWorld = true;
 
@@ -160,10 +162,6 @@ public class Engine {
 					pq.add(new Quad(priorityValue, p, predLink, i));
 				}
 			}
-		}
-		
-		if(allAloneInThisWorld) {
-			System.out.println(String.format("%s is all alone in this world", q.getMovieTitle()));
 		}
 		
 		int pointsEvaluated = 0;
