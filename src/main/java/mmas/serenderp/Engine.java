@@ -221,7 +221,7 @@ public class Engine {
 		Constants.setR(20);
 		Constants.setW(1.85);
 		Constants.setC(1.41);
-		Constants.setDimensions(3_649_941);// + 2);
+		Constants.setDimensions(4_080_356);// + 2);
 		Constants.setNumberOfBandsAndHashFunctionsPerBand(7, 2);
 	}
 }
