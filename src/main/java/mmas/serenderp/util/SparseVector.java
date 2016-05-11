@@ -137,6 +137,10 @@ public class SparseVector {
 	public double length() {
 		return distanceTo(origo);
 	}
+	
+	public SparseVector scaleToUnitVector() {
+		return divide(this, length());
+	}
 
 	public static <A> A foldIgnoreDefault (SparseVector v, BiFunction<Double,A,A> f, A def) {
 		Map.Entry<Integer,Double>[] vector = v.getNonZeroElements();
