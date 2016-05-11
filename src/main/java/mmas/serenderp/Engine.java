@@ -1,11 +1,13 @@
 package main.java.mmas.serenderp;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Scanner;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import main.java.mmas.serenderp.util.Bucket;
@@ -44,11 +46,15 @@ public class Engine {
 
 	private static void consoleUi(Buckets buckets, Map<String, SparseVector> movies) {
 		Scanner scanner = new Scanner(System.in);
-		String movieName;
+		String movieName = null;
 		SparseVector q;
 		while(true) {
+			Double r = null,w = null,c = null;
 			System.out.println("What movie do you want to use as query point?");
-			movieName = scanner.nextLine();
+			String newMovieName = scanner.nextLine();
+			if(!StringUtils.isEmpty(newMovieName)) {
+				movieName = newMovieName;
+			}
 			
 			if("exit".equals(movieName)) {
 				break;
@@ -61,14 +67,23 @@ public class Engine {
 			}
 			
 			System.out.println("Enter value of c");
-			double c = scanner.nextDouble();
+			String newC = scanner.nextLine();
+			if(!StringUtils.isEmpty(newC)) {
+				c = Double.parseDouble(newC);
+			}
 			System.out.println("Enter value of r");
-			double r = scanner.nextDouble();
+			String newR = scanner.nextLine();
+			if(!StringUtils.isEmpty(newR)) {
+				r = Double.parseDouble(newR);
+			}
 			System.out.println("Enter value of w");
-			double w = scanner.nextDouble();
+			String newW = scanner.nextLine();
+			if(!StringUtils.isEmpty(newW)) {
+				w = Double.parseDouble(newW);
+			}
 			// QUERY
 			long startTime = System.currentTimeMillis();
-			List<SparseVector> result = query(buckets, c, r, w, q, 1);
+			List<SparseVector> result = query(buckets, c, r, w, q, Integer.MAX_VALUE);
 			long endTime = System.currentTimeMillis();
 			long duration = (endTime - startTime);
 
@@ -77,8 +92,9 @@ public class Engine {
 			if (result.isEmpty()) {
 				System.out.println("No result was found");
 			} else {
-				System.out.println(String.format("The movie \"%s\" was found as serendipitous", result.get(0).getMovieTitle()));
-				System.out.println(String.format("The distance between the query point and the serendipitous movie is: %f", result.get(0).distanceTo(q)));
+				for(SparseVector movie : new HashSet<SparseVector>(result)) {
+					System.out.println(String.format("The movie \"%s\" was found as serendipitous. The distance between the two movies are %f", movie.getMovieTitle(), movie.distanceTo(q)));
+				}
 //				for (int i : result.get(0).getMap().keySet()) {
 //					System.out.println(PreProcess.getFromGlobalIndex(i));
 //				}
@@ -147,14 +163,14 @@ public class Engine {
 		}
 		
 		if(allAloneInThisWorld) {
-			System.out.println("This movies is all alone in this world");
+			System.out.println(String.format("%s is all alone in this world", q.getMovieTitle()));
 		}
 		
 		int pointsEvaluated = 0;
 		
 		double distance;
 		SparseVector tempResult = null;
-		List<SparseVector> resultList = new ArrayList<>(n);
+		List<SparseVector> resultList = new ArrayList<>();
 		for (int i = 0; i < n; i++) {
 			do {
 				if (pq.isEmpty()) {
