@@ -4,7 +4,10 @@ import static main.java.mmas.serenderp.util.SparseVector.distance;
 import static main.java.mmas.serenderp.util.SparseVector.divide;
 import static main.java.mmas.serenderp.util.SparseVector.multiply;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -14,6 +17,36 @@ import main.java.mmas.serenderp.util.SparseVector;
 
 public class Magic {
 	public static int numberOfRatedMoviesForEligibility = 50;
+	
+	public static SparseVector getUserQueryPoint(List<Entry<Integer,Double>> userRatings, Map<Integer,SparseVector> movies, int numberOfMoviesToCalculateFrom) {
+		SparseVector userAverageMovie = new SparseVector(Constants.getDimensions());
+		//Calculate the user's movie-center, weighed by rating
+		List<Entry<Integer,Double>> topRatings = getTopMovies(userRatings, numberOfMoviesToCalculateFrom);
+		double averageRating = calculateAverageRating(topRatings);
+		for(Entry<Integer, Double> rating : topRatings) {
+			SparseVector m = movies.get(rating.getKey());
+			userAverageMovie = add(userAverageMovie, m);
+		}
+		return divide(userAverageMovie, topRatings.size());
+	}
+	
+	private static List<Entry<Integer,Double>> getTopMovies(List<Entry<Integer,Double>> usersRatings, int numberOfMoviesInTop) {
+		List<Entry<Integer, Double>> topMovies = new ArrayList<Entry<Integer, Double>>();
+		usersRatings.sort(new Comparator<Entry<Integer, Double>>() {
+			@Override
+			public int compare(Entry<Integer, Double> o1,
+					Entry<Integer, Double> o2) {
+				if(o1.getValue() == o2.getValue()) return 0;
+				if(o1.getValue() > o2.getValue()) return -1;
+				return 1;
+			} 
+		});
+		
+		for(int i = 0; i < numberOfMoviesInTop; i++) {
+			topMovies.add(usersRatings.get(i));
+		}
+		return topMovies;
+	}
 	
 	public static void assessMagic(List<List<Entry<Integer,Double>>> users, Map<Integer,SparseVector> movies) {
 		int vectorSize = Constants.getDimensions();
@@ -85,6 +118,10 @@ s	/***
 	
 	public boolean isUserEligible(List<Entry<Integer,Double>> userRatings) {
 		return userRatings.size() > numberOfRatedMoviesForEligibility;
+	}
+	
+	private static double calculateAverageRating(List<Entry<Integer,Double>> userRatings) {
+		return calculateAverageRating(new HashSet<Entry<Integer, Double>>(userRatings));
 	}
 	
 	private static double calculateAverageRating(Set<Entry<Integer,Double>> userRatings) {
