@@ -129,7 +129,7 @@ public class IMDBReader {
 						lastMovie = movie;
 					}
 					SparseVector sv = new SparseVector(DIMENSIONS, movie);
-//					sv.addEntry(1, Double.parseDouble(movie.substring(movie.length() - 5, movie.length() - 1)));//Insert year
+//					sv.addEntry(1, Double.parseDouble(movie.substring(movie.length() - 5, movie.length() - 1)));//Insert year //TODO: normalize year
 					IMDBmovies.put(movie, sv);
 				}
 			}
@@ -152,43 +152,6 @@ public class IMDBReader {
 
 	private static void insertDirectors() {
 		insertActorsActresses("data/directors.list");
-		/*
-		try (BufferedReader br = new BufferedReader(new FileReader(new File("data/directors.list")))) {
-			String line;
-			boolean added = true;
-			int id = indices.size();
-			
-			while ((line = br.readLine()) != null) {
-				if (line.isEmpty()) { // No movie or director
-					continue;
-				} else if (!line.startsWith("\t")) { // director with movie
-
-					// check if previous director was added to a movie, remove if
-					// not
-					if (!added) {
-						indices.remove(id);
-					}
-
-					id = indices.size();
-					indices.add(line.substring(0, line.indexOf("\t")));
-					// add director to movie
-					String movieLine = line.substring(line.lastIndexOf("\t") + 1);
-					if (insertActorToMovie(movieLine, id)) {
-						added = true;
-					}
-				} else { // Just movie
-					// add director to movie
-					String movieLine = line.substring(line.lastIndexOf("\t") + 1);
-					if (insertActorToMovie(movieLine, id)) {
-						added = true;
-					}
-				}
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}*/
 	}
 
 	private static void insertRatings() {
@@ -204,7 +167,7 @@ public class IMDBReader {
 					String movie = m.group(4);
 					SparseVector sv = IMDBmovies.get(movie);
 					if (sv != null) {
-						sv.addEntry(0, rating/2); //TODO: normalize year
+						sv.addEntry(0, rating/2); //normalized between 0.5 and 10
 					}
 				}
 			}
