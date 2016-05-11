@@ -10,7 +10,9 @@ import java.util.function.DoubleUnaryOperator;
 
 import org.apache.commons.math3.linear.RealVector;
 
-public class SparseVector { private int size;
+public class SparseVector {
+	
+	private int size;
 
 	@SuppressWarnings("unchecked")
 	private static final Map.Entry<Integer,Double>[] typePar = new Map.Entry[0];

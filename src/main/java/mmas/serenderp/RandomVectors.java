@@ -6,17 +6,20 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Random;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
+import org.apache.commons.math3.random.JDKRandomGenerator;
+import org.apache.commons.math3.random.RandomGenerator;
 
 public class RandomVectors {
 	
 	private static final String FILE_NAME = "RandomVector";
 	
-	//private static RandomVectorFunctions instance;
 	private static RealVector[] randomVectors = new RealVector[Constants.getAmountOfRandomVectors()];
+	private static RandomGenerator[] rngs = createRngs();
 	
 	private RandomVectors() {
 		
@@ -29,16 +32,17 @@ public class RandomVectors {
 		return randomVectors[index];
 	}
 	
-	/*
-	private static RandomVectorFunctions getInstance() {
-		if(instance == null) {
-			instance = new RandomVectorFunctions();
-		}
-		return instance;
+	public static RealVector getGeneratedRandomVector(int index) {
+		return createRandomVector(Constants.getDimensions(), rngs[index]);
 	}
-	*/
 	
-	private static RealVector createRandomVector(int size){
+	private static RealVector createRandomVector(int size, RandomGenerator rng) {
+		NormalDistribution nd = new NormalDistribution(rng, 1, 1);
+		return new ArrayRealVector(nd.sample(size));
+	}
+	
+	private static RealVector createRandomVector(int size) {
+		
 		NormalDistribution nd = new NormalDistribution(1, 1);
 		double[] values = nd.sample(size);
 		
@@ -117,5 +121,14 @@ public class RandomVectors {
 		endTime = System.currentTimeMillis();
 		System.out.println(String.format("Reading  random vector with %d dimensions took % 5d ms", vectorSize, (endTime-startTime)/runs));
 		
+	}
+	
+	private static RandomGenerator[] createRngs () {
+			RandomGenerator[] rngs = new RandomGenerator[Constants.getAmountOfRandomVectors()];
+			Random rng = new Random();
+			for(int i = 0; i < Constants.getAmountOfRandomVectors(); i++) {
+				rngs[i] = new JDKRandomGenerator(rng.nextInt());
+			}
+			return rngs;
 	}
 }
