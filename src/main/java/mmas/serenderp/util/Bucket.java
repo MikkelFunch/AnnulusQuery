@@ -2,6 +2,7 @@ package main.java.mmas.serenderp.util;
 
 import static main.java.mmas.serenderp.Constants.AMOUNT_OF_RANDOM_VECTORS;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,7 +14,10 @@ import org.apache.commons.lang3.tuple.Pair;
 import main.java.mmas.serenderp.IMDBReader;
 import main.java.mmas.serenderp.RandomVectors;
 
-public class Bucket {
+public class Bucket implements Serializable {
+
+	private static final long serialVersionUID = -9014086210087898593L;
+	// 
 	private List<LinkedList<Pair<Double, SparseVector>>> randomVectorDistances;
 	private int size;
 
@@ -45,7 +49,6 @@ public class Bucket {
 			};
 			Collections.sort(linkedList, cmp);
 		}
-
 	}
 
 	public SparseVector getHead(int i){
@@ -72,6 +75,21 @@ public class Bucket {
 	public int getSize(){
 		return size;
 	}
+	
+//	public List<LinkedList<Pair<Double,SparseVector>>> getBucketContents(){
+//		return randomVectorDistances;
+//	}
+	
+	private void writeObject(java.io.ObjectOutputStream s) throws java.io.IOException{
+		s.writeInt(size);
+		s.writeObject(randomVectorDistances);
+	}
+	
+    @SuppressWarnings("unchecked")
+	private void readObject(java.io.ObjectInputStream s) throws java.io.IOException, ClassNotFoundException {
+    	size = s.readInt();
+    	randomVectorDistances = (List<LinkedList<Pair<Double, SparseVector>>>) s.readObject();
+    }
 
 	/**
 	 * Class used for sorting on the dot product

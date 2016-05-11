@@ -11,28 +11,30 @@ import main.java.mmas.serenderp.util.MinHashing;
 import main.java.mmas.serenderp.util.SparseVector;
 
 public class PreProcess {
-	
+
 	private static Map<Integer, SparseVector> movies;
-	
-	public static Buckets biildQueryStructureMemory(Map<String, SparseVector> movies){
+
+	public static Buckets buildQueryStructureMemory(Map<String, SparseVector> movies) {
 		Buckets buckets = new Buckets();
-		
+
 		// For each point
-		for (SparseVector sv : movies.values()) {
-			if (!sv.hasActors() || sv.getNonZeroElements().length < 10) {
-				continue;
+		for (int i = 0; i < Constants.NUMBER_OF_BANDS; i++) {
+			for (SparseVector sv : movies.values()) {
+				if (!sv.hasActors() || sv.getNonZeroElements().length < 10) {
+					continue;
+				}
+				List<Integer> minHash = MinHashing.minHash(sv, i);
+				buckets.add(i, minHash, sv);
 			}
 			
-			List<List<Integer>> minHash = MinHashing.minHash(sv);
-			for(int band = 0; band < NUMBER_OF_BANDS; band++) {
-				buckets.add(band, minHash.get(band), sv);
-			}
+			buckets.persist(i);
 		}
-
+		
+		/*
 		int largestBucketCount = 0;
 		int count = 0;
 		for (Bucket bucket : buckets) {
-			if(largestBucketCount < bucket.getSize()) {
+			if (largestBucketCount < bucket.getSize()) {
 				largestBucketCount = bucket.getSize();
 			}
 			bucket.sortLists();
@@ -40,14 +42,13 @@ public class PreProcess {
 				System.out.println("Bucket count: " + bucket.getSize());
 				count++;
 			}
-			
 		}
 		System.out.println("Big buckets: " + count);
 		System.out.println(String.format("Largest bucket has %d elements", largestBucketCount));
-
+		*/
 		return buckets;
 	}
-	
+
 	public static Buckets buildQueryStructure(Map<String, SparseVector> movies) {
 		Buckets buckets = new Buckets();
 
@@ -56,9 +57,9 @@ public class PreProcess {
 			if (!sv.hasActors() || sv.getNonZeroElements().length < 10) {
 				continue;
 			}
-			
+
 			List<List<Integer>> minHash = MinHashing.minHash(sv);
-			for(int band = 0; band < NUMBER_OF_BANDS; band++) {
+			for (int band = 0; band < NUMBER_OF_BANDS; band++) {
 				buckets.add(band, minHash.get(band), sv);
 			}
 		}
@@ -66,7 +67,7 @@ public class PreProcess {
 		int largestBucketCount = 0;
 		int count = 0;
 		for (Bucket bucket : buckets) {
-			if(largestBucketCount < bucket.getSize()) {
+			if (largestBucketCount < bucket.getSize()) {
 				largestBucketCount = bucket.getSize();
 			}
 			bucket.sortLists();
@@ -74,14 +75,14 @@ public class PreProcess {
 				System.out.println("Bucket count: " + bucket.getSize());
 				count++;
 			}
-			
+
 		}
 		System.out.println("Big buckets: " + count);
 		System.out.println(String.format("Largest bucket has %d elements", largestBucketCount));
 
 		return buckets;
 	}
-		
+
 	public static Map<Integer, SparseVector> getMovies() {
 		if (movies == null) {
 			movies = new HashMap<Integer, SparseVector>();

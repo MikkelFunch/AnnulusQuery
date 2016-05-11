@@ -237,10 +237,11 @@ public class IMDBReader {
 			vectorToIndexMap = new  HashMap<SparseVector, Integer>();
 			indexToVectorMap = new HashMap<Integer, SparseVector>();
 			int id = 0;
-			for (String s : indices) {
+			for (String s : IMDBmovies.keySet()) {
 				SparseVector sv = IMDBmovies.get(s);
 				vectorToIndexMap.put(sv, id);
 				indexToVectorMap.put(id, sv);
+				id++;
 			}
 		}
 	}
