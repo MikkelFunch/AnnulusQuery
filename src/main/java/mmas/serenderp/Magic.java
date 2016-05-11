@@ -53,7 +53,7 @@ public class Magic {
 	}
 
 	public static void testSuccessProbability(Buckets buckets, Map<String, SparseVector> movies) {
-		ArrayList<String> allMovieKeys = new ArrayList(movies.keySet());
+		ArrayList<String> allMovieKeys = new ArrayList<String>(movies.keySet());
 		ArrayList<String> movieKeys = new ArrayList<String>();
 
 		Random r = new Random();

@@ -1,5 +1,8 @@
 package main.java.mmas.serenderp;
 
+import static main.java.mmas.serenderp.Constants.AMOUNT_OF_RANDOM_VECTORS;
+import static main.java.mmas.serenderp.Constants.NUMBER_OF_BANDS;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -14,8 +17,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import main.java.mmas.serenderp.util.Bucket;
 import main.java.mmas.serenderp.util.MinHashing;
 import main.java.mmas.serenderp.util.SparseVector;
-
-import static main.java.mmas.serenderp.Constants.*;
 
 public class Engine {
 

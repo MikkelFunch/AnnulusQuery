@@ -1,9 +1,10 @@
 package main.java.mmas.serenderp.util;
 
+import static main.java.mmas.serenderp.Constants.AMOUNT_OF_RANDOM_VECTORS;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.ConcurrentModificationException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,7 +12,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import main.java.mmas.serenderp.IMDBReader;
 import main.java.mmas.serenderp.RandomVectors;
-import static main.java.mmas.serenderp.Constants.*;
 
 public class Bucket {
 	private List<LinkedList<Pair<Double, SparseVector>>> randomVectorDistances;
