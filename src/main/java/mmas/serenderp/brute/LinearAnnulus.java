@@ -5,9 +5,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import main.java.mmas.serenderp.Engine;
 import main.java.mmas.serenderp.IMDBReader;
-import main.java.mmas.serenderp.PreProcess;
 import main.java.mmas.serenderp.util.SparseVector;
 
 //Brute force implementation of annulus query.

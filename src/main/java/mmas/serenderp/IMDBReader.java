@@ -1,5 +1,7 @@
 package main.java.mmas.serenderp;
 
+import static main.java.mmas.serenderp.Constants.DIMENSIONS;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,20 +14,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import main.java.mmas.serenderp.util.SparseVector;
-import static main.java.mmas.serenderp.Constants.*;
 
 public class IMDBReader {
 	private static HashMap<String, SparseVector> IMDBmovies = new HashMap<>();
 	private static ArrayList<String> indices = new ArrayList<>();
 
-	private static String moviePattern = ".*?(?=\\(\\d{4}\\))\\(\\d{4}\\)";//".*\\d{4}\\)";
+	private static String moviePattern = ".*?(?=\\(\\d{4}\\))\\(\\d{4}\\)";
 	private static Pattern pattern = Pattern.compile(moviePattern);
 	private static String lastMovie = "";
 	private static boolean ranBefore = false;
 
 	private static void insertActorsActresses(String path) {
 		try (BufferedReader br = new BufferedReader(new FileReader(new File(path)))) {
-			String line;// line = br.readLine();
+			String line;
 			boolean added = true;
 			int id = indices.size(); //TODO: Why?
 			
@@ -66,11 +67,7 @@ public class IMDBReader {
 		Matcher m = pattern.matcher(movieLine);
 		if (m.find()) {
 			String movie = m.group(0);
-			//if (movie.startsWith("The")) {
-				// Move "The" behind in the movie
-				//movie = movie.substring(4, movie.length() - 7) + ", The " + movie.substring(movie.length() - 6);
-			//}
-			
+
 			if (!(movie.equals(lastMovie))) {
 				lastMovie = movie;
 				if (IMDBmovies.containsKey(movie)) {
@@ -132,7 +129,7 @@ public class IMDBReader {
 						lastMovie = movie;
 					}
 					SparseVector sv = new SparseVector(DIMENSIONS, movie);
-//					sv.addEntry(1, Double.parseDouble(movie.substring(movie.length() - 5, movie.length() - 1)));
+//					sv.addEntry(1, Double.parseDouble(movie.substring(movie.length() - 5, movie.length() - 1)));//Insert year
 					IMDBmovies.put(movie, sv);
 				}
 			}
@@ -146,10 +143,52 @@ public class IMDBReader {
 		addGenresToMovies();
 		insertActors();
 		insertActresses();
+		insertDirectors();
 
 		// Get ratings, 0 - 1
 		ranBefore = true;
 		return IMDBmovies;
+	}
+
+	private static void insertDirectors() {
+		insertActorsActresses("data/directors.list");
+		/*
+		try (BufferedReader br = new BufferedReader(new FileReader(new File("data/directors.list")))) {
+			String line;
+			boolean added = true;
+			int id = indices.size();
+			
+			while ((line = br.readLine()) != null) {
+				if (line.isEmpty()) { // No movie or director
+					continue;
+				} else if (!line.startsWith("\t")) { // director with movie
+
+					// check if previous director was added to a movie, remove if
+					// not
+					if (!added) {
+						indices.remove(id);
+					}
+
+					id = indices.size();
+					indices.add(line.substring(0, line.indexOf("\t")));
+					// add director to movie
+					String movieLine = line.substring(line.lastIndexOf("\t") + 1);
+					if (insertActorToMovie(movieLine, id)) {
+						added = true;
+					}
+				} else { // Just movie
+					// add director to movie
+					String movieLine = line.substring(line.lastIndexOf("\t") + 1);
+					if (insertActorToMovie(movieLine, id)) {
+						added = true;
+					}
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}*/
 	}
 
 	private static void insertRatings() {
@@ -199,5 +238,9 @@ public class IMDBReader {
 	
 	public static String getFromGlobalIndex(int i) {
 		return indices.get(i);
+	}
+
+	public static int getGlobalIndicesSize() {
+		return indices.size();
 	}
 }
