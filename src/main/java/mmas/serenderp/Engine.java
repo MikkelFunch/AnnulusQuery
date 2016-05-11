@@ -27,13 +27,6 @@ public class Engine {
 		
 		Magic.assessMagic(users, movies);
 		*/
-		
-		
-		
-		double c, r, w;
-		c = C;
-		r = R;
-		w = W;
 
 		// PRE PROCESS
 		Long startTime = System.currentTimeMillis();
@@ -53,15 +46,15 @@ public class Engine {
 		endTime = System.currentTimeMillis();
 		duration = (endTime - startTime);
 		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
-		
+		consoleUi(buckets, movies);
 	}
 
 	private static void consoleUi(Buckets buckets, Map<String, SparseVector> movies) {
 		Scanner scanner = new Scanner(System.in);
 		String movieName = null;
 		SparseVector q;
+		Double r = null, w = null, c = null;
 		while(true) {
-			Double r = null,w = null,c = null;
 			System.out.println("What movie do you want to use as query point?");
 			String newMovieName = scanner.nextLine();
 			if(!StringUtils.isEmpty(newMovieName)) {
@@ -107,9 +100,6 @@ public class Engine {
 				for(SparseVector movie : new HashSet<SparseVector>(result)) {
 					System.out.println(String.format("The movie \"%s\" was found as serendipitous. The distance between the two movies are %f", movie.getMovieTitle(), movie.distanceTo(q)));
 				}
-//				for (int i : result.get(0).getMap().keySet()) {
-//					System.out.println(PreProcess.getFromGlobalIndex(i));
-//				}
 			}
 		}
 		scanner.close();
