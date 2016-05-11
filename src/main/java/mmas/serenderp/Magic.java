@@ -60,7 +60,7 @@ public class Magic {
 
 		Long startTime = System.currentTimeMillis();
 
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < 10000; i++) {
 			int idx = r.nextInt(allMovieKeys.size());
 			String m = allMovieKeys.get(idx);
 			allMovieKeys.remove(idx);
@@ -71,8 +71,8 @@ public class Magic {
 		for(String s : movieKeys) {
 			Collection<SparseVector> aRes;
 			Collection<SparseVector> eRes;
-			aRes = Engine.query(buckets, 4, 12, 2, movies.get(s), Integer.MAX_VALUE);
-			eRes = LinearAnnulus.query(moviesAsSparseVector, movies.get(s), 2, 25, 2, Integer.MAX_VALUE);
+			aRes = Engine.query(buckets, 4, 12, 2, movies.get(s), 10);
+			eRes = LinearAnnulus.query(moviesAsSparseVector, movies.get(s), 2, 25, 2, 10);
 			System.out.println("Annulus query points: " + aRes.size());
 			System.out.println("exhaustive query points: " + eRes.size());
 			System.out.println("successprobability: " + ((double)aRes.size())/eRes.size());
