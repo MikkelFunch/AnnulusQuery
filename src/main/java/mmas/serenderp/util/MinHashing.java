@@ -1,10 +1,11 @@
 package main.java.mmas.serenderp.util;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import main.java.mmas.serenderp.Constants;
+import static main.java.mmas.serenderp.Constants.*;
 
 public class MinHashing {
 	private static int a[];
@@ -15,10 +16,10 @@ public class MinHashing {
 	public static void init(){
 		Random r = new Random(1337);
 		
-		int numberOfHashFunctions = Constants.getNumberOfHashFunctions();
+		int numberOfHashFunctions = NUMBER_OF_HASH_FUNCTIONS;
 		a = new int[numberOfHashFunctions];
 		b = new int[numberOfHashFunctions];
-		m = Constants.getDimensions();
+		m = DIMENSIONS;
 		
 		for(int i = 0; i < numberOfHashFunctions; i++){
 			a[i] = nextNonZeroInt(r) % p;
@@ -37,7 +38,7 @@ public class MinHashing {
 	public static List<List<Integer>> minHash(SparseVector vector) {
 		List<List<Integer>> bucketSignatures = new ArrayList<List<Integer>>();
 		
-		for(int band = 0; band < Constants.getNumberOfBands(); band++) {
+		for(int band = 0; band < NUMBER_OF_BANDS; band++) {
 			bucketSignatures.add(minHash(vector, band));
 		}
 		return bucketSignatures;
@@ -47,8 +48,8 @@ public class MinHashing {
 	public static List<Integer> minHash(SparseVector vector, int bandIndex) {
 		List<Integer> bandSignature = new ArrayList<Integer>();
 		
-		for(int hashFunction = 0; hashFunction < Constants.getHashFunctionsPerBand(); hashFunction++) {
-			int hashValue = minHashWithHashFunction(vector, (bandIndex * Constants.getHashFunctionsPerBand()) + hashFunction);
+		for(int hashFunction = 0; hashFunction < HASH_FUNCTIONS_PER_BAND; hashFunction++) {
+			int hashValue = minHashWithHashFunction(vector, (bandIndex * HASH_FUNCTIONS_PER_BAND) + hashFunction);
 			bandSignature.add(hashValue);
 		}
 		return bandSignature;

@@ -1,5 +1,8 @@
 package main.java.mmas.serenderp;
 
+import static main.java.mmas.serenderp.Constants.AMOUNT_OF_RANDOM_VECTORS;
+import static main.java.mmas.serenderp.Constants.DIMENSIONS;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,43 +11,45 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
 
-import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.apache.commons.math3.random.RandomGenerator;
 
+import main.java.mmas.serenderp.util.MathTool;
+
 public class RandomVectors {
 	
 	private static final String FILE_NAME = "RandomVector";
 	
-	private static RealVector[] randomVectors = new RealVector[Constants.getAmountOfRandomVectors()];
-	private static RandomGenerator[] rngs = createRngs();
+	private static RealVector[] randomVectors = new RealVector[AMOUNT_OF_RANDOM_VECTORS];
+	private static int[] seeds = createSeeds();
 	
 	private RandomVectors() { /* Hide constructor */ }
 	
 	public static RealVector getRandomVector(int index) {
 		if (randomVectors[index] == null) {
-			randomVectors[index] = createRandomVector(Constants.getDimensions());
+			randomVectors[index] = createRandomVector(DIMENSIONS);
 		}
 		return randomVectors[index];
 	}
 	
 	public static RealVector getGeneratedRandomVector(int index) {
-		return createRandomVector(Constants.getDimensions(), rngs[index]);
+		return createRandomVector(DIMENSIONS, new JDKRandomGenerator(seeds[index]));
 	}
 	
 	private static RealVector createRandomVector(int size, RandomGenerator rng) {
-		NormalDistribution nd = new NormalDistribution(rng, 1, 1);
-		return new ArrayRealVector(nd.sample(size));
+		double[] values = MathTool.normalDistribution(size, rng);
+		return new ArrayRealVector(values);
 	}
 	
 	private static RealVector createRandomVector(int size) {
+		double[] values = new double[size];
+		for (int i = 0; i < size; i++){
+			values[i] = MathTool.normalDistribution();
+		}
 		
-		NormalDistribution nd = new NormalDistribution(1, 1);
-		double[] values = nd.sample(size);
-		
-		return new ArrayRealVector(values); //TODO: ARE THESE VALUES RIGHT
+		return new ArrayRealVector(values);
 	}
 	
 	private static void writeToFile(RealVector vector, int index) {
@@ -120,12 +125,12 @@ public class RandomVectors {
 		
 	}
 	
-	private static RandomGenerator[] createRngs () {
-			RandomGenerator[] rngs = new RandomGenerator[Constants.getAmountOfRandomVectors()];
-			Random rng = new Random();
-			for(int i = 0; i < Constants.getAmountOfRandomVectors(); i++) {
-				rngs[i] = new JDKRandomGenerator(rng.nextInt());
-			}
-			return rngs;
+	private static int[] createSeeds() {
+		int[] seeds = new int[AMOUNT_OF_RANDOM_VECTORS];
+		Random rng = new Random();
+		for(int i = 0; i < AMOUNT_OF_RANDOM_VECTORS; i++) {
+			seeds[i] = rng.nextInt();
+		}
+		return seeds;
 	}
 }

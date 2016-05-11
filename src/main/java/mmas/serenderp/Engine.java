@@ -1,4 +1,8 @@
 package main.java.mmas.serenderp;
+
+import static main.java.mmas.serenderp.Constants.AMOUNT_OF_RANDOM_VECTORS;
+import static main.java.mmas.serenderp.Constants.NUMBER_OF_BANDS;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -6,7 +10,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Scanner;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -25,17 +28,10 @@ public class Engine {
 		
 		Magic.assessMagic(users, movies);
 		*/
-		
-		
-		
-		double c, r, w;
-		c = Constants.getC();
-		r = Constants.getR();
-		w = Constants.getW();
 
 		// PRE PROCESS
 		Long startTime = System.currentTimeMillis();
-		Map<String, SparseVector> movies = PreProcess.getIMDBMovies();
+		Map<String, SparseVector> movies = IMDBReader.getIMDBMovies();
 		Long endTime = System.currentTimeMillis();
 		Long duration = (endTime - startTime);
 		System.out.println(String.format("Pre process duration: %d sec", (duration / 1000)));
@@ -47,19 +43,20 @@ public class Engine {
 
 		// DATA STRUCTURE
 		startTime = System.currentTimeMillis();
-		Buckets buckets = buildQueryStructure(movies);
+		Buckets buckets = PreProcess.buildQueryStructure(movies);
 		endTime = System.currentTimeMillis();
 		duration = (endTime - startTime);
 		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
-		
+
+		Magic.testSuccessProbability(buckets, movies);
 	}
 
 	private static void consoleUi(Buckets buckets, Map<String, SparseVector> movies) {
 		Scanner scanner = new Scanner(System.in);
 		String movieName = null;
 		SparseVector q;
+		Double r = null, w = null, c = null;
 		while(true) {
-			Double r = null,w = null,c = null;
 			System.out.println("What movie do you want to use as query point?");
 			String newMovieName = scanner.nextLine();
 			if(!StringUtils.isEmpty(newMovieName)) {
@@ -105,63 +102,26 @@ public class Engine {
 				for(SparseVector movie : new HashSet<SparseVector>(result)) {
 					System.out.println(String.format("The movie \"%s\" was found as serendipitous. The distance between the two movies are %f", movie.getMovieTitle(), movie.distanceTo(q)));
 				}
-//				for (int i : result.get(0).getMap().keySet()) {
-//					System.out.println(PreProcess.getFromGlobalIndex(i));
-//				}
 			}
 		}
 		scanner.close();
 	}
 
-	private static Buckets buildQueryStructure(Map<String, SparseVector> movies) {
-		Buckets buckets = new Buckets();
-
-		// For each point
-		for (SparseVector sv : movies.values()) {
-			if (!sv.hasActors() || sv.getNonZeroElements().length < 10) {
-				continue;
-			}
-			
-			List<List<Integer>> minHash = MinHashing.minHash(sv);
-			for(int band = 0; band < Constants.getNumberOfBands(); band++) {
-				buckets.add(band, minHash.get(band), sv);
-			}
-		}
-
-		int largestBucketCount = 0;
-		int count = 0;
-		for (Bucket bucket : buckets) {
-			if(largestBucketCount < bucket.getSize()) {
-				largestBucketCount = bucket.getSize();
-			}
-			bucket.sortLists();
-			if (bucket.getSize() > 40000) {
-				System.out.println("Bucket count: " + bucket.getSize());
-				count++;
-			}
-			
-		}
-		System.out.println("Big buckets: " + count);
-		System.out.println(String.format("Largest bucket has %d elements", largestBucketCount));
-
-		return buckets;
-	}
-
-	private static List<SparseVector> query(Buckets queryStructure, double c, double r, double w, SparseVector q, int n) {
+	public static List<SparseVector> query(Buckets queryStructure, double c, double r, double w, SparseVector q, int n) {
 		w *= c;
 		boolean allAloneInThisWorld = true;
 
 		PriorityQueue<Quad> pq = new PriorityQueue<>();
 		// Fill pq
 		
-		for(int bandIndex = 0; bandIndex < Constants.getNumberOfBands(); bandIndex++) {
+		for(int bandIndex = 0; bandIndex < NUMBER_OF_BANDS; bandIndex++) {
 			Bucket bucket = queryStructure.getBucket(bandIndex, MinHashing.minHash(q, bandIndex));
 			if(bucket.getList(0).size() > 1) {
 				System.out.println("Number of movies in the same bucket was " + bucket.getList(0).size());
 				allAloneInThisWorld = false;
 			}
 //			System.out.println(String.format("Bucket has %d elements", bucket.getList(0).size()));
-			for (int i = 0; i < Constants.getAmountOfRandomVectors(); i++) {
+			for (int i = 0; i < AMOUNT_OF_RANDOM_VECTORS; i++) {
 				// NullPointerexception thrown here
 				SparseVector p = bucket.getHead(i);
 				if (p != null) {
@@ -170,10 +130,6 @@ public class Engine {
 					pq.add(new Quad(priorityValue, p, predLink, i));
 				}
 			}
-		}
-		
-		if(allAloneInThisWorld) {
-			System.out.println(String.format("%s is all alone in this world", q.getMovieTitle()));
 		}
 		
 		int pointsEvaluated = 0;
@@ -212,16 +168,6 @@ public class Engine {
 	}
 
 	private static void init() {
-		setConstants();
 		MinHashing.init();
-	}
-
-	public static void setConstants() {
-		Constants.setAmountOfRandomVectors(4);
-		Constants.setR(20);
-		Constants.setW(1.85);
-		Constants.setC(1.41);
-		Constants.setDimensions(3_649_941);// + 2);
-		Constants.setNumberOfBandsAndHashFunctionsPerBand(7, 2);
 	}
 }
