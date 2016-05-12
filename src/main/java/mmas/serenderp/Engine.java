@@ -49,11 +49,11 @@ public class Engine {
 //		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
 //		
 		// DATA STRUCTURE MEMORY
-		startTime = System.currentTimeMillis();
-		Buckets buckets = PreProcess.buildQueryStructureMemory(movies);
-		endTime = System.currentTimeMillis();
-		duration = (endTime - startTime);
-		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
+//		startTime = System.currentTimeMillis();
+//		Buckets buckets = PreProcess.buildQueryStructureMemory(movies);
+//		endTime = System.currentTimeMillis();
+//		duration = (endTime - startTime);
+//		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
 
 		consoleUi(null, movies);
 //		consoleUi(buckets, movies);
@@ -64,7 +64,7 @@ public class Engine {
 		Scanner scanner = new Scanner(System.in);
 		String movieName = null;
 		SparseVector q;
-		Double r = null, w = null, c = null;
+		double r = 1, w = 1, c = 1;
 		while(true) {
 			System.out.println("What movie do you want to use as query point?");
 			String newMovieName = scanner.nextLine();
