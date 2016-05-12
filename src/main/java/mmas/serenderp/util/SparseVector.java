@@ -193,7 +193,7 @@ public class SparseVector {
 	}
 
 	public boolean hasActors() {
-		return nextAvailable > 34;
+		return nextAvailable > 32;
 	}
 	
 	public String getMovieTitle() {
