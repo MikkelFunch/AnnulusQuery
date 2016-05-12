@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -15,6 +17,7 @@ import java.util.Set;
 
 import main.java.mmas.serenderp.util.Bucket;
 import main.java.mmas.serenderp.util.SparseVector;
+import static main.java.mmas.serenderp.Constants.*;
 
 public class Buckets implements Iterable<Bucket> {
 	// Map from band index to band hash sequence to bucket
@@ -88,6 +91,7 @@ public class Buckets implements Iterable<Bucket> {
 	}
 
 	private static File getFileName(int bandIndex, List<Integer> bandSequence) {
-		return new File("buckets" + File.separator + "bandindex-" + bandIndex + File.separator + "bandsequence-" + bandSequence);
+		return Paths.get("bucket", "numberofbands-" + NUMBER_OF_BANDS + "-hashesperband-" + HASH_FUNCTIONS_PER_BAND, "bandindex-" + bandIndex, "bandsequence-" + bandSequence).toFile();
+//		return new File("buckets" + File.separator + "numberofbands-" + NUMBER_OF_BANDS + "hashesperband-" + HASH_FUNCTIONS_PER_BAND + File.separator + "bandindex-" + bandIndex + File.separator + "bandsequence-" + bandSequence);
 	}
 }
