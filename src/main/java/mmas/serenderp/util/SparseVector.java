@@ -2,6 +2,7 @@ package main.java.mmas.serenderp.util;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.BiFunction;
@@ -122,6 +123,12 @@ public class SparseVector {
 	public static SparseVector divide(SparseVector v, double k) {
 		return mapIgnoreDefault(v, (x) -> x/k);
 	}
+	
+	private void divide(double k){
+		for (Entry<Integer, Double> pair : getNonZeroElements()) {
+			pair.setValue(pair.getValue() / k);
+		}
+	}
 
 	public static double distance(SparseVector v1, SparseVector v2) {
 		SparseVector v = subtract(v1,v2);
@@ -138,8 +145,9 @@ public class SparseVector {
 		return distanceTo(origo);
 	}
 	
-	public SparseVector scaleToUnitVector() {
-		return divide(this, length());
+	public void scaleToUnitVector() {
+		divide(length());
+//		return divide(this, length());
 	}
 
 	public static <A> A foldIgnoreDefault (SparseVector v, BiFunction<Double,A,A> f, A def) {
