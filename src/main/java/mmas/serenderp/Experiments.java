@@ -26,7 +26,7 @@ public class Experiments {
 		}
 		
 		isInMovies(moviePairs, movies);
-		System.out.println(suggestInnerAnnulusRadius(movies));
+		System.out.println("The average distance of expected movie pairs was: " + suggestInnerAnnulusRadius(movies));
 	}
 	
 	public static void isInMovies(String[] movies, Map<String, SparseVector> allMovies) {
@@ -47,6 +47,7 @@ public class Experiments {
 			if(i%2 == 0) {
 				movie = moviePairs[i];
 			} else {
+				System.out.println(SparseVector.distance(movies.get(movie), movies.get(moviePairs[i])));
 				totalDistance += SparseVector.distance(movies.get(movie), movies.get(moviePairs[i]));
 			}
 		}
