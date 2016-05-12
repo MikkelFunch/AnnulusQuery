@@ -10,6 +10,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -48,11 +49,11 @@ public class Engine {
 //		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
 //		
 		// DATA STRUCTURE MEMORY
-		startTime = System.currentTimeMillis();
-		PreProcess.buildQueryStructureMemory(movies);
-		endTime = System.currentTimeMillis();
-		duration = (endTime - startTime);
-		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
+//		startTime = System.currentTimeMillis();
+//		PreProcess.buildQueryStructureMemory(movies);
+//		endTime = System.currentTimeMillis();
+//		duration = (endTime - startTime);
+//		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
 
 //		consoleUi(null, movies);
 //		consoleUi(buckets, movies);
@@ -129,9 +130,11 @@ public class Engine {
 			if (result.isEmpty()) {
 				System.out.println("No result was found");
 			} else {
-				for(SparseVector movie : new HashSet<SparseVector>(result)) {
+				Set<SparseVector> foundMovies = new HashSet<SparseVector>(result);
+				for(SparseVector movie : foundMovies) {
 					System.out.println(String.format("The movie \"%s\" was found as serendipitous. The distance between the two movies are %f", movie.getMovieTitle(), movie.distanceTo(q)));
 				}
+				System.out.println(String.format("%d results was found", foundMovies.size()));
 			}
 		}
 		scanner.close();
