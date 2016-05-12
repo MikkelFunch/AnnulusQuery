@@ -14,7 +14,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import main.java.mmas.serenderp.brute.LinearAnnulus;
 import main.java.mmas.serenderp.util.SparseVector;
@@ -113,6 +116,65 @@ public class Magic {
 		Long endTime = System.currentTimeMillis();
 		Long duration = (endTime - startTime);
 		System.out.println(String.format("successprobability took: %d sec", (duration / 1000)));
+	}
+
+	public static void intuitionPlots(List<List<Entry<Integer,Double>>> users, Map<Integer,SparseVector> movies) {
+		HashMap<Double,Integer> ratingIndexMap = new HashMap<Double,Integer>();
+		ratingIndexMap.put(0.5,0);
+		ratingIndexMap.put(1.0,1);
+		ratingIndexMap.put(1.5,2);
+		ratingIndexMap.put(2.0,3);
+		ratingIndexMap.put(2.5,4);
+		ratingIndexMap.put(3.0,5);
+		ratingIndexMap.put(3.5,6);
+		ratingIndexMap.put(4.0,7);
+		ratingIndexMap.put(4.5,8);
+		ratingIndexMap.put(5.0,9);
+
+		HashMap<Integer, Double> invRatingIndexMap = new HashMap<Integer, Double>();
+		for(Entry<Double,Integer> e : ratingIndexMap.entrySet()){
+			invRatingIndexMap.put(e.getValue(), e.getKey());
+		}
+
+		Random rand = new Random();
+		List<List<Entry<Integer,Double>>> userSample = new ArrayList<List<Entry<Integer,Double>>>();
+		for (int i = 0; i < 50000; i++) {
+			int idx = rand.nextInt(users.size());
+			userSample.add(users.get(idx));
+			users.remove(idx);
+		}
+
+		double[] avgRadiusByRating = new double[10];
+		int[] ratingCounts= new int[10];
+
+		for(List<Entry<Integer,Double>> user : userSample) {
+			if(0 == user.size()) {
+				continue;
+			}
+			//Get a max rated movie
+			Collections.sort(user, (Entry<Integer,Double> a, Entry<Integer,Double> b) -> b.getValue().compareTo(a.getValue()));
+			Stream<Entry<Integer,Double>> ratingStream = user.stream();
+			Entry<Integer,Double> max = ratingStream.max((Entry<Integer,Double> a, Entry<Integer,Double> b) -> a.getValue().compareTo(b.getValue())).get();
+			ratingStream = user.stream();
+			ratingStream = ratingStream.filter((Entry<Integer,Double> x) -> x.getValue() == max.getValue());
+			ArrayList<Entry<Integer,Double>> ratingsArray = new ArrayList<Entry<Integer,Double>>();
+			ratingStream.forEach(ratingsArray::add);
+
+			Entry<Integer,Double> rating = ratingsArray.get(rand.nextInt(ratingsArray.size()));
+			user.remove(rating.getKey());
+			SparseVector qMovie = movies.get(rating.getKey());
+
+			for(Entry<Integer,Double> r : user){
+				double d = distance(qMovie, movies.get(r.getKey()));
+				int index = ratingIndexMap.get(r.getValue());
+				avgRadiusByRating[index] += d;
+				ratingCounts[index]++;
+			}
+		}
+		System.out.println("Avg radius vs rating:");
+		for(int i = 0; i < avgRadiusByRating.length; i++) {
+			System.out.println((invRatingIndexMap.get(i)) + " " + avgRadiusByRating[i]/ratingCounts[i]);
+		}
 	}
 	
 	/***

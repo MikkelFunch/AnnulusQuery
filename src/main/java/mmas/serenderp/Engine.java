@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.PriorityQueue;
 import java.util.Scanner;
 
@@ -22,19 +23,18 @@ public class Engine {
 
 	public static void main(String[] args) {
 		init();
-		/*
-		Map<Integer, SparseVector> movies = Constants.getMovies();
+		Map<Integer, SparseVector> movies = PreProcess.getMovies();
+		System.out.println("Got movies");
 		List<List<Entry<Integer,Double>>> users = MovieLensReader.loadUserRatings();
-		
-		Magic.assessMagic(users, movies);
-		*/
+		System.out.println("Got userratings");
+		Magic.intuitionPlots(users, movies);
 
 		// PRE PROCESS
-		Long startTime = System.currentTimeMillis();
-		Map<String, SparseVector> movies = IMDBReader.getIMDBMovies();
-		Long endTime = System.currentTimeMillis();
-		Long duration = (endTime - startTime);
-		System.out.println(String.format("IMDB reading duration: %d sec", (duration / 1000)));
+//		Long startTime = System.currentTimeMillis();
+//		Map<String, SparseVector> movies = IMDBReader.getIMDBMovies();
+//		Long endTime = System.currentTimeMillis();
+//		Long duration = (endTime - startTime);
+//		System.out.println(String.format("IMDB reading duration: %d sec", (duration / 1000)));
 
 		// Test data
 //		final String movieName = "Toy Story (1995)";
@@ -49,15 +49,34 @@ public class Engine {
 //		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
 //		
 		// DATA STRUCTURE MEMORY
-		startTime = System.currentTimeMillis();
-		Buckets buckets = PreProcess.buildQueryStructureMemory(movies);
-		endTime = System.currentTimeMillis();
-		duration = (endTime - startTime);
-		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
+//		startTime = System.currentTimeMillis();
+//		Buckets buckets = PreProcess.buildQueryStructureMemory(movies);
+//		endTime = System.currentTimeMillis();
+//		duration = (endTime - startTime);
+//		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
 
-		consoleUi(null, movies);
+//		consoleUi(null, movies);
 //		consoleUi(buckets, movies);
 		//Magic.testSuccessProbability(buckets, movies);
+
+		//// PRE PROCESS
+		//Long startTime = System.currentTimeMillis();
+		//Map<String, SparseVector> movies = IMDBReader.getIMDBMovies();
+		//Long endTime = System.currentTimeMillis();
+		//Long duration = (endTime - startTime);
+		//System.out.println(String.format("Pre process duration: %d sec", (duration / 1000)));
+
+		//// Test data
+//		//final String movieName = "Toy Story (1995)";
+//		//SparseVector q = movies.get(movieName);
+//		//movies.remove(movieName);
+
+		//// DATA STRUCTURE
+		//startTime = System.currentTimeMillis();
+		//Buckets buckets = PreProcess.buildQueryStructure(movies);
+		//endTime = System.currentTimeMillis();
+		//duration = (endTime - startTime);
+		//System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
 	}
 
 	private static void consoleUi(Buckets buckets, Map<String, SparseVector> movies) {
@@ -188,7 +207,6 @@ public class Engine {
 		for(int bandIndex = 0; bandIndex < NUMBER_OF_BANDS; bandIndex++) {
 			Bucket bucket = queryStructure.getBucket(bandIndex, MinHashing.minHash(q, bandIndex));
 			if(bucket.getList(0).size() > 1) {
-				System.out.println("Number of movies in the same bucket was " + bucket.getList(0).size());
 				allAloneInThisWorld = false;
 			}
 //			System.out.println(String.format("Bucket has %d elements", bucket.getList(0).size()));
