@@ -106,8 +106,8 @@ public class Bucket implements Serializable {
 			this.vector = vector;
 		}
 
-		public PairOfDotProductAndVector() {
-		}
+		@SuppressWarnings("unused") // Used by serializer
+		public PairOfDotProductAndVector() { }
 
 		@Override
 		public SparseVector setValue(SparseVector value) {
@@ -131,14 +131,6 @@ public class Bucket implements Serializable {
 		@Override
 		public int compareTo(Pair<Double, SparseVector> other) {
 			return this.getLeft().compareTo(other.getLeft());
-		}
-		
-		private void setVector(SparseVector v) {
-			vector = v;
-		}
-
-		private void setDotProduct(double d) {
-			dotProduct = d;
 		}
 		
 		private void writeObject(java.io.ObjectOutputStream s) throws java.io.IOException{
