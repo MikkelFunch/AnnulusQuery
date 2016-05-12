@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -150,8 +151,16 @@ public class IMDBReader {
 
 		// Get ratings, 0 - 1
 		ranBefore = true;
+		List<SparseVector> moviesToRemove = new ArrayList<SparseVector>();
 		for (SparseVector sv : IMDBmovies.values()) {
+			if(sv.getNonZeroElements().length < 10) {
+				moviesToRemove.add(sv);
+				continue;
+			}
 			sv.scaleToUnitVector();
+		}
+		for(SparseVector movie : moviesToRemove) {
+			IMDBmovies.remove(movie.getMovieTitle());
 		}
 		return IMDBmovies;
 	}

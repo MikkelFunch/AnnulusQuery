@@ -50,7 +50,7 @@ public class Engine {
 //		
 		// DATA STRUCTURE MEMORY
 		startTime = System.currentTimeMillis();
-		Buckets buckets = PreProcess.buildQueryStructureMemory(movies);
+		PreProcess.buildQueryStructureMemory(movies);
 		endTime = System.currentTimeMillis();
 		duration = (endTime - startTime);
 		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
