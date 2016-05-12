@@ -147,12 +147,8 @@ public class Bucket implements Serializable {
 		}
 		
 	    private void readObject(java.io.ObjectInputStream s) throws java.io.IOException, ClassNotFoundException {
-	    	double d = s.readDouble();
-	    	int i = s.readInt();
-	    	
-	    	PairOfDotProductAndVector p = new PairOfDotProductAndVector();
-	    	p.setDotProduct(d);
-	    	p.setVector(IMDBReader.getSparseVector(i));
+	    	dotProduct = s.readDouble();
+	    	vector = IMDBReader.getSparseVector(s.readInt());
         }
 	}
 }

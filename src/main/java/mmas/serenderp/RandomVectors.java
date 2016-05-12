@@ -15,6 +15,7 @@ import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.apache.commons.math3.random.RandomGenerator;
+import org.junit.Assert;
 
 import main.java.mmas.serenderp.util.MathTool;
 
@@ -29,7 +30,8 @@ public class RandomVectors {
 	
 	public static RealVector getRandomVector(int index) {
 		if (randomVectors[index] == null) {
-			randomVectors[index] = createRandomVector(DIMENSIONS);
+//			randomVectors[index] = createRandomVector(DIMENSIONS);
+			randomVectors[index] = createRandomVector(DIMENSIONS, new JDKRandomGenerator(seeds[index]));
 		}
 		return randomVectors[index];
 	}
@@ -100,34 +102,21 @@ public class RandomVectors {
 	}
 	
 	public static void main(String[] args) {
-		int runs = 20;
-		int vectorSize = 3_649_941;
-		long startTime, endTime;
-		RealVector[] vectors = new RealVector[runs];
+//		RealVector v1 = getGeneratedRandomVector(0);
+//		writeToFile(v1, 0);
 		
-		startTime = System.currentTimeMillis();
-		for(int i = 0; i < runs; i++) {
-			vectors[i] = createRandomVector(vectorSize);
+		RealVector v1 = getGeneratedRandomVector(0);
+		
+		RealVector v2 = readFromFile(0);
+		
+		for(int i = 0; i < DIMENSIONS; i++) {
+			assert v1.getEntry(i) == v2.getEntry(i);
 		}
-		endTime = System.currentTimeMillis();
-		System.out.println(String.format("Creating random vector with %d dimensions took % 5d ms", vectorSize, (endTime-startTime)/runs));
-		
-		for(int i = 0; i < runs; i++) {
-			writeToFile(vectors[i], i);
-		}
-		
-		startTime = System.currentTimeMillis();
-		for(int i = 0; i < runs; i++) {
-			readFromFile(i);
-		}
-		endTime = System.currentTimeMillis();
-		System.out.println(String.format("Reading  random vector with %d dimensions took % 5d ms", vectorSize, (endTime-startTime)/runs));
-		
 	}
 	
 	private static int[] createSeeds() {
 		int[] seeds = new int[AMOUNT_OF_RANDOM_VECTORS];
-		Random rng = new Random();
+		Random rng = new Random(7189234);
 		for(int i = 0; i < AMOUNT_OF_RANDOM_VECTORS; i++) {
 			seeds[i] = rng.nextInt();
 		}

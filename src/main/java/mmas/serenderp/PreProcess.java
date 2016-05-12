@@ -18,7 +18,10 @@ public class PreProcess {
 		Buckets buckets = new Buckets();
 
 		// For each point
+		long startTime = System.currentTimeMillis();
+		long bandStartTime, bandEndTime;
 		for (int i = 0; i < Constants.NUMBER_OF_BANDS; i++) {
+			bandStartTime = System.currentTimeMillis();
 			for (SparseVector sv : movies.values()) {
 				if (!sv.hasActors() || sv.getNonZeroElements().length < 10) {
 					continue;
@@ -26,9 +29,12 @@ public class PreProcess {
 				List<Integer> minHash = MinHashing.minHash(sv, i);
 				buckets.add(i, minHash, sv);
 			}
-			
 			buckets.persist(i);
+			bandEndTime = System.currentTimeMillis();
+			System.out.println(String.format("Processed band %d in %d ms", i+1, bandEndTime - bandStartTime));
 		}
+		long endTime = System.currentTimeMillis();
+		System.out.println(String.format("Processing all bands took %d ms", endTime - startTime));
 		
 		/*
 		int largestBucketCount = 0;

@@ -49,13 +49,14 @@ public class Engine {
 //		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
 //		
 		// DATA STRUCTURE MEMORY
-		startTime = System.currentTimeMillis();
-		Buckets buckets = PreProcess.buildQueryStructureMemory(movies);
-		endTime = System.currentTimeMillis();
-		duration = (endTime - startTime);
-		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
+//		startTime = System.currentTimeMillis();
+//		Buckets buckets = PreProcess.buildQueryStructureMemory(movies);
+//		endTime = System.currentTimeMillis();
+//		duration = (endTime - startTime);
+//		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
 
-		consoleUi(buckets, movies);
+		consoleUi(null, movies);
+//		consoleUi(buckets, movies);
 		//Magic.testSuccessProbability(buckets, movies);
 	}
 
@@ -99,7 +100,7 @@ public class Engine {
 			// QUERY
 			long startTime = System.currentTimeMillis();
 			//List<SparseVector> result = query(buckets, c, r, w, q, Integer.MAX_VALUE);
-			List<SparseVector> result = queryMemory(buckets, c, r, w, q, Integer.MAX_VALUE); //Memory
+			List<SparseVector> result = queryMemory(c, r, w, q, Integer.MAX_VALUE); //Memory
 			long endTime = System.currentTimeMillis();
 			long duration = (endTime - startTime);
 
@@ -116,7 +117,7 @@ public class Engine {
 		scanner.close();
 	}
 	
-	public static List<SparseVector> queryMemory(Buckets queryStructure, double c, double r, double w, SparseVector q, int n) {
+	public static List<SparseVector> queryMemory(double c, double r, double w, SparseVector q, int n) {
 		w *= c;
 		boolean allAloneInThisWorld = true;
 
@@ -124,10 +125,12 @@ public class Engine {
 		// Fill pq
 		
 		for(int bandIndex = 0; bandIndex < NUMBER_OF_BANDS; bandIndex++) {
-			Bucket bucket = queryStructure.getBucketMemory(bandIndex, MinHashing.minHash(q, bandIndex));
+			Bucket bucket = Buckets.getBucketMemory(bandIndex, MinHashing.minHash(q, bandIndex));
 			if(bucket.getList(0).size() > 1) {
 				System.out.println("Number of movies in the same bucket was " + bucket.getList(0).size());
 				allAloneInThisWorld = false;
+			} else {
+				continue;
 			}
 //			System.out.println(String.format("Bucket has %d elements", bucket.getList(0).size()));
 			for (int i = 0; i < AMOUNT_OF_RANDOM_VECTORS; i++) {
@@ -146,6 +149,9 @@ public class Engine {
 		double distance;
 		SparseVector tempResult = null;
 		List<SparseVector> resultList = new ArrayList<>();
+		if(pq.isEmpty()) {
+			System.out.println("PQ is empty before looking for results");
+		}
 		for (int i = 0; i < n; i++) {
 			do {
 				if (pq.isEmpty()) {

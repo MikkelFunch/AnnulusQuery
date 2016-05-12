@@ -41,6 +41,12 @@ public class Buckets implements Iterable<Bucket> {
 		return bucket;
 	}
 
+	/**
+	 * Adds a vector to a bucket
+	 * @param bandIndex The band used to compute the hash sequence
+	 * @param bandHashSequence The hash sequence computed by the bands
+	 * @param vector The vector to store in the bucket
+	 */
 	public void add(int bandIndex, List<Integer> bandHashSequence, SparseVector vector) {
 		getBucket(bandIndex, bandHashSequence).add(vector);
 	}
@@ -58,35 +64,30 @@ public class Buckets implements Iterable<Bucket> {
 	}
 
 	public void persist(int bandIndex) {
-		try {
-			for (List<Integer> bandSequence : getBandSequences(bandIndex)) {
-				File file = getFileName(bandIndex, bandSequence);
-				file.getParentFile().mkdirs();
-				ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
+		for (List<Integer> bandSequence : getBandSequences(bandIndex)) {
+			File file = getFileName(bandIndex, bandSequence);
+			file.getParentFile().mkdirs();
+			try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file))) {
 				out.writeObject(getBucket(bandIndex, bandSequence));
-				out.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.exit(13);
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.exit(13);
 		}
 		buckets = new HashMap<>();
 	}
 
-	public Bucket getBucketMemory(int bandIndex, List<Integer> bandSequence) {
-		Bucket b = null;
-		try {
-			ObjectInputStream in = new ObjectInputStream(new FileInputStream(getFileName(bandIndex, bandSequence)));
-			b = (Bucket) in.readObject();
-			in.close();
+	public static Bucket getBucketMemory(int bandIndex, List<Integer> bandSequence) {
+		try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(getFileName(bandIndex, bandSequence)))) {
+			return (Bucket) in.readObject();
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 			System.exit(13);
+			return null;
 		}
-		return b;
 	}
 
-	private File getFileName(int bandIndex, List<Integer> bandSequence) {
-		return new File("buckets" + File.separator + "bucket-bandindex:" + bandIndex + "-bandsequence:" + bandSequence);
+	private static File getFileName(int bandIndex, List<Integer> bandSequence) {
+		return new File("buckets" + File.separator + "bandindex-" + bandIndex + File.separator + "bandsequence-" + bandSequence);
 	}
 }
