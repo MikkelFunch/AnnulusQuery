@@ -150,7 +150,6 @@ public class IMDBReader {
 
 		// Get ratings, 0 - 1
 		ranBefore = true;
-		System.out.println(indices.size());
 		for (SparseVector sv : IMDBmovies.values()) {
 			sv.scaleToUnitVector();
 		}
