@@ -49,11 +49,11 @@ public class Engine {
 //		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
 //		
 		// DATA STRUCTURE MEMORY
-//		startTime = System.currentTimeMillis();
-//		PreProcess.buildQueryStructureMemory(movies);
-//		endTime = System.currentTimeMillis();
-//		duration = (endTime - startTime);
-//		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
+		startTime = System.currentTimeMillis();
+		PreProcess.buildQueryStructureMemory(movies);
+		endTime = System.currentTimeMillis();
+		duration = (endTime - startTime);
+		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
 
 //		consoleUi(null, movies);
 //		consoleUi(buckets, movies);
