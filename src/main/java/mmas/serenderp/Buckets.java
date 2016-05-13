@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,6 +16,7 @@ import java.util.Set;
 
 import main.java.mmas.serenderp.util.Bucket;
 import main.java.mmas.serenderp.util.SparseVector;
+
 import static main.java.mmas.serenderp.Constants.*;
 
 public class Buckets implements Iterable<Bucket> {
@@ -89,9 +89,8 @@ public class Buckets implements Iterable<Bucket> {
 			return null;
 		}
 	}
-
+	
 	private static File getFileName(int bandIndex, List<Integer> bandSequence) {
 		return Paths.get("bucket", "numberofbands-" + NUMBER_OF_BANDS + "-hashesperband-" + HASH_FUNCTIONS_PER_BAND,"randomvector-" + AMOUNT_OF_RANDOM_VECTORS , "bandindex-" + bandIndex, "bandsequence-" + bandSequence).toFile();
-//		return new File("buckets" + File.separator + "numberofbands-" + NUMBER_OF_BANDS + "hashesperband-" + HASH_FUNCTIONS_PER_BAND + File.separator + "bandindex-" + bandIndex + File.separator + "bandsequence-" + bandSequence);
 	}
 }

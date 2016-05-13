@@ -13,7 +13,11 @@ public class MinHashing {
 	private static int p = 2147483647;
 	private static int m;
 	
-	public static void init(){
+	static {
+		init();
+	}
+	
+	private static void init() {
 		Random r = new Random(1337);
 		
 		int numberOfHashFunctions = NUMBER_OF_HASH_FUNCTIONS;
