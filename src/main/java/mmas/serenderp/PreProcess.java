@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import main.java.mmas.serenderp.util.Bucket;
 import main.java.mmas.serenderp.util.MinHashing;
 import main.java.mmas.serenderp.util.SparseVector;
 
@@ -41,24 +40,8 @@ public class PreProcess {
 			System.out.println(String.format("Processed band %d in %d ms", bandIndex+1, bandEndTime - bandStartTime));
 		}
 		long endTime = System.currentTimeMillis();
-		System.out.println(String.format("Processing all bands took %d ms", endTime - startTime));
+		System.out.println(String.format("Processing all bands took %d sec", (endTime - startTime)/1000));
 		
-		/*
-		int largestBucketCount = 0;
-		int count = 0;
-		for (Bucket bucket : buckets) {
-			if (largestBucketCount < bucket.getSize()) {
-				largestBucketCount = bucket.getSize();
-			}
-			bucket.sortLists();
-			if (bucket.getSize() > 40000) {
-				System.out.println("Bucket count: " + bucket.getSize());
-				count++;
-			}
-		}
-		System.out.println("Big buckets: " + count);
-		System.out.println(String.format("Largest bucket has %d elements", largestBucketCount));
-		*/
 		return buckets;
 	}
 
@@ -76,23 +59,6 @@ public class PreProcess {
 				buckets.add(band, minHash.get(band), sv);
 			}
 		}
-
-		int largestBucketCount = 0;
-		int count = 0;
-		for (Bucket bucket : buckets) {
-			if (largestBucketCount < bucket.getSize()) {
-				largestBucketCount = bucket.getSize();
-			}
-			bucket.sortLists();
-			if (bucket.getSize() > 40000) {
-				System.out.println("Bucket count: " + bucket.getSize());
-				count++;
-			}
-
-		}
-		System.out.println("Big buckets: " + count);
-		System.out.println(String.format("Largest bucket has %d elements", largestBucketCount));
-
 		return buckets;
 	}
 

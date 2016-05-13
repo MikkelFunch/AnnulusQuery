@@ -121,6 +121,10 @@ public class Buckets implements Iterable<Bucket> {
 	}
 	
 	private static File getFileName(int bandIndex, List<Integer> bandSequence) {
+<<<<<<< HEAD
 		return new File(getFileName(bandIndex), bandSequence.toString());
+=======
+		return Paths.get("bucket", "hashesperband-" + HASH_FUNCTIONS_PER_BAND,"randomvector-" + AMOUNT_OF_RANDOM_VECTORS , "bandindex-" + bandIndex, "bandsequence-" + bandSequence).toFile();
+>>>>>>> 6878c3ba719612141e7b8f483ba616989b699fa7
 	}
 }
