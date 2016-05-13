@@ -31,27 +31,11 @@ public class PreProcess {
 			}
 			buckets.persist(i);
 			bandEndTime = System.currentTimeMillis();
-			System.out.println(String.format("Processed band %d in %d ms", i+1, bandEndTime - bandStartTime));
+			System.out.println(String.format("Processed band %d in %d sec", i+1, (bandEndTime - bandStartTime)/1000));
 		}
 		long endTime = System.currentTimeMillis();
-		System.out.println(String.format("Processing all bands took %d ms", endTime - startTime));
+		System.out.println(String.format("Processing all bands took %d sec", (endTime - startTime)/1000));
 		
-		/*
-		int largestBucketCount = 0;
-		int count = 0;
-		for (Bucket bucket : buckets) {
-			if (largestBucketCount < bucket.getSize()) {
-				largestBucketCount = bucket.getSize();
-			}
-			bucket.sortLists();
-			if (bucket.getSize() > 40000) {
-				System.out.println("Bucket count: " + bucket.getSize());
-				count++;
-			}
-		}
-		System.out.println("Big buckets: " + count);
-		System.out.println(String.format("Largest bucket has %d elements", largestBucketCount));
-		*/
 		return buckets;
 	}
 
@@ -69,23 +53,6 @@ public class PreProcess {
 				buckets.add(band, minHash.get(band), sv);
 			}
 		}
-
-		int largestBucketCount = 0;
-		int count = 0;
-		for (Bucket bucket : buckets) {
-			if (largestBucketCount < bucket.getSize()) {
-				largestBucketCount = bucket.getSize();
-			}
-			bucket.sortLists();
-			if (bucket.getSize() > 40000) {
-				System.out.println("Bucket count: " + bucket.getSize());
-				count++;
-			}
-
-		}
-		System.out.println("Big buckets: " + count);
-		System.out.println(String.format("Largest bucket has %d elements", largestBucketCount));
-
 		return buckets;
 	}
 

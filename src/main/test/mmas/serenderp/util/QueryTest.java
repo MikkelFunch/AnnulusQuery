@@ -75,7 +75,7 @@ public class QueryTest {
 			List<SparseVector> result = Engine.queryMemory(c, r, w, queryPoint, serendipitousMoviesToFind);
 			
 			//linear
-			Collection<SparseVector> linearResult = LinearAnnulus.query(allMovies.values(), queryPoint, Constants.R, Constants.W, 1, serendipitousMoviesToFind);
+			Collection<SparseVector> linearResult = LinearAnnulus.query(allMovies.values(), queryPoint, r, w, 1, serendipitousMoviesToFind);
 			if (result != null && linearResult != null) {
 				System.out.print(linearResult.size() / result.size());
 			}
