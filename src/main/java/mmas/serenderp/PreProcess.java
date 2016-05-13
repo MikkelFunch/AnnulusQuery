@@ -2,11 +2,11 @@ package main.java.mmas.serenderp;
 
 import static main.java.mmas.serenderp.Constants.NUMBER_OF_BANDS;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import main.java.mmas.serenderp.util.Bucket;
 import main.java.mmas.serenderp.util.MinHashing;
 import main.java.mmas.serenderp.util.SparseVector;
 
@@ -20,18 +20,24 @@ public class PreProcess {
 		// For each point
 		long startTime = System.currentTimeMillis();
 		long bandStartTime, bandEndTime;
-		for (int i = 0; i < Constants.NUMBER_OF_BANDS; i++) {
+		for (int bandIndex = 0; bandIndex < Constants.NUMBER_OF_BANDS; bandIndex++) {
+			File bandIndexFolder = Buckets.getFileName(bandIndex);
+			if(bandIndexFolder.exists()) {
+				System.out.println("Skipping " + bandIndexFolder.getAbsolutePath());
+				continue;
+			}
+			
 			bandStartTime = System.currentTimeMillis();
 			for (SparseVector sv : movies.values()) {
 				if (!sv.hasActors() || sv.getNonZeroElements().length < 10) {
 					continue;
 				}
-				List<Integer> minHash = MinHashing.minHash(sv, i);
-				buckets.add(i, minHash, sv);
+				List<Integer> minHash = MinHashing.minHash(sv, bandIndex);
+				buckets.add(bandIndex, minHash, sv);
 			}
-			buckets.persist(i);
+			buckets.persist(bandIndex);
 			bandEndTime = System.currentTimeMillis();
-			System.out.println(String.format("Processed band %d in %d sec", i+1, (bandEndTime - bandStartTime)/1000));
+			System.out.println(String.format("Processed band %d in %d ms", bandIndex+1, bandEndTime - bandStartTime));
 		}
 		long endTime = System.currentTimeMillis();
 		System.out.println(String.format("Processing all bands took %d sec", (endTime - startTime)/1000));
