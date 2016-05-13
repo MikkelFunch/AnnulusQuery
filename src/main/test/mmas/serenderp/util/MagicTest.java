@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import junit.framework.Assert;
 import main.java.mmas.serenderp.Constants;
 import main.java.mmas.serenderp.Magic;
 import main.java.mmas.serenderp.util.SparseVector;
@@ -15,15 +16,12 @@ import org.junit.Test;
 
 public class MagicTest {
 	@Test
-	public void testUserQueryPoint() {
-		Map<Integer, SparseVector> movies = getExampleMovies();
-		List<Entry<Integer, Double>> userRatings = getUserRatings();
-		
-		SparseVector userQueryPoint = Magic.getUserQueryPoint(userRatings, movies, 2);
-
+	public void testSerendipity() {
+		double serendipity = Magic.calculateSerendipityForUser(getExampleUserRatings(), getExampleRecommendations());
+		Assert.assertEquals(0.5, serendipity);
 	}
 	
-	private List<Entry<Integer, Double>> getUserRatings() {
+	private List<Entry<Integer, Double>> getExampleUserRatings() {
 		List<Entry<Integer, Double>> result = new ArrayList<Entry<Integer, Double>>();
 		
 		Entry rating1 = new AbstractMap.SimpleEntry<Integer, Double>(1, 5.0);
@@ -42,44 +40,13 @@ public class MagicTest {
 		return result;
 	}
 	
-	private Map<Integer, SparseVector> getExampleMovies() {
-		SparseVector a = new SparseVector(4);
-		SparseVector b = new SparseVector(4);
-		SparseVector c = new SparseVector(4);
-		SparseVector d = new SparseVector(4);
-		SparseVector e = new SparseVector(4);
-		a.addEntry(1);
-		a.addEntry(0);
-		a.addEntry(0);
-		a.addEntry(0);
-		
-		b.addEntry(1);
-		b.addEntry(1);
-		b.addEntry(0);
-		b.addEntry(0);
-		
-		c.addEntry(1);
-		c.addEntry(1);
-		c.addEntry(1);
-		c.addEntry(0);
-		
-		d.addEntry(1);
-		d.addEntry(1);
-		d.addEntry(1);
-		d.addEntry(1);
-		
-		e.addEntry(0);
-		e.addEntry(1);
-		e.addEntry(1);
-		e.addEntry(1);
-		
-		Map<Integer, SparseVector> movies = new HashMap<Integer, SparseVector>();
-		movies.put(1, a);
-		movies.put(2, b);
-		movies.put(3, c);
-		movies.put(4, d);
-		movies.put(5, e);
-		
-		return movies;
+	private List<Integer> getExampleRecommendations() {
+		List<Integer> recommendations = new ArrayList<Integer>();
+		recommendations.add(1);
+		recommendations.add(2);
+		recommendations.add(3);
+		recommendations.add(5);
+		recommendations.add(500);
+		return recommendations;
 	}
 }

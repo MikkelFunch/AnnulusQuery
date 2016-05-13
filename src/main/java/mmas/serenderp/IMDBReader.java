@@ -157,7 +157,7 @@ public class IMDBReader {
 		ranBefore = true;
 		List<SparseVector> moviesToRemove = new ArrayList<SparseVector>();
 		for (SparseVector sv : IMDBmovies.values()) {
-			if(sv.getNonZeroElements().length < 10) {
+			if(sv.getNonZeroElements().length < 5) {
 				moviesToRemove.add(sv);
 				continue;
 			}
@@ -198,7 +198,7 @@ public class IMDBReader {
 	}
 
 	private static void addGenresToMovies() {
-		try (BufferedReader br = new BufferedReader(new FileReader(new File("data/genres.txt")))) {
+		try (BufferedReader br = new BufferedReader(new FileReader(new File("data/genres.list")))) {
 			String line;
 
 			while ((line = br.readLine()) != null) {
@@ -207,7 +207,16 @@ public class IMDBReader {
 				if (m.find()) {
 					String movie = m.group(0);
 					String genre = line.substring(line.lastIndexOf("\t") + 1);
-					IMDBmovies.get(movie).addEntry(indices.indexOf(genre), genreWeight);
+					
+					SparseVector sv = IMDBmovies.get(movie);
+					if (sv != null) {
+						int g = indices.indexOf(genre);
+						if (g != -1) {
+							sv.addEntry(g, genreWeight);
+						}
+					}
+					
+//					IMDBmovies.get(movie).addEntry(indices.indexOf(genre), genreWeight);
 				}
 			}
 		} catch (FileNotFoundException e) {

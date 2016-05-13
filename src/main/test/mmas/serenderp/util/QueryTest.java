@@ -1,5 +1,7 @@
 package main.test.mmas.serenderp.util;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -9,6 +11,7 @@ import org.junit.Test;
 import main.java.mmas.serenderp.Constants;
 import main.java.mmas.serenderp.Engine;
 import main.java.mmas.serenderp.IMDBReader;
+import main.java.mmas.serenderp.brute.LinearAnnulus;
 import main.java.mmas.serenderp.util.SparseVector;
 
 public class QueryTest {
@@ -32,7 +35,7 @@ public class QueryTest {
 		allMovies = IMDBReader.getIMDBMovies();
 	}
 	
-	@Test
+//	@Test
 	public void testAmountOfRandomVectors() {
 		final int bands = 20, bandSize = 1;
 		final int[] amountOfRandomVectors = { 100, 50, 25, 10, 5, 1 };
@@ -46,6 +49,20 @@ public class QueryTest {
 		}
 	}
 	
+	@Test
+	public void testAmountOfBands(){
+		final int amountOfBands[] = {50, 20, 10, 5, 2, 1};
+		final int bandSize = 1, randomVectors = 10;
+		
+		System.out.println("Amound of bands");
+		printMovies();
+		for(int bands : amountOfBands) {
+			Constants.setParameters(bands, bandSize, randomVectors);
+			System.out.print(bands);
+			query();
+		}
+	}
+	
 	private void query() {
 		SparseVector queryPoint;
 		for(String movieName : movieNames) {
@@ -55,7 +72,13 @@ public class QueryTest {
 				continue;
 			}
 			Assert.assertNotNull(queryPoint);
-			Engine.queryMemory(c, r, w, queryPoint, serendipitousMoviesToFind);
+			List<SparseVector> result = Engine.queryMemory(c, r, w, queryPoint, serendipitousMoviesToFind);
+			
+			//linear
+			Collection<SparseVector> linearResult = LinearAnnulus.query(allMovies.values(), queryPoint, Constants.R, Constants.W, 1, serendipitousMoviesToFind);
+			if (result != null && linearResult != null) {
+				System.out.print(linearResult.size() / result.size());
+			}
 		}
 		System.out.println();
 	}
