@@ -28,7 +28,7 @@ public class Engine {
 //		System.out.println("Got userratings");
 //		Magic.intuitionPlots(users, movies);
 
-		Constants.setParameters(10, 1, 10);
+		Constants.setParameters(1, 2, 10);
 		
 		// PRE PROCESS
 		Long startTime = System.currentTimeMillis();
