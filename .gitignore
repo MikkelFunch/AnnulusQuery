@@ -22,4 +22,4 @@ hs_err_pid*
 *.csv
 
 /vectors/
-/buckets/
+/bucket/

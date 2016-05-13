@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,8 +27,12 @@ public class IMDBReader {
 	
 	private static Map<Integer, SparseVector> indexToVectorMap;
 	private static Map<SparseVector, Integer> vectorToIndexMap;
+	
+	private static double genreWeight = 2d;
+	private static double directorWeight = 1.5;
+	private static double actorWeight = 1d;
 
-	private static void insertActorsActresses(String path) {
+	private static void insertActorsActresses(String path, double weight) {
 		try (BufferedReader br = new BufferedReader(new FileReader(new File(path)))) {
 			String line;
 			boolean added = true;
@@ -48,13 +53,13 @@ public class IMDBReader {
 					indices.add(line.substring(0, line.indexOf("\t")));
 					// add actor to movie
 					String movieLine = line.substring(line.lastIndexOf("\t") + 1);
-					if (insertActorToMovie(movieLine, id)) {
+					if (insertActorToMovie(movieLine, id, weight)) {
 						added = true;
 					}
 				} else { // Just movie
 					// add actor to movie
 					String movieLine = line.substring(line.lastIndexOf("\t") + 1);
-					if (insertActorToMovie(movieLine, id)) {
+					if (insertActorToMovie(movieLine, id, weight)) {
 						added = true;
 					}
 				}
@@ -66,7 +71,7 @@ public class IMDBReader {
 		}
 	}
 
-	private static boolean insertActorToMovie(String movieLine, int id) {
+	private static boolean insertActorToMovie(String movieLine, int id, double weight) {
 		Matcher m = pattern.matcher(movieLine);
 		if (m.find()) {
 			String movie = m.group(0);
@@ -75,7 +80,7 @@ public class IMDBReader {
 				lastMovie = movie;
 				if (IMDBmovies.containsKey(movie)) {
 					SparseVector sv = IMDBmovies.get(movie);
-					sv.addEntry(id, 1d);
+					sv.addEntry(id, weight);
 					return true;
 				}
 			} else {
@@ -87,11 +92,11 @@ public class IMDBReader {
 	}
 
 	private static void insertActors() {
-		insertActorsActresses("data/actors.list");
+		insertActorsActresses("data/actors.list", actorWeight);
 	}
 
 	private static void insertActresses() {
-		insertActorsActresses("data/actresses.list");
+		insertActorsActresses("data/actresses.list", actorWeight);
 	}
 
 	private static void insertGenres() {
@@ -150,14 +155,22 @@ public class IMDBReader {
 
 		// Get ratings, 0 - 1
 		ranBefore = true;
+		List<SparseVector> moviesToRemove = new ArrayList<SparseVector>();
 		for (SparseVector sv : IMDBmovies.values()) {
+			if(sv.getNonZeroElements().length < 10) {
+				moviesToRemove.add(sv);
+				continue;
+			}
 			sv.scaleToUnitVector();
+		}
+		for(SparseVector movie : moviesToRemove) {
+			IMDBmovies.remove(movie.getMovieTitle());
 		}
 		return IMDBmovies;
 	}
 
 	private static void insertDirectors() {
-		insertActorsActresses("data/directors.list");
+		insertActorsActresses("data/directors.list", directorWeight);
 	}
 
 	private static void insertRatings() {
@@ -194,7 +207,7 @@ public class IMDBReader {
 				if (m.find()) {
 					String movie = m.group(0);
 					String genre = line.substring(line.lastIndexOf("\t") + 1);
-					IMDBmovies.get(movie).addEntry(indices.indexOf(genre), 1d);
+					IMDBmovies.get(movie).addEntry(indices.indexOf(genre), genreWeight);
 				}
 			}
 		} catch (FileNotFoundException e) {

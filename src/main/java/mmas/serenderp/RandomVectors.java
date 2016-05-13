@@ -15,7 +15,6 @@ import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.apache.commons.math3.random.RandomGenerator;
-import org.junit.Assert;
 
 import main.java.mmas.serenderp.util.MathTool;
 
@@ -121,5 +120,10 @@ public class RandomVectors {
 			seeds[i] = rng.nextInt();
 		}
 		return seeds;
+	}
+	
+	public static void createRandomVectors() {
+		seeds = createSeeds();
+		randomVectors = new RealVector[AMOUNT_OF_RANDOM_VECTORS];
 	}
 }

@@ -8,9 +8,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.PriorityQueue;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -22,19 +22,18 @@ import main.java.mmas.serenderp.util.SparseVector;
 public class Engine {
 
 	public static void main(String[] args) {
-		init();
-		Map<Integer, SparseVector> movies = PreProcess.getMovies();
-		System.out.println("Got movies");
-		List<List<Entry<Integer,Double>>> users = MovieLensReader.loadUserRatings();
-		System.out.println("Got userratings");
-		Magic.intuitionPlots(users, movies);
+//		Map<Integer, SparseVector> movies = PreProcess.getMovies();
+//		System.out.println("Got movies");
+//		List<List<Entry<Integer,Double>>> users = MovieLensReader.loadUserRatings();
+//		System.out.println("Got userratings");
+//		Magic.intuitionPlots(users, movies);
 
 		// PRE PROCESS
-//		Long startTime = System.currentTimeMillis();
-//		Map<String, SparseVector> movies = IMDBReader.getIMDBMovies();
-//		Long endTime = System.currentTimeMillis();
-//		Long duration = (endTime - startTime);
-//		System.out.println(String.format("IMDB reading duration: %d sec", (duration / 1000)));
+		Long startTime = System.currentTimeMillis();
+		Map<String, SparseVector> movies = IMDBReader.getIMDBMovies();
+		Long endTime = System.currentTimeMillis();
+		Long duration = (endTime - startTime);
+		System.out.println(String.format("IMDB reading duration: %d sec", (duration / 1000)));
 
 		// Test data
 //		final String movieName = "Toy Story (1995)";
@@ -49,11 +48,11 @@ public class Engine {
 //		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
 //		
 		// DATA STRUCTURE MEMORY
-//		startTime = System.currentTimeMillis();
-//		Buckets buckets = PreProcess.buildQueryStructureMemory(movies);
-//		endTime = System.currentTimeMillis();
-//		duration = (endTime - startTime);
-//		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
+		startTime = System.currentTimeMillis();
+		PreProcess.buildQueryStructureMemory(movies);
+		endTime = System.currentTimeMillis();
+		duration = (endTime - startTime);
+		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
 
 //		consoleUi(null, movies);
 //		consoleUi(buckets, movies);
@@ -77,13 +76,15 @@ public class Engine {
 		//endTime = System.currentTimeMillis();
 		//duration = (endTime - startTime);
 		//System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
+		
+		consoleUi(null, movies);
 	}
 
 	private static void consoleUi(Buckets buckets, Map<String, SparseVector> movies) {
 		Scanner scanner = new Scanner(System.in);
 		String movieName = null;
 		SparseVector q;
-		Double r = null, w = null, c = null;
+		double r = 1, w = 1, c = 1;
 		while(true) {
 			System.out.println("What movie do you want to use as query point?");
 			String newMovieName = scanner.nextLine();
@@ -128,9 +129,11 @@ public class Engine {
 			if (result.isEmpty()) {
 				System.out.println("No result was found");
 			} else {
-				for(SparseVector movie : new HashSet<SparseVector>(result)) {
+				Set<SparseVector> foundMovies = new HashSet<SparseVector>(result);
+				for(SparseVector movie : foundMovies) {
 					System.out.println(String.format("The movie \"%s\" was found as serendipitous. The distance between the two movies are %f", movie.getMovieTitle(), movie.distanceTo(q)));
 				}
+				System.out.println(String.format("%d results was found", foundMovies.size()));
 			}
 		}
 		scanner.close();
@@ -146,7 +149,7 @@ public class Engine {
 		for(int bandIndex = 0; bandIndex < NUMBER_OF_BANDS; bandIndex++) {
 			Bucket bucket = Buckets.getBucketMemory(bandIndex, MinHashing.minHash(q, bandIndex));
 			if(bucket.getList(0).size() > 1) {
-				System.out.println("Number of movies in the same bucket was " + bucket.getList(0).size());
+//				System.out.println("Number of movies in the same bucket was " + bucket.getList(0).size());
 				allAloneInThisWorld = false;
 			} else {
 				continue;
@@ -174,7 +177,8 @@ public class Engine {
 		for (int i = 0; i < n; i++) {
 			do {
 				if (pq.isEmpty()) {
-					return resultList;
+					break;
+//					return resultList;
 				}
 				Quad currentPoint = pq.poll();
 				tempResult = currentPoint.getVector();
@@ -186,13 +190,14 @@ public class Engine {
 					double priorityValue = calculatePriorityValue(next.getRight(), q, vectorIndex);
 					pq.add(new Quad(priorityValue, next.getRight(), predLink, vectorIndex));
 				}
-				if(++pointsEvaluated % 1000 == 0) {
-					System.out.println(String.format("%d points evaluated", pointsEvaluated));
-				}
+				pointsEvaluated++;
+//				if(++pointsEvaluated % 1000 == 0) {
+//					System.out.println(String.format("%d points evaluated", pointsEvaluated));
+//				}
 			} while (!(r / w < distance && distance < r * w));
 			resultList.add(tempResult);
 		}
-		
+		System.out.print("\t" + pointsEvaluated);
 		//Check annulus correctness
 		return resultList;
 	}
@@ -254,9 +259,5 @@ public class Engine {
 
 	private static double calculatePriorityValue(SparseVector p, SparseVector q, int randomVectorIndex) {
 		return SparseVector.dotProduct(p.subtract(q), RandomVectors.getRandomVector(randomVectorIndex));
-	}
-
-	private static void init() {
-		MinHashing.init();
 	}
 }
