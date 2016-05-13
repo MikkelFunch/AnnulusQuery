@@ -199,7 +199,7 @@ public class Engine {
 			} while (!(r / w < distance && distance < r * w));
 			resultList.add(tempResult);
 		}
-		System.out.println(pointsEvaluated);
+		System.out.print("\t" + pointsEvaluated);
 		//Check annulus correctness
 		return resultList;
 	}
