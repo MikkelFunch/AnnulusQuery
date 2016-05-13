@@ -25,6 +25,14 @@ import main.java.mmas.serenderp.util.SparseVector;
 public class Magic {
 	public static int numberOfRatedMoviesForEligibility = 50;
 	
+	public static void main(String[] args) {
+		Map<Integer, SparseVector> movies = PreProcess.getMovies();
+		System.out.println("Got movies");
+		List<List<Entry<Integer,Double>>> users = MovieLensReader.loadUserRatings();
+		System.out.println("Got userratings");
+		Magic.intuitionPlots(users, movies);
+	}
+	
 	public static SparseVector getUserQueryPoint(List<Entry<Integer,Double>> userRatings, Map<Integer,SparseVector> movies, int numberOfMoviesToCalculateFrom) {
 		SparseVector userAverageMovie = new SparseVector(Constants.DIMENSIONS);
 		//Calculate the user's movie-center, weighed by rating
@@ -138,7 +146,7 @@ public class Magic {
 
 		Random rand = new Random();
 		List<List<Entry<Integer,Double>>> userSample = new ArrayList<List<Entry<Integer,Double>>>();
-		for (int i = 0; i < 50000; i++) {
+		for (int i = 0; i < 1000; i++) {
 			int idx = rand.nextInt(users.size());
 			userSample.add(users.get(idx));
 			users.remove(idx);
