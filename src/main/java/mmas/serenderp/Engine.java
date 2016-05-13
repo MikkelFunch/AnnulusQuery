@@ -22,15 +22,13 @@ import main.java.mmas.serenderp.util.SparseVector;
 public class Engine {
 
 	public static void main(String[] args) {
-		Constants.setParameters(2, 2, 10);
+		Constants.setParameters(1, 2, 10);
 		
 //		Map<Integer, SparseVector> movies = PreProcess.getMovies();
 //		System.out.println("Got movies");
 //		List<List<Entry<Integer,Double>>> users = MovieLensReader.loadUserRatings();
 //		System.out.println("Got userratings");
 //		Magic.intuitionPlots(users, movies);
-
-		Constants.setParameters(1, 2, 10);
 		
 		// PRE PROCESS
 		Long startTime = System.currentTimeMillis();

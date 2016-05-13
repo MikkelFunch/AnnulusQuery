@@ -59,12 +59,27 @@ public class QueryTest {
 		for(int bands : amountOfBands) {
 			Constants.setParameters(bands, bandSize, randomVectors);
 			System.out.print(bands);
-			query();
+			queryBands();
 		}
 	}
 	
 	private void query() {
 		SparseVector queryPoint;
+		for(String movieName : movieNames) {
+			queryPoint = allMovies.get(movieName);
+			if(queryPoint == null) {
+				System.out.println(movieName);
+				continue;
+			}
+			Assert.assertNotNull(queryPoint);
+			Engine.queryMemory(c, r, w, queryPoint, serendipitousMoviesToFind);
+		}
+		System.out.println();
+	}
+	
+	private void queryBands() {
+		SparseVector queryPoint;
+		
 		for(String movieName : movieNames) {
 			queryPoint = allMovies.get(movieName);
 			if(queryPoint == null) {
