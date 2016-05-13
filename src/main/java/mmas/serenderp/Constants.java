@@ -18,6 +18,6 @@ public class Constants {
 		HASH_FUNCTIONS_PER_BAND = hashFuntionsPerBand;
 		NUMBER_OF_HASH_FUNCTIONS = NUMBER_OF_BANDS * HASH_FUNCTIONS_PER_BAND;
 		AMOUNT_OF_RANDOM_VECTORS = amountOfRandomVectors;
-		RandomVectors.createRandomVectors();
+//		RandomVectors.createRandomVectors();
 	}
 }
