@@ -22,15 +22,13 @@ import main.java.mmas.serenderp.util.SparseVector;
 public class Engine {
 
 	public static void main(String[] args) {
-		Constants.setParameters(2, 2, 10);
+		Constants.setParameters(5, 2, 10);
 		
 //		Map<Integer, SparseVector> movies = PreProcess.getMovies();
 //		System.out.println("Got movies");
 //		List<List<Entry<Integer,Double>>> users = MovieLensReader.loadUserRatings();
 //		System.out.println("Got userratings");
 //		Magic.intuitionPlots(users, movies);
-
-		Constants.setParameters(1, 2, 10);
 		
 		// PRE PROCESS
 		Long startTime = System.currentTimeMillis();
@@ -52,11 +50,11 @@ public class Engine {
 //		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
 //		
 		// DATA STRUCTURE MEMORY
-//		startTime = System.currentTimeMillis();
-//		PreProcess.buildQueryStructureMemory(movies);
-//		endTime = System.currentTimeMillis();
-//		duration = (endTime - startTime);
-//		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
+		startTime = System.currentTimeMillis();
+		PreProcess.buildQueryStructureMemory(movies);
+		endTime = System.currentTimeMillis();
+		duration = (endTime - startTime);
+		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
 
 //		consoleUi(null, movies);
 //		consoleUi(buckets, movies);
@@ -81,7 +79,7 @@ public class Engine {
 		//duration = (endTime - startTime);
 		//System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
 		
-		consoleUi(null, movies);
+//		consoleUi(null, movies);
 	}
 
 	private static void consoleUi(Buckets buckets, Map<String, SparseVector> movies) {
