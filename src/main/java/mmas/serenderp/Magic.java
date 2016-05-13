@@ -127,23 +127,6 @@ public class Magic {
 	}
 
 	public static void intuitionPlots(List<List<Entry<Integer,Double>>> users, Map<Integer,SparseVector> movies) {
-		HashMap<Double,Integer> ratingIndexMap = new HashMap<Double,Integer>();
-		ratingIndexMap.put(0.5,0);
-		ratingIndexMap.put(1.0,1);
-		ratingIndexMap.put(1.5,2);
-		ratingIndexMap.put(2.0,3);
-		ratingIndexMap.put(2.5,4);
-		ratingIndexMap.put(3.0,5);
-		ratingIndexMap.put(3.5,6);
-		ratingIndexMap.put(4.0,7);
-		ratingIndexMap.put(4.5,8);
-		ratingIndexMap.put(5.0,9);
-
-		HashMap<Integer, Double> invRatingIndexMap = new HashMap<Integer, Double>();
-		for(Entry<Double,Integer> e : ratingIndexMap.entrySet()){
-			invRatingIndexMap.put(e.getValue(), e.getKey());
-		}
-
 		Random rand = new Random();
 		List<List<Entry<Integer,Double>>> userSample = new ArrayList<List<Entry<Integer,Double>>>();
 		for (int i = 0; i < 1000; i++) {
@@ -152,8 +135,7 @@ public class Magic {
 			users.remove(idx);
 		}
 
-		double[] avgRadiusByRating = new double[10];
-		int[] ratingCounts= new int[10];
+		HashMap<Double, Double> ratingDistancesMap = new HashMap<>();
 
 		for(List<Entry<Integer,Double>> user : userSample) {
 			if(0 == user.size()) {
@@ -168,21 +150,27 @@ public class Magic {
 			ArrayList<Entry<Integer,Double>> ratingsArray = new ArrayList<Entry<Integer,Double>>();
 			ratingStream.forEach(ratingsArray::add);
 
-			Entry<Integer,Double> rating = ratingsArray.get(rand.nextInt(ratingsArray.size()));
-			user.remove(rating.getKey());
-			SparseVector qMovie = movies.get(rating.getKey());
+			Entry<Integer,Double> qRating = ratingsArray.get(rand.nextInt(ratingsArray.size()));
+			user.remove(qRating.getKey());
+			SparseVector qMovie = movies.get(qRating.getKey());
 
-			for(Entry<Integer,Double> r : user){
+			HashMap<Double, Double> userRatingDistancesMap = new HashMap<>();
+			HashMap<Double, Integer> userRatingCountMap = new HashMap<>();
+			for(Entry<Integer,Double> r : user) {
 				double d = distance(qMovie, movies.get(r.getKey()));
-				int index = ratingIndexMap.get(r.getValue());
-				avgRadiusByRating[index] += d;
-				ratingCounts[index]++;
+				userRatingDistancesMap.compute(r.getValue(), (k,v) ->(null == v) ? d : v+d);
+				userRatingCountMap.compute(r.getValue(), (k,v) -> (null == v) ? 1 : v+1);
 			}
+
+			for(Double rating : userRatingDistancesMap.keySet()){
+				double d = userRatingDistancesMap.get(rating);
+				double avgDist = d/userRatingCountMap.get(rating);
+				ratingDistancesMap.compute(rating, (k,v) -> (null == v) ? avgDist : v + avgDist);
+			}
+
 		}
-		System.out.println("Avg radius vs rating:");
-		for(int i = 0; i < avgRadiusByRating.length; i++) {
-			System.out.println((invRatingIndexMap.get(i)) + " " + avgRadiusByRating[i]/ratingCounts[i]);
-		}
+		System.out.println("Radius vs rating:");
+		ratingDistancesMap.forEach((k,v) -> System.out.println(k + " " + v/userSample.size()));
 	}
 	
 	/***
