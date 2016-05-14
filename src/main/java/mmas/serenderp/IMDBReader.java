@@ -157,7 +157,7 @@ public class IMDBReader {
 		ranBefore = true;
 		List<SparseVector> moviesToRemove = new ArrayList<SparseVector>();
 		for (SparseVector sv : IMDBmovies.values()) {
-			if(sv.getNonZeroElements().length < 5) {
+			if(sv.getNonZeroElements().length < 5) { //TODO: gogo
 				moviesToRemove.add(sv);
 				continue;
 			}
