@@ -24,7 +24,7 @@ import main.java.mmas.serenderp.util.SparseVector;
 public class Engine {
 
 	public static void main(String[] args) {
-		Constants.setParameters(5, 2, 10);
+		Constants.setParameters(3, 2, 10);
 
 		// Map<Integer, SparseVector> movies = PreProcess.getMovies();
 		// System.out.println("Got movies");

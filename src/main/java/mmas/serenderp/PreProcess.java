@@ -29,9 +29,6 @@ public class PreProcess {
 			
 			bandStartTime = System.currentTimeMillis();
 			for (SparseVector sv : movies.values()) {
-				if (sv.getMovieTitle().equals("Kasal O' Sakal (1964)")) {
-					System.out.print("");
-				}
 //				if (!sv.hasActors() || sv.getNonZeroElements().length < 10) {
 //					continue;
 //				}
