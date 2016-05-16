@@ -5,9 +5,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -15,12 +17,13 @@ import org.junit.Test;
 import main.java.mmas.serenderp.Constants;
 import main.java.mmas.serenderp.Engine;
 import main.java.mmas.serenderp.IMDBReader;
+import main.java.mmas.serenderp.brute.LinearAnnulus;
 import main.java.mmas.serenderp.util.SparseVector;
 
 public class QueryTest {
 	private static Map<String, SparseVector> allMovies;
 	private static final double c = 1, r = 1.339, w = 1.025;
-	private static final int serendipitousMoviesToFind = 10;
+	private static final int[] serendipitousMoviesToFind = { 1, 10 };
 	private static final List<String> movieNames = loadTestMoviesFromFile();
 
 	@BeforeClass
@@ -30,17 +33,33 @@ public class QueryTest {
 
 	@Test
 	public void testAmountOfRandomVectors() {
-		final int bands = 5, bandSize = 2;
-		final int[] amountOfRandomVectors = { 50, 25, 10, 5, 1 };
+		final int bands = 20, bandSize = 2;
+		final int[] amountOfRandomVectors = { 50, 25 };//, 10, 5, 1 };
 
-		System.out.println("Amount of random vectors");
-		for (int randomVectors : amountOfRandomVectors) {
-			Constants.setParameters(bands, bandSize, randomVectors);
-			System.out.print(randomVectors);
-			query();
+		SparseVector queryPoint;
+		for (int moviesToFind : serendipitousMoviesToFind) {
+			System.out.println(String.format("Querying for %d movies\n", moviesToFind));
+			System.out.println("Amount of random vectors\tAverage number of points examined");
+			for (int randomVectors : amountOfRandomVectors) {
+				Constants.setParameters(bands, bandSize, randomVectors);
+				double numberOfMovies = 0;
+				double pointsExamined = 0;
+				System.out.print(randomVectors);
+				for (String movieName : movieNames) {
+					queryPoint = allMovies.get(movieName);
+					Assert.assertNotNull(queryPoint);
+					Pair<List<SparseVector>, Integer> results = Engine.queryMemory(c, r, w, queryPoint, moviesToFind);
+					if (results.getLeft().size() == moviesToFind) {
+						pointsExamined += results.getRight();
+						numberOfMovies++;
+					}
+				}
+				System.out.println(String.format("\t%.2f", pointsExamined / numberOfMovies));
+			}
+			System.out.println();
 		}
 	}
-
+	
 //	@Test
 //	public void testAmountOfBands() {
 ////		final int amountOfBands[] = { 100, 75, 50, 30, 20, 10, 5, 4, 2, 1 };
@@ -162,19 +181,15 @@ public class QueryTest {
 		return result;
 	}
 
-	private void query() {
-		SparseVector queryPoint;
-		for (String movieName : movieNames) {
-			queryPoint = allMovies.get(movieName);
-			if (queryPoint == null) {
-				System.out.println(movieName);
-				continue;
-			}
-			Assert.assertNotNull(queryPoint);
-			Engine.queryMemory(c, r, w, queryPoint, serendipitousMoviesToFind);
-		}
-		System.out.println();
-	}
+//	private void query() {
+//		SparseVector queryPoint;
+//		for (String movieName : movieNames) {
+//			queryPoint = allMovies.get(movieName);
+//			Assert.assertNotNull(queryPoint);
+//			Engine.queryMemory(c, r, w, queryPoint, serendipitousMoviesToFind);
+//		}
+//		System.out.println();
+//	}
 
 	private void printMovies() {
 		for (String movieName : movieNames) {
