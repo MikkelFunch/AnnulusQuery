@@ -32,7 +32,7 @@ public class LinearAnnulus {
 		}).limit(n).collect(Collectors.toList());
 	}
 	
-	public ImmutablePair<List<SparseVector>, Integer> queryPointsExamined(Collection<SparseVector> movies,  SparseVector q, double r, double w, double c, int n) {
+	public static ImmutablePair<List<SparseVector>, Integer> queryPointsExamined(Collection<SparseVector> movies,  SparseVector q, double r, double w, double c, int n) {
 		double wc = w*c;
 		int pointsExamined = 0;
 		List<SparseVector> pointsFound = new ArrayList<SparseVector>();
