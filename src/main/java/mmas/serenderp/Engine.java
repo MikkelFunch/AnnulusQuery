@@ -13,6 +13,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import main.java.mmas.serenderp.util.Bucket;
@@ -52,7 +53,9 @@ public class Engine {
 		// sec", (duration / 1000)));
 		//
 
-
+		final int[] amountOfRandomVectors = { 25, 10, 5, 1 };
+		final int numbersOfBands = 20, hashFunctionsPerBand = 2;
+		
 		// DATA STRUCTURE MEMORY
 		 startTime = System.currentTimeMillis();
 		 PreProcess.buildQueryStructureMemory(movies);
@@ -145,7 +148,7 @@ public class Engine {
 			// List<SparseVector> result = query(buckets, c, r, w, q,
 			// Integer.MAX_VALUE);
 			List<SparseVector> result;
-			result = queryMemory(c, r, w, q, Integer.MAX_VALUE);
+			result = queryMemory(c, r, w, q, Integer.MAX_VALUE).getLeft();
 			long endTime = System.currentTimeMillis();
 			long duration = (endTime - startTime);
 
@@ -167,9 +170,8 @@ public class Engine {
 		scanner.close();
 	}
 
-	public static List<SparseVector> queryMemory(double c, double r, double w, SparseVector q, int n) {
+	public static Pair<List<SparseVector>, Integer> queryMemory(double c, double r, double w, SparseVector q, int n) {
 		w *= c;
-		boolean allAloneInThisWorld = true;
 
 		PriorityQueue<Quad> pq = new PriorityQueue<>();
 		// Fill pq
@@ -179,14 +181,12 @@ public class Engine {
 			if (bucket.getList(0).size() > 1) {
 				// System.out.println("Number of movies in the same bucket was "
 				// + bucket.getList(0).size());
-				allAloneInThisWorld = false;
 			} else {
 				continue;
 			}
 			// System.out.println(String.format("Bucket has %d elements",
 			// bucket.getList(0).size()));
 			for (int i = 0; i < AMOUNT_OF_RANDOM_VECTORS; i++) {
-				// NullPointerexception thrown here
 				SparseVector p = bucket.getHead(i);
 				if (p != null) {
 					double priorityValue = calculatePriorityValue(p, q, i);
@@ -202,7 +202,7 @@ public class Engine {
 		SparseVector tempResult = null;
 		List<SparseVector> resultList = new ArrayList<>();
 		if (pq.isEmpty()) {
-			// System.out.println("PQ is empty before looking for results");
+//			 System.out.println(String.format("PQ is empty before looking for results with query point being %s", q.getMovieTitle()));
 		}
 		search: for (int i = 0; i < n; i++) {
 			do {
@@ -228,28 +228,22 @@ public class Engine {
 			} while (!(r / w < distance && distance < r * w));
 			resultList.add(tempResult);
 		}
-		System.out.print("\t" + pointsEvaluated);
+//		System.out.print("\t" + pointsEvaluated);
 		// Check annulus correctness
-		return resultList;
+		
+		return new ImmutablePair<List<SparseVector>, Integer>(resultList, pointsEvaluated);
 	}
 
 	public static List<SparseVector> query(Buckets queryStructure, double c, double r, double w, SparseVector q,
 			int n) {
 		w *= c;
-		boolean allAloneInThisWorld = true;
 
 		PriorityQueue<Quad> pq = new PriorityQueue<>();
 		// Fill pq
 
 		for (int bandIndex = 0; bandIndex < NUMBER_OF_BANDS; bandIndex++) {
 			Bucket bucket = queryStructure.getBucket(bandIndex, MinHashing.minHash(q, bandIndex));
-			if (bucket.getList(0).size() > 1) {
-				allAloneInThisWorld = false;
-			}
-			// System.out.println(String.format("Bucket has %d elements",
-			// bucket.getList(0).size()));
 			for (int i = 0; i < AMOUNT_OF_RANDOM_VECTORS; i++) {
-				// NullPointerexception thrown here
 				SparseVector p = bucket.getHead(i);
 				if (p != null) {
 					double priorityValue = calculatePriorityValue(p, q, i);

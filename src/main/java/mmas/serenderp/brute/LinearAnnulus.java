@@ -1,9 +1,13 @@
 package main.java.mmas.serenderp.brute;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import main.java.mmas.serenderp.IMDBReader;
 import main.java.mmas.serenderp.util.SparseVector;
@@ -26,6 +30,30 @@ public class LinearAnnulus {
 			double wc = w * c;
 			return (r / wc < d && d < r * wc);
 		}).limit(n).collect(Collectors.toList());
+	}
+	
+	public ImmutablePair<List<SparseVector>, Integer> queryPointsExamined(Collection<SparseVector> movies,  SparseVector q, double r, double w, double c, int n) {
+		double wc = w*c;
+		int pointsExamined = 0;
+		List<SparseVector> pointsFound = new ArrayList<SparseVector>();
+
+		for (SparseVector movie : movies) {
+			pointsExamined++;
+			
+			double d = q.distanceTo(movie);
+			
+			if( r / wc < d && d < r * wc ) {
+				pointsFound.add(movie);
+			} else {
+				continue;
+			}
+			
+			if(pointsFound.size() == n) {
+				break;
+			}
+		}
+		
+		return new ImmutablePair<List<SparseVector>, Integer>(pointsFound, pointsExamined);
 	}
 
 
