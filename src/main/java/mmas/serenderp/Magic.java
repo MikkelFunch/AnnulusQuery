@@ -129,13 +129,14 @@ public class Magic {
 	public static void intuitionPlots(List<List<Entry<Integer,Double>>> users, Map<Integer,SparseVector> movies) {
 		Random rand = new Random();
 		List<List<Entry<Integer,Double>>> userSample = new ArrayList<List<Entry<Integer,Double>>>();
-		for (int i = 0; i < 1000; i++) {
+		for (int i = 0; i < 10000; i++) {
 			int idx = rand.nextInt(users.size());
 			userSample.add(users.get(idx));
 			users.remove(idx);
 		}
 
 		HashMap<Double, Double> ratingDistancesMap = new HashMap<>();
+		HashMap<Double, Integer> ratingDistancesCountMap = new HashMap<>();
 
 		for(List<Entry<Integer,Double>> user : userSample) {
 			if(0 == user.size()) {
@@ -151,13 +152,17 @@ public class Magic {
 			ratingStream.forEach(ratingsArray::add);
 
 			Entry<Integer,Double> qRating = ratingsArray.get(rand.nextInt(ratingsArray.size()));
-			user.remove(qRating.getKey());
+			user.remove(qRating);
 			SparseVector qMovie = movies.get(qRating.getKey());
 
 			HashMap<Double, Double> userRatingDistancesMap = new HashMap<>();
 			HashMap<Double, Integer> userRatingCountMap = new HashMap<>();
 			for(Entry<Integer,Double> r : user) {
+				SparseVector movie = movies.get(r.getKey()); //test
 				double d = distance(qMovie, movies.get(r.getKey()));
+				if(d<0.8) {
+					int a = 0;  //test
+				}
 				userRatingDistancesMap.compute(r.getValue(), (k,v) ->(null == v) ? d : v+d);
 				userRatingCountMap.compute(r.getValue(), (k,v) -> (null == v) ? 1 : v+1);
 			}
@@ -166,11 +171,14 @@ public class Magic {
 				double d = userRatingDistancesMap.get(rating);
 				double avgDist = d/userRatingCountMap.get(rating);
 				ratingDistancesMap.compute(rating, (k,v) -> (null == v) ? avgDist : v + avgDist);
+				ratingDistancesCountMap.compute(rating, (k,v) -> (null == v) ? 1 : v+1);
 			}
-
 		}
 		System.out.println("Radius vs rating:");
-		ratingDistancesMap.forEach((k,v) -> System.out.println(k + " " + v/userSample.size()));
+		for(double d = 1.0; d < 5.5; d += 0.5) {
+			System.out.println(d + " " + ratingDistancesMap.get(d)/ratingDistancesCountMap.get(d));
+		}
+//		ratingDistancesMap.forEach((k,v) -> System.out.println(k + " " + v/userSample.size()));
 	}
 	
 	/***

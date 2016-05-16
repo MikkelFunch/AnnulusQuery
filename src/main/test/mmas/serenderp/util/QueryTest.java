@@ -60,8 +60,9 @@ public class QueryTest {
 		}
 	}
 	
+	@Test
 	public void testLinearPointsExamined() {
-		Map<String, SparseVector> movies = IMDBReader.getIMDBMovies();
+		//Map<String, SparseVector> movies = IMDBReader.getIMDBMovies();
 		
 		SparseVector queryPoint;
 		for (int moviesToFind : serendipitousMoviesToFind) {
@@ -70,8 +71,9 @@ public class QueryTest {
 				double pointsExamined = 0;
 				for (String movieName : movieNames) {
 					queryPoint = allMovies.get(movieName);
+					if(queryPoint == null) System.out.println(movieName);
 					Assert.assertNotNull(queryPoint);
-					Pair<List<SparseVector>, Integer> results = LinearAnnulus.queryPointsExamined(movies.values(), queryPoint, r, w, c, moviesToFind);
+					Pair<List<SparseVector>, Integer> results = LinearAnnulus.queryPointsExamined(allMovies.values(), queryPoint, r, w, c, moviesToFind);
 					if (results.getLeft().size() == moviesToFind) {
 						pointsExamined += results.getRight();
 						numberOfMovies++;
