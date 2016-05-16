@@ -3,8 +3,6 @@ package main.java.mmas.serenderp;
 import static main.java.mmas.serenderp.Constants.AMOUNT_OF_RANDOM_VECTORS;
 import static main.java.mmas.serenderp.Constants.NUMBER_OF_BANDS;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -24,7 +22,7 @@ import main.java.mmas.serenderp.util.SparseVector;
 public class Engine {
 
 	public static void main(String[] args) {
-		Constants.setParameters(3, 2, 10);
+		Constants.setParameters(64, 2, 10);
 
 		// Map<Integer, SparseVector> movies = PreProcess.getMovies();
 		// System.out.println("Got movies");
@@ -54,11 +52,11 @@ public class Engine {
 		// sec", (duration / 1000)));
 		//
 		// DATA STRUCTURE MEMORY
-		startTime = System.currentTimeMillis();
-		PreProcess.buildQueryStructureMemory(movies);
-		endTime = System.currentTimeMillis();
-		duration = (endTime - startTime);
-		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
+//		startTime = System.currentTimeMillis();
+//		PreProcess.buildQueryStructureMemory(movies);
+//		endTime = System.currentTimeMillis();
+//		duration = (endTime - startTime);
+//		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
 
 		// consoleUi(null, movies);
 		// consoleUi(buckets, movies);
