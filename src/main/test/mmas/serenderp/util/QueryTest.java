@@ -5,9 +5,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -15,6 +17,7 @@ import org.junit.Test;
 import main.java.mmas.serenderp.Constants;
 import main.java.mmas.serenderp.Engine;
 import main.java.mmas.serenderp.IMDBReader;
+import main.java.mmas.serenderp.brute.LinearAnnulus;
 import main.java.mmas.serenderp.util.SparseVector;
 
 public class QueryTest {
@@ -41,122 +44,76 @@ public class QueryTest {
 		}
 	}
 
-//	@Test
-//	public void testAmountOfBands() {
-////		final int amountOfBands[] = { 100, 75, 50, 30, 20, 10, 5, 4, 2, 1 };
-//		final int amountOfBands[] = { 1 };
-//		final int bandSize = 2, randomVectors = 10;
-//
-//		System.out.println("Amount of bands");
-//		printMovies();
-//
-//		for (String movieName : movieNames) { // TODO: Remove
-//			SparseVector queryPoint = allMovies.get(movieName);
-//			if (queryPoint == null) {
-//				System.out.println(movieName);
-//				continue;
-//			}
-//		}
-//		for (int bands : amountOfBands) {
-//			Constants.setParameters(bands, bandSize, randomVectors);
-//			System.out.print(bands);
-//			queryBands();
-//		}
-//	}
+	@Test
+	public void testAmountOfBands() {
+		// final int amountOfBands[] = { 60, 50, 40, 30, 20, 10, 5, 2, 1 };
+		final int amountOfBands = 60;
+		final int bandSize = 2, randomVectors = 10;
 
-//	private void queryBands() {
-//		SparseVector queryPoint;
-//
-//		double success = 0;
-//
-//		 int amountOfTestMovies = 200;
-//		// ArrayList<String> works = new ArrayList<>();
-//		//
-//		 Random rand = new Random();
-//		// movieNames = new String[amountOfTestMovies];
-//		//
-//		// while (works.size() < amountOfTestMovies) {
-//		String[] allStrings = new String[allMovies.size()];
-//		Collection<SparseVector> allMoviesStringsCollection = allMovies.values();
-//		int i = 0;
-//		for (SparseVector sv : allMoviesStringsCollection) {
-//			allStrings[i] = sv.getMovieTitle();
-//
-//			i++;
-//		}
-//		
-//
-//		// String[] all = new String[allMovies.size()];
-//		// for (int i = 0; i < all.length; i++) {
-//		//
-//		// all[i] =
-//		// }
-//		// Map.Entry[] entries = (Entry[]) allMovies.entrySet().toArray();
-//		movieNames = new String[amountOfTestMovies];
-//		 for (int j = 0; j < amountOfTestMovies; j++) {
-//		 movieNames[j] = allStrings[rand.nextInt(allStrings.length)];
-//		 }
-//		//
-//		// i = 0;
-//		// movieNames = getTestMoviesFromFile();
-//		 
-//		 movieNames = loadTestMoviesFromFile();
-//		 
-//		for (String movieName : movieNames) {
-//
-//			queryPoint = allMovies.get(movieName);
-//			if (queryPoint == null) {
-//				System.out.println(movieName);
-//				continue;
-//			}
-//			Assert.assertNotNull(queryPoint);
-//			// System.out.println(movieName);
-//			// try {
-//			List<SparseVector> result = Engine.queryMemory(c, r, w, queryPoint, serendipitousMoviesToFind);
-//			// linear
-//			Collection<SparseVector> linearResult = LinearAnnulus.query(allMovies.values(), queryPoint, r, w, 1,
-//					serendipitousMoviesToFind);
-//			if (linearResult.size() == result.size()) {
-//				success++;
-//			} else {
-//				System.out.print("");
-//			}
-//
-//			// works.add(movieName);
-//			// i++;
-//			// } catch (Exception e) {
-//			// System.out.print("");
-//			// }
-//			// }
-//		}
-//		try(  PrintWriter out = new PrintWriter( "data/testMovies" )  ){
-//			for (String m : movieNames) {
-//		    out.println( m );
-//			
-//		}
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//
-//		System.out.println("Success: " + (success / movieNames.length) * 100 + "%");
-//		if ((success / movieNames.length) * 100 != 100) {
-//			System.out.println();
-//		}
-//
-//		System.out.println();
-//	}
+		System.out.println("Amount of bands");
+		printMovies();
+
+		// Test all bands
+		List<Pair<Integer, Double>> resultList = new ArrayList<>(amountOfBands);
+		for (int i = amountOfBands; i != 0; i--) {
+			Constants.setParameters(i, bandSize, randomVectors);
+			double result = queryBands();
+			resultList.add(Pair.of(i, result));
+			System.out.println("Finished band: " + i);
+		}
+
+		// Test band array
+		// List<Pair<Integer, Double>> resultList = new
+		// ArrayList<>(amountOfBands.length);
+		// for (int band : amountOfBands) {
+		// Constants.setParameters(band, bandSize, randomVectors);
+		// double result = queryBands();
+		// resultList.add(Pair.of(band, result));
+		// System.out.println("Finished band: " + band);
+		// }
+
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println("bands\tsuccessrate");
+		for (Pair<Integer, Double> pair : resultList) {
+			System.out.println(pair.getLeft() + "\t" + pair.getRight());
+		}
+	}
+
+	private double queryBands() {
+		SparseVector queryPoint;
+
+		double success = 0;
+
+		for (String movieName : movieNames) {
+			queryPoint = allMovies.get(movieName);
+			Assert.assertNotNull(queryPoint);
+			List<SparseVector> result = Engine.queryMemory(c, r, w, queryPoint, serendipitousMoviesToFind);
+
+			// linear
+			Collection<SparseVector> linearResult = LinearAnnulus.query(allMovies.values(), queryPoint, r, w, 1,
+					serendipitousMoviesToFind);
+			if (linearResult.size() == result.size()) {
+				success++;
+			}
+		}
+
+		System.out.println("Success: " + (success / movieNames.size()) * 100 + "%");
+		System.out.println();
+
+		return (success / movieNames.size()) * 100;
+	}
 
 	private static List<String> loadTestMoviesFromFile() {
 		ArrayList<String> result = new ArrayList<>();
-		 try (BufferedReader br = new BufferedReader(new FileReader(new File("data/testmovies.txt")))) {
-				String line;
-
-				while ((line = br.readLine()) != null) {
-					result.add(line);
-				}
-		 } catch (IOException e) {
-			// TODO Auto-generated catch block
+		try (BufferedReader br = new BufferedReader(new FileReader(new File("data/testmovies.txt")))) {
+			String line;
+			while ((line = br.readLine()) != null) {
+				result.add(line);
+			}
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return result;
