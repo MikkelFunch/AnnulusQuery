@@ -2,10 +2,12 @@ package main.java.mmas.serenderp;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -67,17 +69,42 @@ public class Buckets implements Iterable<Bucket> {
 	}
 
 	public void persist(int bandIndex) {
-		for (List<Integer> bandSequence : getBandSequences(bandIndex)) {
-			File file = getFileName(bandIndex, bandSequence);
-			file.getParentFile().mkdirs();
-			try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file))) {
-				out.writeObject(getBucket(bandIndex, bandSequence));
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.exit(13);
+		File folder = getFileName(bandIndex);
+		if(!folder.exists()) {
+			folder.mkdirs();
+			for (List<Integer> bandSequence : getBandSequences(bandIndex)) {
+				persist(bandIndex, bandSequence);
 			}
+		} else {
+			System.out.println("Skipping " + folder.getAbsolutePath());
 		}
+		
+//		for (List<Integer> bandSequence : getBandSequences(bandIndex)) {
+//			File file = getFileName(bandIndex, bandSequence);
+//			File bandIndexDir = file.getParentFile();
+//			if(bandIndexDir.exists()) {
+//				System.out.println("Skipping " + bandIndexDir.getAbsolutePath());
+//				break; // Already written. Skip
+//			}
+//			bandIndexDir.mkdirs();
+//			try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file))) {
+//				out.writeObject(getBucket(bandIndex, bandSequence));
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//				System.exit(13);
+//			}
+//		}
 		buckets = new HashMap<>();
+	}
+	
+	private void persist(int bandIndex, List<Integer> bandSequence) {
+		File file = getFileName(bandIndex, bandSequence);
+		try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file))) {
+			out.writeObject(getBucket(bandIndex, bandSequence));
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(13);
+		}
 	}
 
 	public static Bucket getBucketMemory(int bandIndex, List<Integer> bandSequence) {
@@ -90,7 +117,11 @@ public class Buckets implements Iterable<Bucket> {
 		}
 	}
 	
+	public static File getFileName(int bandIndex) {
+		return Paths.get("bucket", "hashesperband-" + HASH_FUNCTIONS_PER_BAND,"randomvector-" + AMOUNT_OF_RANDOM_VECTORS , "bandindex-" + bandIndex).toFile();
+	}
+	
 	private static File getFileName(int bandIndex, List<Integer> bandSequence) {
-		return Paths.get("bucket", "numberofbands-" + NUMBER_OF_BANDS + "-hashesperband-" + HASH_FUNCTIONS_PER_BAND,"randomvector-" + AMOUNT_OF_RANDOM_VECTORS , "bandindex-" + bandIndex, "bandsequence-" + bandSequence).toFile();
+		return new File(getFileName(bandIndex), bandSequence.toString());
 	}
 }
