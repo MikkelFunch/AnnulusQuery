@@ -5,15 +5,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.StandardSocketOptions;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -29,24 +24,24 @@ public class QueryTest {
 	private static Map<String, SparseVector> allMovies;
 	private static final double c = 1, r = 1.339, w = 1.025;
 	private static final int serendipitousMoviesToFind = 10;
-	private static String[] movieNames = { "Cars (2006)", "Titanic (1997)", "Toy Story (1995)",
-			"The Girl in Room 69 (1994)", "\"Mucho Gusto\" (2001)", "\"Spy TV\" (2001)", "\"The Mighty B!\" (2008)",
-			"\"Kung ako'y iiwan mo\" (2012)", "\"Gumapang ka sa lusak\" (2010)", "Cast Away (2000)",
-			"\"Fox News Sunday\" (1996)", "\"Zomergasten\" (1988)", "\"Eisai to tairi mou\" (2001)",
-			"\"The Glen Campbell Music Show\" (1982)", "\"Bela ladja\" (2006)", "Camino de Sacramento (1945)", };
+//	private static final String[] movieNames = { "Cars (2006)", "Titanic (1997)", "Toy Story (1995)",
+//			"The Girl in Room 69 (1994)", "\"Mucho Gusto\" (2001)", "\"Spy TV\" (2001)", "\"The Mighty B!\" (2008)",
+//			"\"Kung ako'y iiwan mo\" (2012)", "\"Gumapang ka sa lusak\" (2010)", "Cast Away (2000)",
+//			"\"Fox News Sunday\" (1996)", "\"Zomergasten\" (1988)", "\"Eisai to tairi mou\" (2001)",
+//			"\"The Glen Campbell Music Show\" (1982)", "\"Bela ladja\" (2006)", "Camino de Sacramento (1945)" };
+	private static final String[] movieNames = getTestMoviesFromFile();
 
 	@BeforeClass
 	public static void beforeClass() {
 		allMovies = IMDBReader.getIMDBMovies();
 	}
 
-	// @Test
+	@Test
 	public void testAmountOfRandomVectors() {
-		final int bands = 20, bandSize = 1;
-		final int[] amountOfRandomVectors = { 100, 50, 25, 10, 5, 1 };
+		final int bands = 5, bandSize = 2;
+		final int[] amountOfRandomVectors = { 50, 25, 10, 5, 1 };
 
-		System.out.print("Amount of random vectors");
-		printMovies();
+		System.out.println("Amount of random vectors");
 		for (int randomVectors : amountOfRandomVectors) {
 			Constants.setParameters(bands, bandSize, randomVectors);
 			System.out.print(randomVectors);
@@ -157,8 +152,7 @@ public class QueryTest {
 				continue;
 			}
 			Assert.assertNotNull(queryPoint);
-			// Engine.queryMemory(c, r, w, queryPoint,
-			// serendipitousMoviesToFind);
+			Engine.queryMemory(c, r, w, queryPoint, serendipitousMoviesToFind);
 		}
 		System.out.println();
 	}
@@ -170,7 +164,7 @@ public class QueryTest {
 		System.out.println();
 	}
 
-	private String[] getTestMoviesFromFile() {
+	private static String[] getTestMoviesFromFile() {
 		ArrayList<String> result = new ArrayList<String>();
 		try (BufferedReader br = new BufferedReader(new FileReader(new File("data/testmovies.txt")))) {
 			String line = "";
