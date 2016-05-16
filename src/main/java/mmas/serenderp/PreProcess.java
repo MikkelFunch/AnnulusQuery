@@ -29,9 +29,6 @@ public class PreProcess {
 			
 			bandStartTime = System.currentTimeMillis();
 			for (SparseVector sv : movies.values()) {
-//				if (!sv.hasActors() || sv.getNonZeroElements().length < 10) {
-//					continue;
-//				}
 				List<Integer> minHash = MinHashing.minHash(sv, bandIndex);
 				buckets.add(bandIndex, minHash, sv);
 			}

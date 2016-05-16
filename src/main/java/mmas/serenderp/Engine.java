@@ -22,7 +22,7 @@ import main.java.mmas.serenderp.util.SparseVector;
 public class Engine {
 
 	public static void main(String[] args) {
-		Constants.setParameters(64, 2, 10);
+		Constants.setParameters(60, 2, 10);
 
 		// Map<Integer, SparseVector> movies = PreProcess.getMovies();
 		// System.out.println("Got movies");
@@ -51,12 +51,29 @@ public class Engine {
 		// System.out.println(String.format("Build data structure duration: %d
 		// sec", (duration / 1000)));
 		//
+
+
 		// DATA STRUCTURE MEMORY
-//		startTime = System.currentTimeMillis();
-//		PreProcess.buildQueryStructureMemory(movies);
-//		endTime = System.currentTimeMillis();
-//		duration = (endTime - startTime);
-//		System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
+		 startTime = System.currentTimeMillis();
+		 PreProcess.buildQueryStructureMemory(movies);
+		 endTime = System.currentTimeMillis();
+		 duration = (endTime - startTime);
+		 System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
+		 
+		 
+		//AMOUNT OF RANDOM VECTORS
+//		 final int[] amountOfRandomVectors = { 50, 25, 10, 5, 1 };
+//		 final int numbersOfBands = 5, hashFunctionsPerBand = 2;
+		
+//		for (int randomVectors : amountOfRandomVectors) {
+//			Constants.setParameters(numbersOfBands, hashFunctionsPerBand, randomVectors);
+//			startTime = System.currentTimeMillis();
+//			PreProcess.buildQueryStructureMemory(movies);
+//			endTime = System.currentTimeMillis();
+//			duration = (endTime - startTime);
+//			System.out.println(String.format("Build data structure with %d random vectors took: %d sec", randomVectors,
+//					(duration / 1000)));
+//		}
 
 		// consoleUi(null, movies);
 		// consoleUi(buckets, movies);
@@ -83,7 +100,7 @@ public class Engine {
 		// System.out.println(String.format("Build data structure duration: %d
 		//// sec", (duration / 1000)));
 
-		consoleUi(null, movies);
+		// consoleUi(null, movies);
 	}
 
 	private static void consoleUi(Buckets buckets, Map<String, SparseVector> movies) {

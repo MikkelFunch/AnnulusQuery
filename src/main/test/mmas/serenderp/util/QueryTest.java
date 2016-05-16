@@ -24,24 +24,19 @@ public class QueryTest {
 	private static Map<String, SparseVector> allMovies;
 	private static final double c = 1, r = 1.339, w = 1.025;
 	private static final int serendipitousMoviesToFind = 10;
-	private static String[] movieNames = { "Cars (2006)", "Titanic (1997)", "Toy Story (1995)",
-			"The Girl in Room 69 (1994)", "\"Mucho Gusto\" (2001)", "\"Spy TV\" (2001)", "\"The Mighty B!\" (2008)",
-			"\"Kung ako'y iiwan mo\" (2012)", "\"Gumapang ka sa lusak\" (2010)", "Cast Away (2000)",
-			"\"Fox News Sunday\" (1996)", "\"Zomergasten\" (1988)", "\"Eisai to tairi mou\" (2001)",
-			"\"The Glen Campbell Music Show\" (1982)", "\"Bela ladja\" (2006)", "Camino de Sacramento (1945)", };
+	private static final List<String> movieNames = loadTestMoviesFromFile();
 
 	@BeforeClass
 	public static void beforeClass() {
 		allMovies = IMDBReader.getIMDBMovies();
 	}
 
-	// @Test
+	@Test
 	public void testAmountOfRandomVectors() {
-		final int bands = 20, bandSize = 1;
-		final int[] amountOfRandomVectors = { 100, 50, 25, 10, 5, 1 };
+		final int bands = 5, bandSize = 2;
+		final int[] amountOfRandomVectors = { 50, 25, 10, 5, 1 };
 
-		System.out.print("Amount of random vectors");
-		printMovies();
+		System.out.println("Amount of random vectors");
 		for (int randomVectors : amountOfRandomVectors) {
 			Constants.setParameters(bands, bandSize, randomVectors);
 			System.out.print(randomVectors);
@@ -56,7 +51,6 @@ public class QueryTest {
 		final int bandSize = 2, randomVectors = 10;
 
 		System.out.println("Amount of bands");
-		movieNames = loadTestMoviesFromFile(); // Load movies from file
 		printMovies();
 
 		// Test all bands
@@ -106,13 +100,13 @@ public class QueryTest {
 			}
 		}
 
-		System.out.println("Success: " + (success / movieNames.length) * 100 + "%");
+		System.out.println("Success: " + (success / movieNames.size()) * 100 + "%");
 		System.out.println();
 
-		return (success / movieNames.length) * 100;
+		return (success / movieNames.size()) * 100;
 	}
 
-	private String[] loadTestMoviesFromFile() {
+	private static List<String> loadTestMoviesFromFile() {
 		ArrayList<String> result = new ArrayList<>();
 		try (BufferedReader br = new BufferedReader(new FileReader(new File("data/testmovies.txt")))) {
 			String line;
@@ -122,7 +116,7 @@ public class QueryTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return result.toArray(new String[result.size()]);
+		return result;
 	}
 
 	private void query() {
@@ -134,7 +128,7 @@ public class QueryTest {
 				continue;
 			}
 			Assert.assertNotNull(queryPoint);
-			// Engine.queryMemory(c, r, w, queryPoint, serendipitousMoviesToFind);
+			Engine.queryMemory(c, r, w, queryPoint, serendipitousMoviesToFind);
 		}
 		System.out.println();
 	}
