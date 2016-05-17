@@ -82,7 +82,7 @@ public class QueryTest {
 						pointsExamined += results.getRight();
 						numberOfMovies++;
 					}
-				System.out.println(String.format("\t%.2f", pointsExamined / numberOfMovies));
+				System.out.print(String.format("\t%.2f", pointsExamined / numberOfMovies));
 				resultsNumbers.add(pointsExamined / numberOfMovies);
 			}
 			System.out.println(String.format("%.2f", pointsExamined / numberOfMovies));
