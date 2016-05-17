@@ -253,4 +253,25 @@ public class Magic {
 		}
 		return sumOfRatings / (double) userRatings.size();
 	}
+	
+	public static int moviesUserHasVotedOn(List<Entry<Integer, Double>> user, List<Integer> recommendations){
+		int result = 0;
+		for (Entry<Integer, Double> id : user) {
+			if (recommendations.contains(id.getKey())) {
+				result++;
+			}
+		}
+		return result;
+	}
 }
+
+
+
+
+
+
+
+
+
+
+

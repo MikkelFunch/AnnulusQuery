@@ -24,12 +24,19 @@ public class LinearAnnulus {
 	}
 
 	private static Collection<SparseVector> query(Stream<SparseVector> stream, SparseVector q, double r, final double w, double c, int n) {
-		
-		return stream.filter(m -> {
-			double d = m.distanceTo(q);
-			double wc = w * c;
-			return (r / wc < d && d < r * wc);
-		}).limit(n).collect(Collectors.toList());
+		if (n == -1) {
+			return stream.filter(m -> {
+				double d = m.distanceTo(q);
+				double wc = w * c;
+				return (r / wc < d && d < r * wc);
+			}).collect(Collectors.toList());
+		} else {
+			return stream.filter(m -> {
+				double d = m.distanceTo(q);
+				double wc = w * c;
+				return (r / wc < d && d < r * wc);
+			}).limit(n).collect(Collectors.toList());
+		}
 	}
 	
 	public static double percentageInAnnulus(Collection<SparseVector> movies,  SparseVector q, double r, double w, double c) {

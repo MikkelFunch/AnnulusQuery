@@ -2,6 +2,7 @@ package main.test.mmas.serenderp.util;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -19,11 +20,12 @@ import main.java.mmas.serenderp.IMDBReader;
 import main.java.mmas.serenderp.Magic;
 import main.java.mmas.serenderp.MovieLensReader;
 import main.java.mmas.serenderp.PreProcess;
+import main.java.mmas.serenderp.brute.LinearAnnulus;
 import main.java.mmas.serenderp.util.SparseVector;
 
 public class MagicTest {
 	private static Map<String, SparseVector> allMovies;
-	private static final double c = 1, r = 1.339, w = 1.025;
+	private static final double c = 1, r = 1.38606209756, w = 1.007;
 	private static final int serendipitousMoviesToFind = -1;
 	private static Map<String, Integer> imdbToMovieLens;
 
@@ -47,25 +49,31 @@ public class MagicTest {
 
 		Map<Integer, String> movieLensToImdb = MovieLensReader.loadMovies();
 		imdbToMovieLens = PreProcess.getImdbToMovieLensMap();
+		
+		List<SparseVector> movieLensVectors = new ArrayList<>();
+		for (String name : movieLensToImdb.values()) {
+			movieLensVectors.add(allMovies.get(name));
+		}
 
-		final int amountOfBands = 60, bandSize = 2, randomVectors = 10;
-		Constants.setParameters(amountOfBands, bandSize, randomVectors);
+//		final int amountOfBands = 60, bandSize = 2, randomVectors = 10;
+//		Constants.setParameters(amountOfBands, bandSize, randomVectors);
 		Long startTime = System.currentTimeMillis();
 
-		SparseVector queryPoint;
+		SparseVector queryPoint = null;
 
 		double allTotal = 0;
 		double totalUsers = 0;
+		int votedOnTotal = 0;
 		int i = 0;
 		for (List<Entry<Integer, Double>> user : validUsers) {
-			if (i == 100)
+			if (i == 3)
 				break;
 			List<Integer> queryPoints = Magic.getUserQueryPoints(user);
-
+			
 			Set<SparseVector> sparseRecommendations = new HashSet<>();
 			for (Integer qId : queryPoints) {
 				queryPoint = allMovies.get(movieLensToImdb.get(qId));
-				sparseRecommendations.addAll(Engine.queryMemory(c, r, w, queryPoint, serendipitousMoviesToFind).getLeft());
+				sparseRecommendations.addAll(LinearAnnulus.query(movieLensVectors, queryPoint, r, w, c, serendipitousMoviesToFind));
 			}
 
 			List<Integer> recommendations = getMovieLensIds(sparseRecommendations);
@@ -75,6 +83,7 @@ public class MagicTest {
 				totalUsers++;
 				i++;
 			}
+			votedOnTotal += Magic.moviesUserHasVotedOn(user, recommendations);
 			System.out.println("Done with user: " + i);
 		}
 		allTotal /= totalUsers;
@@ -83,9 +92,10 @@ public class MagicTest {
 		System.out.println(String.format("Time for " + i + " users: %d sec", (duration / 1000)));
 
 		System.out.println("FINAL SERENDIPITY FOR " + i + " USERS: " + allTotal);
+		System.out.println("Based on: " + votedOnTotal + " ratings");
 	}
 
-	@Test
+//	@Test
 	public void randomSerendipityTest() {
 		List<List<Entry<Integer, Double>>> userRatings = MovieLensReader.loadUserRatings();
 
@@ -113,9 +123,9 @@ public class MagicTest {
 				"Average serendipity: " + total / validUsers.size() + " - For " + validUsers.size() + " users");
 	}
 
-	private List<Integer> getMovieLensIds(Set<SparseVector> svs) {
+	private List<Integer> getMovieLensIds(Collection<SparseVector> sparseRecommendations) {
 		List<Integer> result = new ArrayList<>();
-		for (SparseVector sv : svs) {
+		for (SparseVector sv : sparseRecommendations) {
 			Integer i = imdbToMovieLens.get(sv.getMovieTitle());
 			if (i != null) {
 				result.add(i);
@@ -124,7 +134,7 @@ public class MagicTest {
 		return result;
 	}
 
-	@Test
+//	@Test
 	public void testSerendipity() {
 		double serendipity = Magic.calculateSerendipityForUser(getExampleUserRatings(), getExampleRecommendations());
 		Assert.assertEquals(0.5, serendipity);
