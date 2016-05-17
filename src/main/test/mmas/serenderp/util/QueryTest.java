@@ -92,8 +92,8 @@ public class QueryTest {
 		for(int i = 0; i < resultsNumbers.size(); i++) {
 			result[i] = resultsNumbers.get(i);
 		}
-		System.out.println("newline");
-		System.out.println(Statistics.calculateAverageWithoutOutliers(result));
+//		System.out.println("newline");
+//		System.out.println(Statistics.calculateAverageWithoutOutliers(result));
 	}
 
 //	@Test
