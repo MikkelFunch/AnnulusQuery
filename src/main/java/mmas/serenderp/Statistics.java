@@ -76,14 +76,26 @@ public class Statistics {
 			System.out.println("no outliers: " + getMeanWithoutOutliers(doubles));
 			System.out.println("mean: " + getMean(doubles));
 			System.out.println("50 percentile: " + get50Percentile(doubles));
+			System.out.println();
 		}
-
 		
-//		String file2 = "data/query001.csv"; 
-//		values = readValues(file2);
-//		System.out.println(getMeanWithoutOutliers(values));
-//		System.out.println(getMean(values));
-//		System.out.println(get50Percentile(values));
+//		String linearFile1 = "data/linear001.csv";
+//		values = readValues(linearFile1);
+//		for (double[] doubles : values) {
+//			System.out.println("no outliers: " + getMeanWithoutOutliers(doubles));
+//			System.out.println("mean: " + getMean(doubles));
+//			System.out.println("50 percentile: " + get50Percentile(doubles));
+//			System.out.println();
+//		}
+		
+//		String linearFile10 = "data/linear010.csv";
+//		values = readValues(linearFile10);
+//		for (double[] doubles : values) {
+//			System.out.println("no outliers: " + getMeanWithoutOutliers(doubles));
+//			System.out.println("mean: " + getMean(doubles));
+//			System.out.println("50 percentile: " + get50Percentile(doubles));
+//			System.out.println();
+//		}
 	}
 	
 	

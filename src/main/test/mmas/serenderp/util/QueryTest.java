@@ -16,14 +16,13 @@ import org.junit.Test;
 import main.java.mmas.serenderp.Constants;
 import main.java.mmas.serenderp.Engine;
 import main.java.mmas.serenderp.IMDBReader;
-import main.java.mmas.serenderp.Statistics;
 import main.java.mmas.serenderp.brute.LinearAnnulus;
 import main.java.mmas.serenderp.util.SparseVector;
 
 public class QueryTest {
 	private static Map<String, SparseVector> allMovies;
 	private static final double c = 1, r = 1.339, w = 1.025;
-	private static final int[] serendipitousMoviesToFind = { 1 };
+	private static final int[] serendipitousMoviesToFind = { 1, 10 };
 	private static final List<String> movieNames = loadTestMoviesFromFile();
 
 	@BeforeClass
@@ -35,6 +34,8 @@ public class QueryTest {
 	public void testAmountOfRandomVectors() {
 		final int bands = 20, bandSize = 2;
 		final int[] amountOfRandomVectors = { 10, 5, 1 };
+		final StringBuilder sb = new StringBuilder();
+		sb.append("Did not find movies:").append("\n");
 
 		SparseVector queryPoint;
 		for (int moviesToFind : serendipitousMoviesToFind) {
@@ -54,12 +55,15 @@ public class QueryTest {
 						System.out.print(String.format("\t%d", results.getRight()));
 //						pointsExamined += results.getRight();
 //						numberOfMovies++;
+					} else {
+						sb.append(movieName).append("\n");
 					}
 				}
 //				System.out.println(String.format("\t%.2f", pointsExamined / numberOfMovies));
 				System.out.println();
 			}
 			System.out.println();
+			System.out.println(sb.toString());
 		}
 	}
 	
@@ -152,7 +156,7 @@ public class QueryTest {
 //
 	private static List<String> loadTestMoviesFromFile() {
 		ArrayList<String> result = new ArrayList<>();
-		try (BufferedReader br = new BufferedReader(new FileReader(new File("data/testmovies.txt")))) {
+		try (BufferedReader br = new BufferedReader(new FileReader(new File("data/testmoviesAAQfinds.txt")))) {
 			String line;
 			while ((line = br.readLine()) != null) {
 				result.add(line);

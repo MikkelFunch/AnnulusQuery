@@ -199,11 +199,11 @@ public class Engine {
 
 		double distance;
 		SparseVector tempResult = null;
-		List<SparseVector> resultList = new ArrayList<>();
+		Set<SparseVector> resultList = new HashSet<>();
 		if (pq.isEmpty()) {
 //			 System.out.println(String.format("PQ is empty before looking for results with query point being %s", q.getMovieTitle()));
 		}
-		search: for (int i = 0; i < n; i++) {
+		search: while(resultList.size() < n) {
 			do {
 				if (pq.isEmpty()) {
 					break search;
@@ -230,7 +230,7 @@ public class Engine {
 //		System.out.print("\t" + pointsEvaluated);
 		// Check annulus correctness
 		
-		return new ImmutablePair<List<SparseVector>, Integer>(resultList, pointsEvaluated);
+		return new ImmutablePair<List<SparseVector>, Integer>(new ArrayList<>(resultList), pointsEvaluated);
 	}
 
 	public static List<SparseVector> query(Buckets queryStructure, double c, double r, double w, SparseVector q,
