@@ -17,6 +17,7 @@ import org.junit.Test;
 import main.java.mmas.serenderp.Constants;
 import main.java.mmas.serenderp.Engine;
 import main.java.mmas.serenderp.IMDBReader;
+import main.java.mmas.serenderp.Statistics;
 import main.java.mmas.serenderp.brute.LinearAnnulus;
 import main.java.mmas.serenderp.util.SparseVector;
 
@@ -63,6 +64,7 @@ public class QueryTest {
 	@Test
 	public void testLinearPointsExamined() {
 		//Map<String, SparseVector> movies = IMDBReader.getIMDBMovies();
+		List<Double> resultsNumbers = new ArrayList<>();
 		
 		SparseVector queryPoint;
 		for (int moviesToFind : serendipitousMoviesToFind) {
@@ -79,9 +81,17 @@ public class QueryTest {
 						numberOfMovies++;
 					}
 				System.out.println(String.format("\t%.2f", pointsExamined / numberOfMovies));
+				resultsNumbers.add(pointsExamined / numberOfMovies);
 			}
 			System.out.println();
 		}
+		
+		double[] result = new double[resultsNumbers.size()];
+		for(int i = 0; i < resultsNumbers.size(); i++) {
+			result[i] = resultsNumbers.get(i);
+		}
+		System.out.println("newline");
+		System.out.println("Statistics.calculateAverageWithoutOutliers(result)");
 	}
 
 //	@Test
