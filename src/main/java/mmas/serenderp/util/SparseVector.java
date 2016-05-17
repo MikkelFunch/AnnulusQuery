@@ -12,6 +12,7 @@ import java.util.function.DoubleUnaryOperator;
 import main.java.mmas.serenderp.Constants;
 
 import org.apache.commons.math3.linear.RealVector;
+import org.hamcrest.core.IsInstanceOf;
 
 public class SparseVector {
 	
@@ -217,5 +218,13 @@ public class SparseVector {
 			res += "(" + entry.getKey() + ", " + entry.getValue() + "), ";
 		}
 		return res + "]";
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof SparseVector) {
+			return this.getMovieTitle().equals(((SparseVector) obj).getMovieTitle());			
+		}
+		return false;
 	}
 }

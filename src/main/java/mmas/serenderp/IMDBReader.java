@@ -271,15 +271,3 @@ public class IMDBReader {
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
