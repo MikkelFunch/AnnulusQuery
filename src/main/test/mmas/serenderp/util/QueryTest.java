@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +23,7 @@ import main.java.mmas.serenderp.util.SparseVector;
 public class QueryTest {
 	private static Map<String, SparseVector> allMovies;
 	private static final double c = 1, r = 1.339, w = 1.025;
-	private static final int[] serendipitousMoviesToFind = { 1, 10 };
+	private static final int[] serendipitousMoviesToFind = { 1, 10, 100 };
 	private static final List<String> movieNames = loadTestMoviesFromFile();
 
 	@BeforeClass
@@ -35,7 +34,7 @@ public class QueryTest {
 	@Test
 	public void testAmountOfRandomVectors() {
 		final int bands = 20, bandSize = 2;
-		final int[] amountOfRandomVectors = { 50, 25 };//, 10, 5, 1 };
+		final int[] amountOfRandomVectors = { 10, 5, 1 };
 
 		SparseVector queryPoint;
 		for (int moviesToFind : serendipitousMoviesToFind) {
@@ -46,16 +45,19 @@ public class QueryTest {
 				double numberOfMovies = 0;
 				double pointsExamined = 0;
 				System.out.print(randomVectors);
-				for (String movieName : movieNames) {
-					queryPoint = allMovies.get(movieName);
+//				for (String movieName : new String[] { "Cars (2006)", "Toy Story (1995)" }) {
+				for (String movieName : movieNames ) {
+					queryPoint = allMovies.get((String) movieName);
 					Assert.assertNotNull(queryPoint);
 					Pair<List<SparseVector>, Integer> results = Engine.queryMemory(c, r, w, queryPoint, moviesToFind);
 					if (results.getLeft().size() == moviesToFind) {
-						pointsExamined += results.getRight();
-						numberOfMovies++;
+						System.out.print(String.format("\t%d", results.getRight()));
+//						pointsExamined += results.getRight();
+//						numberOfMovies++;
 					}
 				}
-				System.out.println(String.format("\t%.2f", pointsExamined / numberOfMovies));
+//				System.out.println(String.format("\t%.2f", pointsExamined / numberOfMovies));
+				System.out.println();
 			}
 			System.out.println();
 		}
@@ -83,7 +85,7 @@ public class QueryTest {
 				System.out.println(String.format("\t%.2f", pointsExamined / numberOfMovies));
 				resultsNumbers.add(pointsExamined / numberOfMovies);
 			}
-			System.out.println();
+			System.out.println(String.format("%.2f", pointsExamined / numberOfMovies));
 		}
 		
 		double[] result = new double[resultsNumbers.size()];
