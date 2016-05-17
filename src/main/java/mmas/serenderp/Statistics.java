@@ -76,6 +76,7 @@ public class Statistics {
 			System.out.println("no outliers: " + getMeanWithoutOutliers(doubles));
 			System.out.println("mean: " + getMean(doubles));
 			System.out.println("50 percentile: " + get50Percentile(doubles));
+			System.out.println("std dev: " + getStdDev(doubles));
 		}
 
 		
