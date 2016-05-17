@@ -36,6 +36,6 @@ public class Quad implements Comparable<Quad> {
 
 	@Override
 	public int compareTo(Quad o) {
-		return Double.compare(dotProduct, o.getDotProduct());
+		return Double.compare(dotProduct, o.getDotProduct()) * -1;
 	}
 }

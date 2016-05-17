@@ -31,7 +31,7 @@ public class QueryTest {
 		allMovies = IMDBReader.getIMDBMovies();
 	}
 
-	@Test
+//	@Test
 	public void testAmountOfRandomVectors() {
 		final int bands = 5, bandSize = 2;
 		final int[] amountOfRandomVectors = { 50, 25, 10, 5, 1 };
@@ -47,7 +47,7 @@ public class QueryTest {
 	@Test
 	public void testAmountOfBands() {
 		// final int amountOfBands[] = { 60, 50, 40, 30, 20, 10, 5, 2, 1 };
-		final int amountOfBands = 60;
+		final int amountOfBands = 20;
 		final int bandSize = 2, randomVectors = 10;
 
 		System.out.println("Amount of bands");
@@ -93,8 +93,7 @@ public class QueryTest {
 			List<SparseVector> result = Engine.queryMemory(c, r, w, queryPoint, serendipitousMoviesToFind);
 
 			// linear
-			Collection<SparseVector> linearResult = LinearAnnulus.query(allMovies.values(), queryPoint, r, w, 1,
-					serendipitousMoviesToFind);
+			Collection<SparseVector> linearResult = LinearAnnulus.query(allMovies.values(), queryPoint, r, w, 1, serendipitousMoviesToFind);
 			if (linearResult.size() == result.size()) {
 				success++;
 			}

@@ -12,6 +12,10 @@ import java.util.PriorityQueue;
 import java.util.Scanner;
 import java.util.Set;
 
+import javax.management.RuntimeErrorException;
+
+import java.util.Map.Entry;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -22,7 +26,7 @@ import main.java.mmas.serenderp.util.SparseVector;
 public class Engine {
 
 	public static void main(String[] args) {
-		Constants.setParameters(60, 2, 10);
+		Constants.setParameters(20, 2, 10);
 
 		// Map<Integer, SparseVector> movies = PreProcess.getMovies();
 		// System.out.println("Got movies");
@@ -54,11 +58,13 @@ public class Engine {
 
 
 		// DATA STRUCTURE MEMORY
-		 startTime = System.currentTimeMillis();
-		 PreProcess.buildQueryStructureMemory(movies);
-		 endTime = System.currentTimeMillis();
-		 duration = (endTime - startTime);
-		 System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
+//		 startTime = System.currentTimeMillis();
+//		 PreProcess.buildQueryStructureMemory(movies);
+//		 endTime = System.currentTimeMillis();
+//		 duration = (endTime - startTime);
+//		 System.out.println(String.format("Build data structure duration: %d sec", (duration / 1000)));
+		
+
 		 
 		 
 		//AMOUNT OF RANDOM VECTORS
@@ -100,7 +106,7 @@ public class Engine {
 		// System.out.println(String.format("Build data structure duration: %d
 		//// sec", (duration / 1000)));
 
-		// consoleUi(null, movies);
+		 consoleUi(null, movies);
 	}
 
 	private static void consoleUi(Buckets buckets, Map<String, SparseVector> movies) {
@@ -183,8 +189,7 @@ public class Engine {
 			} else {
 				continue;
 			}
-			// System.out.println(String.format("Bucket has %d elements",
-			// bucket.getList(0).size()));
+			 System.out.println(String.format("Bucket has %d elements", bucket.getList(0).size()));
 			for (int i = 0; i < AMOUNT_OF_RANDOM_VECTORS; i++) {
 				// NullPointerexception thrown here
 				SparseVector p = bucket.getHead(i);
@@ -204,11 +209,12 @@ public class Engine {
 		if (pq.isEmpty()) {
 			// System.out.println("PQ is empty before looking for results");
 		}
-		search: for (int i = 0; i < n; i++) {
+		
+		if (n == -1) {
+			while(true){
 			do {
 				if (pq.isEmpty()) {
-					break search;
-					// return resultList;
+					return resultList;
 				}
 				Quad currentPoint = pq.poll();
 				tempResult = currentPoint.getVector();
@@ -227,9 +233,35 @@ public class Engine {
 				// }
 			} while (!(r / w < distance && distance < r * w));
 			resultList.add(tempResult);
+			}
+		} else {
+			search: for (int i = 0; i < n; i++) {
+				do {
+					if (pq.isEmpty()) {
+						break search;
+						// return resultList;
+					}
+					Quad currentPoint = pq.poll();
+					tempResult = currentPoint.getVector();
+					distance = q.distanceTo(tempResult);
+					ListIterator<Pair<Double, SparseVector>> predLink = currentPoint.getPredecessor();
+					if (predLink.hasNext()) {
+						Pair<Double, SparseVector> next = predLink.next();
+						int vectorIndex = currentPoint.getRandomVectorIndex();
+						double priorityValue = calculatePriorityValue(next.getRight(), q, vectorIndex);
+						pq.add(new Quad(priorityValue, next.getRight(), predLink, vectorIndex));
+					}
+					pointsEvaluated++;
+					// if(++pointsEvaluated % 1000 == 0) {
+					// System.out.println(String.format("%d points evaluated",
+					// pointsEvaluated));
+					// }
+				} while (!(r / w < distance && distance < r * w));
+				resultList.add(tempResult);
+			}
 		}
 		System.out.print("\t" + pointsEvaluated);
-		// Check annulus correctness
+		
 		return resultList;
 	}
 

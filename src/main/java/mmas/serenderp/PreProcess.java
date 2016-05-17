@@ -6,6 +6,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import main.java.mmas.serenderp.util.MinHashing;
 import main.java.mmas.serenderp.util.SparseVector;
@@ -75,7 +76,14 @@ public class PreProcess {
 				}
 			}
 		}
-
 		return movies;
+	}
+	
+	public static Map<String, Integer> getImdbToMovieLensMap(){
+		Map<String, Integer> result = new HashMap<>();
+		for(Entry<Integer, SparseVector> entry : getMovies().entrySet()){
+			result.put(entry.getValue().getMovieTitle(), entry.getKey());
+		}
+		return result;
 	}
 }
