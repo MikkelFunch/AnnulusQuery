@@ -184,7 +184,7 @@ public class Engine {
 			} else {
 				continue;
 			}
-			System.out.println(String.format("Bucket has %d elements", bucket.getList(0).size()));
+//			System.out.println(String.format("Bucket has %d elements", bucket.getList(0).size()));
 			for (int i = 0; i < AMOUNT_OF_RANDOM_VECTORS; i++) {
 				SparseVector p = bucket.getHead(i);
 				if (p != null) {

@@ -64,43 +64,44 @@ public class QueryTest {
 //		}
 //	}
 	
-	@Test
-	public void testAmountOfRandomVectors() {
-		final int bands = 20, bandSize = 2;
-		final int[] amountOfRandomVectors = { 10, 5, 1 };
-		final StringBuilder sb = new StringBuilder();
-		sb.append("Did not find movies:").append("\n");
-
-		SparseVector queryPoint;
-		for (int moviesToFind : serendipitousMoviesToFind) {
-			System.out.println(String.format("Querying for %d movies\n", moviesToFind));
-			System.out.println("Amount of random vectors\tAverage number of points examined");
-			for (int randomVectors : amountOfRandomVectors) {
-				Constants.setParameters(bands, bandSize, randomVectors);
-				double numberOfMovies = 0;
-				double pointsExamined = 0;
-				System.out.print(randomVectors);
-//				for (String movieName : new String[] { "Cars (2006)", "Toy Story (1995)" }) {
-				for (String movieName : movieNames ) {
-					queryPoint = allMovies.get((String) movieName);
-					Assert.assertNotNull(queryPoint);
-					Pair<List<SparseVector>, Integer> results = Engine.queryMemory(c, r, w, queryPoint, moviesToFind);
-					if (results.getLeft().size() == moviesToFind) {
-						System.out.print(String.format("\t%d", results.getRight()));
-//						pointsExamined += results.getRight();
-//						numberOfMovies++;
-					} else {
-						sb.append(movieName).append("\n");
-					}
-				}
-//				System.out.println(String.format("\t%.2f", pointsExamined / numberOfMovies));
-				System.out.println();
-			}
-			System.out.println();
-			System.out.println(sb.toString());
-		}
-	}
+//	@Test
+//	public void testAmountOfRandomVectors() {
+//		final int bands = 20, bandSize = 2;
+//		final int[] amountOfRandomVectors = { 10, 5, 1 };
+//		final StringBuilder sb = new StringBuilder();
+//		sb.append("Did not find movies:").append("\n");
+//
+//		SparseVector queryPoint;
+//		for (int moviesToFind : serendipitousMoviesToFind) {
+//			System.out.println(String.format("Querying for %d movies\n", moviesToFind));
+//			System.out.println("Amount of random vectors\tAverage number of points examined");
+//			for (int randomVectors : amountOfRandomVectors) {
+//				Constants.setParameters(bands, bandSize, randomVectors);
+//				double numberOfMovies = 0;
+//				double pointsExamined = 0;
+//				System.out.print(randomVectors);
+////				for (String movieName : new String[] { "Cars (2006)", "Toy Story (1995)" }) {
+//				for (String movieName : movieNames ) {
+//					queryPoint = allMovies.get((String) movieName);
+//					Assert.assertNotNull(queryPoint);
+//					Pair<List<SparseVector>, Integer> results = Engine.queryMemory(c, r, w, queryPoint, moviesToFind);
+//					if (results.getLeft().size() == moviesToFind) {
+//						System.out.print(String.format("\t%d", results.getRight()));
+////						pointsExamined += results.getRight();
+////						numberOfMovies++;
+//					} else {
+//						sb.append(movieName).append("\n");
+//					}
+//				}
+////				System.out.println(String.format("\t%.2f", pointsExamined / numberOfMovies));
+//				System.out.println();
+//			}
+//			System.out.println();
+//			System.out.println(sb.toString());
+//		}
+//	}
 	
+	@Test
 	public void testAmountOfBands() {
 		// final int amountOfBands[] = { 60, 50, 40, 30, 20, 10, 5, 2, 1 };
 		final int amountOfBands = 20;
@@ -238,7 +239,7 @@ public class QueryTest {
 //
 	private static List<String> loadTestMoviesFromFile() {
 		ArrayList<String> result = new ArrayList<>();
-		try (BufferedReader br = new BufferedReader(new FileReader(new File("data/testmoviesAAQfinds.txt")))) {
+		try (BufferedReader br = new BufferedReader(new FileReader(new File("data/testmovies.txt")))) {
 			String line;
 			while ((line = br.readLine()) != null) {
 				result.add(line);
