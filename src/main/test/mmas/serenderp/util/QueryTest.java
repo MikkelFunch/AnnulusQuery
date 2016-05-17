@@ -23,7 +23,7 @@ import main.java.mmas.serenderp.util.SparseVector;
 public class QueryTest {
 	private static Map<String, SparseVector> allMovies;
 	private static final double c = 1, r = 1.339, w = 1.025;
-	private static final int[] serendipitousMoviesToFind = { 1, 10, 100 };
+	private static final int[] serendipitousMoviesToFind = { 1  };
 	private static final List<String> movieNames = loadTestMoviesFromFile();
 
 	@BeforeClass
@@ -93,7 +93,7 @@ public class QueryTest {
 			result[i] = resultsNumbers.get(i);
 		}
 		System.out.println("newline");
-		System.out.println("Statistics.calculateAverageWithoutOutliers(result)");
+		System.out.println(Statistics.calculateAverageWithoutOutliers(result));
 	}
 
 //	@Test
