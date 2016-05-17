@@ -86,13 +86,6 @@ public class QueryTest {
 			}
 //			System.out.println(String.format("%.2f", pointsExamined / numberOfMovies));
 		}
-
-		double[] result = new double[resultsNumbers.size()];
-		for (int i = 0; i < resultsNumbers.size(); i++) {
-			result[i] = resultsNumbers.get(i);
-		}
-		System.out.println("newline");
-		System.out.println(Statistics.calculateAverageWithoutOutliers(result));
 	}
 
 //	@Test
