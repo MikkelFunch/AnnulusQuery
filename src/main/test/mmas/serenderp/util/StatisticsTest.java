@@ -18,7 +18,7 @@ public class StatisticsTest {
 		doubles[3] = 2.0;
 		doubles[4] = 1.0;
 		
-		double calculateAverageWithoutOutliers = Statistics.calculateAverageWithoutOutliers(doubles);
+		double calculateAverageWithoutOutliers = Statistics.getMeanWithoutOutliers(doubles);
 		Assert.assertEquals(1.25, calculateAverageWithoutOutliers, 0.00001);
 	}
 }
