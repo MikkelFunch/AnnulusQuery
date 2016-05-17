@@ -23,7 +23,7 @@ import main.java.mmas.serenderp.util.SparseVector;
 public class QueryTest {
 	private static Map<String, SparseVector> allMovies;
 	private static final double c = 1, r = 1.339, w = 1.025;
-	private static final int[] serendipitousMoviesToFind = { 1  };
+	private static final int[] serendipitousMoviesToFind = { 1 };
 	private static final List<String> movieNames = loadTestMoviesFromFile();
 
 	@BeforeClass
@@ -65,31 +65,30 @@ public class QueryTest {
 	
 	@Test
 	public void testLinearPointsExamined() {
-		//Map<String, SparseVector> movies = IMDBReader.getIMDBMovies();
+		// Map<String, SparseVector> movies = IMDBReader.getIMDBMovies();
 		List<Double> resultsNumbers = new ArrayList<>();
-		
+
 		SparseVector queryPoint;
 		for (int moviesToFind : serendipitousMoviesToFind) {
 			System.out.println(String.format("Querying for %d movies\n", moviesToFind));
-				double numberOfMovies = 0;
-				double pointsExamined = 0;
-				for (String movieName : movieNames) {
-					queryPoint = allMovies.get(movieName);
-					if(queryPoint == null) System.out.println(movieName);
-					Assert.assertNotNull(queryPoint);
-					Pair<List<SparseVector>, Integer> results = LinearAnnulus.queryPointsExamined(allMovies.values(), queryPoint, r, w, c, moviesToFind);
-					if (results.getLeft().size() == moviesToFind) {
-						pointsExamined += results.getRight();
-						numberOfMovies++;
-					}
-				System.out.print(String.format("\t%.2f", pointsExamined / numberOfMovies));
-				resultsNumbers.add(pointsExamined / numberOfMovies);
+			for (String movieName : movieNames) {
+				queryPoint = allMovies.get(movieName);
+				Assert.assertNotNull(queryPoint);
+				
+				Pair<List<SparseVector>, Integer> results = LinearAnnulus.queryPointsExamined(allMovies.values(), queryPoint, r, w, c, moviesToFind);
+				
+				if (results.getLeft().size() == moviesToFind) {
+					System.out.print(String.format("\t%d", results.getRight()));
+//					pointsExamined += results.getRight();
+//					numberOfMovies++;
+				}
+//				resultsNumbers.add(pointsExamined / numberOfMovies);
 			}
-			System.out.println(String.format("%.2f", pointsExamined / numberOfMovies));
+//			System.out.println(String.format("%.2f", pointsExamined / numberOfMovies));
 		}
-		
+
 		double[] result = new double[resultsNumbers.size()];
-		for(int i = 0; i < resultsNumbers.size(); i++) {
+		for (int i = 0; i < resultsNumbers.size(); i++) {
 			result[i] = resultsNumbers.get(i);
 		}
 		System.out.println("newline");
