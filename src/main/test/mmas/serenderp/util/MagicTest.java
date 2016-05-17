@@ -65,7 +65,7 @@ public class MagicTest {
 			Set<SparseVector> sparseRecommendations = new HashSet<>();
 			for (Integer qId : queryPoints) {
 				queryPoint = allMovies.get(movieLensToImdb.get(qId));
-				sparseRecommendations.addAll(Engine.queryMemory(c, r, w, queryPoint, serendipitousMoviesToFind));
+				sparseRecommendations.addAll(Engine.queryMemory(c, r, w, queryPoint, serendipitousMoviesToFind).getLeft());
 			}
 
 			List<Integer> recommendations = getMovieLensIds(sparseRecommendations);

@@ -25,15 +25,35 @@ import main.java.mmas.serenderp.util.SparseVector;
 public class Magic {
 	public static int numberOfRatedMoviesForEligibility = 500;
 
-	public static List<Integer> getUserQueryPoints(List<Entry<Integer, Double>> userRatings) {
-		List<Entry<Integer, Double>> speedList = new ArrayList<>();
-		double maxRating = Integer.MIN_VALUE;
-		
-		for (Entry<Integer, Double> e : userRatings) {
-			if (e.getValue() >= maxRating) {
-				maxRating = e.getValue();
-				speedList.add(e);
-			}
+
+	
+	public static void main(String[] args) {
+		Map<Integer, SparseVector> movies = PreProcess.getMovies();
+		System.out.println("Got movies");
+		List<List<Entry<Integer,Double>>> users = MovieLensReader.loadUserRatings();
+		System.out.println("Got userratings");
+		Magic.intuitionPlots(users, movies);
+	}
+	
+//	public static SparseVector getUserQueryPoint(List<Entry<Integer,Double>> userRatings, Map<Integer,SparseVector> movies, int numberOfMoviesToCalculateFrom) {
+//		SparseVector userAverageMovie = new SparseVector(Constants.DIMENSIONS);
+//		//Calculate the user's movie-center, weighed by rating
+//		List<Entry<Integer,Double>> topRatings = getTopMovies(userRatings, numberOfMoviesToCalculateFrom);
+//		double averageRating = calculateAverageRating(topRatings);
+//		for(Entry<Integer, Double> rating : topRatings) {
+//			SparseVector m = movies.get(rating.getKey());
+//			userAverageMovie = add(userAverageMovie, m);
+//>>>>>>> 44a7484ea060cc07d8036a29143ce67f683b16c1
+			
+			public static List<Integer> getUserQueryPoints(List<Entry<Integer, Double>> userRatings) {
+	List<Entry<Integer, Double>> speedList = new ArrayList<>();
+	double maxRating = Integer.MIN_VALUE;
+	
+	for (Entry<Integer, Double> e : userRatings) {
+		if (e.getValue() >= maxRating) {
+			maxRating = e.getValue();
+			speedList.add(e);
+		}
 		}
 		
 		List<Integer> maxRatings = new ArrayList<>();
@@ -130,14 +150,15 @@ public class Magic {
 
 	public static void intuitionPlots(List<List<Entry<Integer, Double>>> users, Map<Integer, SparseVector> movies) {
 		Random rand = new Random();
-		List<List<Entry<Integer, Double>>> userSample = new ArrayList<List<Entry<Integer, Double>>>();
-		for (int i = 0; i < 1000; i++) {
+		List<List<Entry<Integer,Double>>> userSample = new ArrayList<List<Entry<Integer,Double>>>();
+		for (int i = 0; i < 10000; i++) {
 			int idx = rand.nextInt(users.size());
 			userSample.add(users.get(idx));
 			users.remove(idx);
 		}
 
 		HashMap<Double, Double> ratingDistancesMap = new HashMap<>();
+		HashMap<Double, Integer> ratingDistancesCountMap = new HashMap<>();
 
 		for (List<Entry<Integer, Double>> user : userSample) {
 			if (0 == user.size()) {
@@ -152,27 +173,34 @@ public class Magic {
 			ArrayList<Entry<Integer, Double>> ratingsArray = new ArrayList<Entry<Integer, Double>>();
 			ratingStream.forEach(ratingsArray::add);
 
-			Entry<Integer, Double> qRating = ratingsArray.get(rand.nextInt(ratingsArray.size()));
-			user.remove(qRating.getKey());
+			Entry<Integer,Double> qRating = ratingsArray.get(rand.nextInt(ratingsArray.size()));
+			user.remove(qRating);
 			SparseVector qMovie = movies.get(qRating.getKey());
 
 			HashMap<Double, Double> userRatingDistancesMap = new HashMap<>();
 			HashMap<Double, Integer> userRatingCountMap = new HashMap<>();
-			for (Entry<Integer, Double> r : user) {
+			for(Entry<Integer,Double> r : user) {
+				SparseVector movie = movies.get(r.getKey()); //test
 				double d = distance(qMovie, movies.get(r.getKey()));
-				userRatingDistancesMap.compute(r.getValue(), (k, v) -> (null == v) ? d : v + d);
-				userRatingCountMap.compute(r.getValue(), (k, v) -> (null == v) ? 1 : v + 1);
+				if(d<0.8) {
+					int a = 0;  //test
+				}
+				userRatingDistancesMap.compute(r.getValue(), (k,v) ->(null == v) ? d : v+d);
+				userRatingCountMap.compute(r.getValue(), (k,v) -> (null == v) ? 1 : v+1);
 			}
 
 			for (Double rating : userRatingDistancesMap.keySet()) {
 				double d = userRatingDistancesMap.get(rating);
-				double avgDist = d / userRatingCountMap.get(rating);
-				ratingDistancesMap.compute(rating, (k, v) -> (null == v) ? avgDist : v + avgDist);
+				double avgDist = d/userRatingCountMap.get(rating);
+				ratingDistancesMap.compute(rating, (k,v) -> (null == v) ? avgDist : v + avgDist);
+				ratingDistancesCountMap.compute(rating, (k,v) -> (null == v) ? 1 : v+1);
 			}
-
 		}
 		System.out.println("Radius vs rating:");
-		ratingDistancesMap.forEach((k, v) -> System.out.println(k + " " + v / userSample.size()));
+		for(double d = 1.0; d < 5.5; d += 0.5) {
+			System.out.println(d + " " + ratingDistancesMap.get(d)/ratingDistancesCountMap.get(d));
+		}
+//		ratingDistancesMap.forEach((k,v) -> System.out.println(k + " " + v/userSample.size()));
 	}
 
 	/***
